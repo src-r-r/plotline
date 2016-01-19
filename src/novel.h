@@ -2,25 +2,66 @@
 #define NOVEL_H
 
 #include <QObject>
-#include <novelpart.h>
+#include <stdlib.h>
+#include "chapter.h"
 
 class Novel : public QObject
 {
-private:
-    QString
-        *workingTitle,
-        *genre,
-        *tense,
-        *setting;
-    QLinkedList<NovelPart> *parts;
-
     Q_OBJECT
+
 public:
-    explicit Novel(QObject *parent = 0);
+    enum Tense {
+        Past, Present, Future
+    };
+
+    enum PointOfView {
+        FirstPersonSingular, SecondPersonSingular, ThirdPersonSingular,
+        FirstPersonPlural, SecondPersonPlural, ThirdPersonPlural,
+    };
+
+    explicit Novel(const QString &workingTitle,
+                   const QString &genre = QString(),
+                   const QString &setting = QString(),
+                   const Novel::Tense tense = Past,
+                   const Novel::PointOfView pov = ThirdPersonSingular,
+                   QObject *parent = 0);
+    Novel(const Novel &);
+
+    QString getWorkingTitle() const;
+
+    QString getGenre() const;
+
+    Novel::Tense getTense() const;
+    void setTense(const Novel::Tense tense);
+
+    QString getSetting() const;
+
+    QList<Scene> getScenes() const;
+    void setScenes(const QList<Scene> &value);
+
+    QList<Chapter> getChapters() const;
+    void setChapters(const QList<Chapter> &value);
+
+    Novel::PointOfView getPointOfView() const;
+    void setPointOfView(const Novel::PointOfView &pointOfView);
+
+private:
+
+    QString workingTitle,
+    genre,
+    setting;
+    Novel::Tense mTense;
+    Novel::PointOfView mPointOfView;
+    QList<Scene> scenes;
+    QList<Chapter> chapters;
 
 signals:
 
 public slots:
+    void setWorkingTitle(const QString &value);
+    void setGenre(const QString &value);
+    void setSetting(const QString &value);
+
 };
 
 #endif // NOVEL_H

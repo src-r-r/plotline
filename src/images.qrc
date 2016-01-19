@@ -1,9 +1,11 @@
 <RCC>
     <qresource prefix="/new/prefix1">
-        <file>resources/images/list-add-user.png</file>
-        <file>resources/images/list-remove-user.png</file>
-        <file>resources/images/user-archive.png</file>
-        <file>resources/images/list-remove-plotline.png</file>
-        <file>resources/images/list-add-plotline.png</file>
+        <file>res/list-add-plotline.png</file>
+        <file>res/list-add-user.png</file>
+        <file>res/list-remove-plotline.png</file>
+        <file>res/list-remove-user.png</file>
+        <file>res/user-archive.png</file>
+        <file>res/user-identity.png</file>
+        <file>res/user-properties.png</file>
     </qresource>
 </RCC>

@@ -1,0 +1,55 @@
+{
+    "label" : "Part 2",
+    "attributes" : [
+        {
+            "label": "Internal Conflict (obstacles)",
+            "prompt": "Why is your protagonist hesitant to strive for her goals? What (emotionally) makes her falter?",
+            "type": String
+        },
+        {
+            "label": "External Conflict (obstacles)",
+            "prompt" : "What stands in the way of your protagonist’s goals? What will happen to her if she fails?",
+            "type" : String
+        },
+        {
+            "label": "Internal Higher Conflict (obstacles heighten)",
+            "prompt": "Why should your protagonist turn back now? Why doesn’t she? What’s at stake?",
+            "type" : String
+        },
+        {
+            "label" : "External Higher Conflict (obstacles heighten)",
+            "prompt" : "Who or what is trying to stop your protagonist? Why?",
+            "type" : String
+        },
+        {
+            "label" : "Internal Highest Conflict (obstacles intensify)",
+            "prompt" : "What makes your protagonist realize the unavoidable importance of her original goal? What gives it new meaning?",
+            "type" : String
+        },
+        {
+            "label" : "External Highest Conflict (obstacles intensify)",
+            "prompt" : "How does the antagonist get the best of your protagonist? What could make it worse? What happens to make her believe that there is no way to win?",
+            "type" : String
+        },
+        {
+            "label" : "Internal Point of No Return (stakes)",
+            "prompt" : "What happens to change your protagonist so that she’ll never be the same again?",
+            "type" : String
+        },
+        {
+            "label" : "External Point of No Return (stakes)",
+            "prompt" : "What makes it impossible for your protagonist to go back, to give up?",
+            "type" : String
+        },
+        {
+            "label" : "Darkest Hour",
+            "prompt" : "What is the worst possible thing that could happen to your protagonist?",
+            "type" : String
+        },
+        {
+            "label": "Turning Point",
+            "prompt" : "How does your protagonist realize she must continue to fight? How does she decide to risk everything? What new approach or idea has she come up with to battle on?",
+            "type" : String
+        }
+    ],
+}

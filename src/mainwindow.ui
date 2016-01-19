@@ -18,7 +18,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabNovel">
        <attribute name="title">
@@ -183,7 +183,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="images.qrc">
+               <iconset>
                 <normaloff>:/new/prefix1/resources/images/list-add-user.png</normaloff>:/new/prefix1/resources/images/list-add-user.png</iconset>
               </property>
               <property name="flat">
@@ -203,7 +203,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="images.qrc">
+               <iconset>
                 <normaloff>:/new/prefix1/resources/images/user-archive.png</normaloff>:/new/prefix1/resources/images/user-archive.png</iconset>
               </property>
              </widget>
@@ -220,7 +220,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="images.qrc">
+               <iconset>
                 <normaloff>:/new/prefix1/resources/images/list-remove-user.png</normaloff>:/new/prefix1/resources/images/list-remove-user.png</iconset>
               </property>
              </widget>
@@ -268,7 +268,7 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <layout class="QVBoxLayout" name="verticalLayout">
             <item>
              <widget class="QListView" name="listView">
@@ -306,7 +306,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="images.qrc">
+                 <iconset>
                   <normaloff>:/new/prefix1/resources/images/list-add-plotline.png</normaloff>:/new/prefix1/resources/images/list-add-plotline.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
@@ -326,7 +326,7 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset resource="images.qrc">
+                 <iconset>
                   <normaloff>:/new/prefix1/resources/images/list-remove-plotline.png</normaloff>:/new/prefix1/resources/images/list-remove-plotline.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
@@ -353,7 +353,7 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>487</width>
+              <width>361</width>
               <height>387</height>
              </rect>
             </property>
@@ -625,9 +625,7 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
  <buttongroups>
   <buttongroup name="buttonGroup"/>

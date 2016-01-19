@@ -1,0 +1,28 @@
+{
+    "label" : "Part 1",
+    "attributes" : [
+        {
+            "label" : "Inciting Incident",
+            "prompt" : "What happens to the protagonist to put her unavoidably in the path of the antagonist?",
+            "type" : String
+        },
+        {
+            "label" : "Internal Initial Conflict (call to action)",
+            "name" : "ii_conflict",
+            "prompt" : "What does your protagonist most want? Why can’t she have it? How will she try to get it?",
+            "type" : String
+        },
+        {
+            "label" : "External Initial Conflict (call to action)",
+            "name" : "ei_conflict",
+            "prompt" : "What does your protagonist want to accomplish or obtain (physically)? How will she go about it?",
+            "type" : String
+        },
+        {
+            "label": "Woven-in Backstory, Vital Information",
+            "name" : "backstory",
+            "prompt": "What happened before the inciting incident that we must know to understand the story?",
+            "type" : String
+        },
+    ]
+}

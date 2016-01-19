@@ -1,0 +1,25 @@
+{
+    "label" : "Part 3",
+    "attributes" : [
+        {
+            "label" : "Internal Climax",
+            "prompt" : "What does your protagonist realize at the crucial moment? What does she learn? Overcome?",
+            "type" : String,
+        },
+        {
+            "label" : "External Climax",
+            "prompt" : "How does your protagonist defeat your antagonist?",
+            "type" : String
+        },
+        {
+            "label" : "Resolution (external)",
+            "prompt" : "What does defeating the antagonist accomplish? How are things different?",
+            "type" : String
+        },
+        {
+            "label" : "Character Growth (internal)",
+            "prompt" : "How has your protagonist changed?",
+            "type" : String
+        }
+    ]
+}

@@ -1,0 +1,120 @@
+{
+    "label" : "Novel Worthiness",
+    "fields" : [
+        {
+            "label" : "Main Character",
+            "type" : "choice",
+            "choices" : [
+                {
+                   "label" : "Heroic"
+                },
+                {
+                   "label" : "Courageous"
+                },
+                {
+                   "label" : "Goal-driven"
+                },
+                {
+                    "label" : "Focused"
+                },
+                {
+                    "label" : "Passionate"
+                },
+                {
+                    "label" : "Sympathetic"
+                },
+                {
+                    "label" : "Loyal"
+                },
+                {
+                    "label" : "Attractive"
+                },
+                {
+                    "label" : "Clever"
+                },
+                {
+                    "label" : "Funny"
+                },
+                {
+                    "label" : "Resourceful"
+                },
+                {
+                    "label" : "Responds actively to surroundings"
+                },
+                {
+                    "label" : "Embraces opportunity"
+                },
+                {
+                    "label" : "Makes things happen"
+                },
+                {
+                    "label" : "Mouthy"
+                },
+                {
+                    "label" : "Stubborn"
+                },
+                {
+                    "label" : "Perseveres with dignity"
+                },
+                {
+                    "label" : "Stoic about problems"
+                },
+                {
+                    "label" : "Leads Action"
+                },
+                {
+                    "label" : "Idealistic"
+                },
+                {
+                    "label" : "High Opinion of Self"
+                },
+                {
+                    "label" : "Lives by Different Rules",
+                    "name" : "different_rules"
+                },
+                {
+                    "label" : "Quintessentially",
+                    "name" : "quintessentially"
+                },
+                {
+                    "label" : "Essential to the plot"
+                },
+                {
+                    "label" : "Responsible for resolution"
+                }
+            ],
+            "special" : [
+                {
+                    "field" : "different_rules",
+                    "type" : "small-string"
+                },
+                {
+                    "field" : "quintessentially",
+                    "type" : "small-string"
+                }
+            ]
+        },
+        {
+            "label" : "Sub-Ordinate Character",
+            "type" : "choice",
+            "choices" : [
+                {
+                    "label" : "Reinforces a main character"
+                },
+                {
+                    "label" : "Encourages and supports main character"
+                },
+                {
+                    "label" : "Adds humor"
+                },
+                {
+                    "label" : "Brings out Protag’s Strength"
+                },
+                {
+                    "label" : "Piles on complications"
+                }
+            ]
+        }
+
+    ]
+}

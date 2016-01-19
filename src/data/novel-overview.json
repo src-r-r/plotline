@@ -1,0 +1,25 @@
+{
+    "name" : "overview",
+    "label" : "Overview",
+    "attributes" : [
+        {
+            "label" : "Working Title",
+            "type" : String,
+            "isLong" : false
+        },
+        {
+            "label" : "Genre",
+            "type" : String,
+            "isLong" : false
+        },
+        {
+            "label" : "Tense/POV",
+            "type" : String,
+            "isLong" : false
+        },
+        {
+            "label" : "Setting",
+            "type" : String
+        }
+    ]
+}
