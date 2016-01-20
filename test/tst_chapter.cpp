@@ -1,31 +1,6 @@
-#include <QString>
-#include <QtTest>
-#include <QList>
-#include <QDebug>
-#include <iostream>
-#include <stdlib.h>
-#include "../src/chapter.h"
+#include "tst_chapter.h"
 
-class TestChapter : public QObject
-{
-    Q_OBJECT
-
-public:
-    TestChapter();
-
-private:
-    QList<Character *> *mTestCharacters;
-    QList<Scene *> *mTestScenes;
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void testConstructor();
-    void testSetScenes();
-};
-
-TestChapter::TestChapter()
+TestChapter::TestChapter(QObject *parent) : QObject(parent)
 {
 
 }
@@ -80,5 +55,3 @@ void TestChapter::cleanupTestCase()
     delete mTestCharacters;
     delete mTestScenes;
 }
-
-#include "tst_chapter.moc"

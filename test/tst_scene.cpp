@@ -1,19 +1,6 @@
-#include <QString>
-#include <QtTest>
-#include "../src/scene.h"
+#include "tst_scene.h"
 
-class TestScene : public QObject
-{
-    Q_OBJECT
-
-public:
-    TestScene();
-
-private Q_SLOTS:
-    void testConstructor();
-};
-
-TestScene::TestScene()
+TestScene::TestScene(QObject *parent) : QObject(parent)
 {
 
 }
@@ -21,6 +8,4 @@ TestScene::TestScene()
 void TestScene::testConstructor()
 {
 }
-
-#include "tst_scene.moc"
 

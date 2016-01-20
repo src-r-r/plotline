@@ -1,20 +1,6 @@
-#include <QString>
-#include <QtTest>
-#include "../src/novel.h"
+#include "tst_novel.h"
 
-class TestNovel : public QObject
-{
-    Q_OBJECT
-
-public:
-    TestNovel();
-
-private Q_SLOTS:
-    void testConstructor();
-    void testSetters();
-};
-
-TestNovel::TestNovel()
+TestNovel::TestNovel(QObject *parent) : QObject(parent)
 {
 }
 
@@ -68,5 +54,3 @@ void TestNovel::testSetters()
     novel->setTense(Novel::Future);
     QTRY_COMPARE(novel->getTense(), Novel::Future);
 }
-
-#include "tst_novel.moc"

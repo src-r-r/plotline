@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     int nFailed = 0;
 
     for (int i = 0; tests[i]; ++i)
-        nFailed += QTest::qExec(tests[i]);
+        nFailed += QTest::qExec(tests[i], argc, argv);
 
     QString border = QString("+++++++++++++++++ ");
 
