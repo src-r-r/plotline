@@ -11,8 +11,8 @@ class Scene : public Completable
 private:
     QString headline,
         action;
-    QList<Character> mCharacters;
-    QList<Character> mPovCharacters;
+    QList<Character *> mCharacters;
+    QList<Character *> mPovCharacters;
 
 public:
     explicit Scene(QObject *parent=0);
@@ -24,13 +24,11 @@ public:
     QString getAction() const;
     void setAction(const QString &value);
 
-    void setCharacters(const QList<Character> &mCharacters);
-    QList<Character> getCharacters() const;
+    void setCharacters(const QList<Character *> &mCharacters);
+    QList<Character *> getCharacters() const;
 
-    void setPointsOfView(const QList<Character> &mCharacters);
-    QList<Character> getPointsOfView() const;
-
-    Scene(const Scene &s);
+    void setPointsOfView(const QList<Character *> &mCharacters);
+    QList<Character *> getPointsOfView() const;
 
 signals:
 

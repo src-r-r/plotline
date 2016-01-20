@@ -29,8 +29,3 @@ void Completable::setCompleted(int state)
 {
     this->mComplete = (state == Qt::Checked);
 }
-
-Completable::Completable(const Completable &c) : QObject(c.parent())
-{
-    this->mComplete = c.mComplete;
-}

@@ -24,8 +24,9 @@ public:
                    const QString &setting = QString(),
                    const Novel::Tense tense = Past,
                    const Novel::PointOfView pov = ThirdPersonSingular,
+                   const QList<Scene *> scenes = QList<Scene *>(),
+                   const QList<Chapter *> chapters = QList<Chapter *>(),
                    QObject *parent = 0);
-    Novel(const Novel &);
 
     QString getWorkingTitle() const;
 
@@ -36,11 +37,11 @@ public:
 
     QString getSetting() const;
 
-    QList<Scene> getScenes() const;
-    void setScenes(const QList<Scene> &value);
+    QList<Scene *> getScenes() const;
+    void setScenes(const QList<Scene *> &value);
 
-    QList<Chapter> getChapters() const;
-    void setChapters(const QList<Chapter> &value);
+    QList<Chapter *> getChapters() const;
+    void setChapters(const QList<Chapter *> &value);
 
     Novel::PointOfView getPointOfView() const;
     void setPointOfView(const Novel::PointOfView &pointOfView);
@@ -52,8 +53,8 @@ private:
     setting;
     Novel::Tense mTense;
     Novel::PointOfView mPointOfView;
-    QList<Scene> scenes;
-    QList<Chapter> chapters;
+    QList<Scene *> mScenes;
+    QList<Chapter *> mChapters;
 
 signals:
 

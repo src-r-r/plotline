@@ -1,17 +1,17 @@
 #include "sceneitemmodel.h"
 
-SceneItemModel::SceneItemModel(QList<Scene> scenes, QObject *parent)
+SceneItemModel::SceneItemModel(QList<Scene *> scenes, QObject *parent)
     : QAbstractListModel(parent)
 {
     this->mScenes = scenes;
 }
 
-QList<Scene> SceneItemModel::getScenes() const
+QList<Scene *> SceneItemModel::getScenes() const
 {
     return mScenes;
 }
 
-void SceneItemModel::setScenes(const QList<Scene> &scenes)
+void SceneItemModel::setScenes(const QList<Scene *> &scenes)
 {
     mScenes = scenes;
 }
@@ -28,7 +28,7 @@ QVariant SceneItemModel::data(const QModelIndex &index, int role) const
     if (index.row() < 0 || index.row() > this->mScenes.size())
         return QVariant();
     if (role == Qt::DisplayRole)
-         return this->mScenes.value(index.row()).getHeadline();
+         return this->mScenes.value(index.row())->getHeadline();
     return QVariant();
 }
 

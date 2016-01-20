@@ -10,22 +10,20 @@ class Chapter : public Completable
 private:
     QString mTitle;
     QString mContent;
-    QList<Scene> mScenes;
+    QList<Scene *> mScenes;
 
     Q_OBJECT
 public:
     explicit Chapter(const QString &title = QString(),
                      const QString &content = QString(),
-                     const QList<Scene> &scenes = QList<Scene>(),
+                     const QList<Scene *> &scenes = QList<Scene *>(),
                      QObject *parent = 0);
-
-    Chapter(const Chapter &c);
 
     QString getTitle() const;
     QString getContent() const;
 
-    QList<Scene> getScenes() const;
-    void setScenes(const QList<Scene> &scenes);
+    QList<Scene *> getScenes() const;
+    void setScenes(const QList<Scene *> &scenes);
 
 signals:
 

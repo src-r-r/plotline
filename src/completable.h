@@ -14,8 +14,6 @@ public:
     void unmarkCompleted();
     void toggleCompleted();
 
-    Completable(const Completable &c);
-
 protected:
     bool mComplete;
 

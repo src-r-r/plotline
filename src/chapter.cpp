@@ -1,7 +1,7 @@
 #include "chapter.h"
 
 Chapter::Chapter(const QString &title, const QString &content,
-                 const QList<Scene> &scenes,
+                 const QList<Scene *> &scenes,
                  QObject *parent) : Completable(parent)
 {
     mTitle = title;
@@ -29,19 +29,12 @@ void Chapter::setContent(const QString &content)
     mContent = content;
 }
 
-QList<Scene> Chapter::getScenes() const
+QList<Scene *> Chapter::getScenes() const
 {
     return mScenes;
 }
 
-void Chapter::setScenes(const QList<Scene> &scenes)
+void Chapter::setScenes(const QList<Scene *> &scenes)
 {
     mScenes = scenes;
-}
-
-Chapter::Chapter(const Chapter &c) : Completable(c)
-{
-    this->mTitle = c.mTitle;
-    this->mContent = c.mContent;
-    this->mScenes = c.mScenes;
 }

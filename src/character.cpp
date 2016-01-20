@@ -12,8 +12,8 @@ Character::Character(const QString &name, const QString &nickname,
     this->mHeadshot = headshot;
     QString lbl = QString();
 
-    // If a label is not given, make the label the name parts in title-case, so the name "John Doe" will
-    // appear as "JoDo"
+    // If a label is not given, make the label the name parts in title-case,
+    // so the name "John Doe" will appear as "JoDo"
     if (label == 0){
         QStringList nameParts = name.split(QChar(' '));
         for (QString namePart : nameParts)
@@ -22,15 +22,6 @@ Character::Character(const QString &name, const QString &nickname,
     } else {
         this->mLabel = label;
     }
-}
-
-Character::Character(const Character &c) : QObject(c.parent())
-{
-    this->mName = c.mName;
-    this->mNickname = c.mNickname;
-    this->mLabel = c.mLabel;
-    this->mColor = c.mColor;
-    this->mHeadshot = c.mHeadshot;
 }
 
 QString Character::getName() const

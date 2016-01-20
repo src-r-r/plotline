@@ -8,10 +8,11 @@
 class SceneItemModel : public QAbstractListModel
 {
 public:
-    SceneItemModel(QList<Scene> scenes=QList<Scene>(), QObject *parent = 0 );
+    SceneItemModel(QList<Scene *> scenes=QList<Scene *>(),
+                   QObject *parent = 0 );
 
-    QList<Scene> getScenes() const;
-    void setScenes(const QList<Scene> &scenes);
+    QList<Scene *> getScenes() const;
+    void setScenes(const QList<Scene *> &scenes);
 
     // Overrides
     int rowCount(const QModelIndex &parent) const;
@@ -21,7 +22,7 @@ public:
         const;
 
 private:
-    QList<Scene> mScenes;
+    QList<Scene *> mScenes;
     SceneItemModel *root;
 
 signals:

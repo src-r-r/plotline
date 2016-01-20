@@ -6,11 +6,15 @@ Novel::Novel(const QString &workingTitle,
              const QString &setting,
              const Novel::Tense tense,
              const Novel::PointOfView pov,
+             const QList<Scene *> scenes,
+             const QList<Chapter *> chapters,
              QObject *parent)
     : QObject(parent)
 {
     this->workingTitle = workingTitle;
     this->genre = genre;
+    this->mScenes = scenes;
+    this->mChapters = chapters;
     this->mTense = tense;
     this->setting = setting;
     this->mPointOfView = pov;
@@ -56,24 +60,24 @@ void Novel::setSetting(const QString &value)
     setting = value;
 }
 
-QList<Scene> Novel::getScenes() const
+QList<Scene *> Novel::getScenes() const
 {
-    return scenes;
+    return mScenes;
 }
 
-void Novel::setScenes(const QList<Scene> &value)
+void Novel::setScenes(const QList<Scene *> &value)
 {
-    scenes = value;
+    mScenes = value;
 }
 
-QList<Chapter> Novel::getChapters() const
+QList<Chapter *> Novel::getChapters() const
 {
-    return chapters;
+    return mChapters;
 }
 
-void Novel::setChapters(const QList<Chapter> &value)
+void Novel::setChapters(const QList<Chapter *> &value)
 {
-    chapters = value;
+    mChapters = value;
 }
 
 Novel::PointOfView Novel::getPointOfView() const
@@ -84,14 +88,4 @@ Novel::PointOfView Novel::getPointOfView() const
 void Novel::setPointOfView(const Novel::PointOfView &pointOfView)
 {
     mPointOfView = pointOfView;
-}
-
-Novel::Novel(const Novel &novel) : QObject(novel.parent())
-{
-    this->workingTitle = novel.workingTitle;
-    this->genre = novel.genre;
-    this->mTense = novel.mTense;
-    this->mPointOfView = novel.mPointOfView;
-    this->scenes = novel.scenes;
-    this->chapters = novel.chapters;
 }

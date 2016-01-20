@@ -69,6 +69,4 @@ void TestNovel::testSetters()
     QTRY_COMPARE(novel->getTense(), Novel::Future);
 }
 
-QTEST_APPLESS_MAIN(TestNovel)
-
 #include "tst_novel.moc"

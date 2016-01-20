@@ -25,7 +25,6 @@ public:
                        const QImage &mHeadshot = QImage(),
                        const QColor &mColor = QColor(),
                        QObject *parent = 0);
-    Character(const Character &c);
 
     QString getName() const;
 

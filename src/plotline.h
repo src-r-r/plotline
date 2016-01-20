@@ -12,15 +12,15 @@ class Plotline : public QObject
 
 private:
 
-    QList<Character> mCharacters;
-    QList<Scene> mScenes;
+    QList<Character *> mCharacters;
+    QList<Scene *> mScenes;
     QString mSynopsis;
     QColor mColor;
 
 public:
     explicit Plotline(const QString &mSynopsis,
-                      const QList<Scene> &mScenes = QList<Scene>(),
-                      const QList<Character> &mCharacters = QList<Character>(),
+                      const QList<Scene *> &mScenes = QList<Scene *>(),
+                      const QList<Character *> &mCharacters = QList<Character *>(),
                       const QColor &mColor = QColor(),
                       QObject *parent = 0);
 
@@ -30,11 +30,11 @@ public:
     QColor getColor() const;
     void setColor(const QColor &value);
 
-    QList<Character> getCharacters() const;
-    void setCharacters(const QList<Character> &mCharacters);
+    QList<Character *> getCharacters() const;
+    void setCharacters(const QList<Character *> &characters);
 
-    QList<Scene> getScenes() const;
-    void setScenes(const QList<Scene> &mScenes);
+    QList<Scene *> getScenes() const;
+    void setScenes(const QList<Scene *> &scenes);
 
 signals:
 

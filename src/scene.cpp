@@ -30,29 +30,22 @@ void Scene::setAction(const QString &action)
     this->action = action;
 }
 
-QList<Character> Scene::getCharacters() const
+QList<Character *> Scene::getCharacters() const
 {
     return this->mCharacters;
 }
 
-void Scene::setPointsOfView(const QList<Character> &characters)
+void Scene::setPointsOfView(const QList<Character *> &characters)
 {
     this->mPovCharacters = characters;
 }
 
-QList<Character> Scene::getPointsOfView() const
+QList<Character *> Scene::getPointsOfView() const
 {
     return this->mPovCharacters;
 }
 
-void Scene::setCharacters(const QList<Character> &characters)
+void Scene::setCharacters(const QList<Character *> &characters)
 {
     this->mCharacters = characters;
-}
-
-Scene::Scene(const Scene &s) : Completable(s.parent())
-{
-    this->headline = s.headline;
-    this->mCharacters = s.mCharacters;
-    this->mPovCharacters = s.mPovCharacters;
 }
