@@ -12,8 +12,10 @@ private:
     // SERIALIZABLE instance instead of every subclass instance, but this
     // will take the work-load off the subclasses.
 
-    static const QString JSON_ID;
     int mId;
+protected:
+
+    static const QString JSON_ID;
 
 public:
     Serializable(int id = -1);

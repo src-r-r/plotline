@@ -24,11 +24,11 @@ int Serializable::deserialize(const QJsonObject &object)
 
 int Serializable::getId() const
 {
-    return this->mId;
+    return mId;
 }
 
 void Serializable::setId(const int id)
 {
-    this->mId = id;
+    mId = id;
 }
 

@@ -4,13 +4,11 @@ const QString Character::J_NAME = QString("name"),
     Character::J_NICKNAME = QString("nickname"),
     Character::J_LABEL = QString("label"),
     Character::J_HEADSHOT = QString("headshot"),
-    Character::J_COLOR = QString("color"),
-    Character::J_SCENES = QString("scenes");
+    Character::J_COLOR = QString("color");
 
 Character::Character(const QString &name, const QString &nickname,
                      const QString &label, const QImage &headshot,
                      const QColor &color,
-                     const QList<Scene *> scenes,
                      Novel *novel,
                      int id,
                      QObject *parent) : QObject(parent), Serializable(id)
@@ -19,7 +17,6 @@ Character::Character(const QString &name, const QString &nickname,
     this->mNickname = nickname;
     this->mColor = color;
     this->mHeadshot = headshot;
-    this->mScenes = scenes;
     this->mNovel = novel;
     QString lbl = QString();
 
@@ -35,16 +32,6 @@ Character::Character(const QString &name, const QString &nickname,
     }
 }
 
-QList<Scene *> Character::getScenes() const
-{
-    return mScenes;
-}
-
-void Character::setScenes(const QList<Scene *> &scenes)
-{
-    mScenes = scenes;
-}
-
 Novel *Character::getNovel() const
 {
     return mNovel;
@@ -58,17 +45,13 @@ void Character::setNovel(Novel *novel)
 QJsonObject Character::serialize() const
 {
     QJsonObject character = QJsonObject();
+    QJsonArray scenes = QJsonArray();
 
-    QJsonObject color = QJsonObject();
-    color["red"] = mColor.red();
-    color["green"] = mColor.green();
-    color["blue"] = mColor.blue();
-
-    character["id"] = this->getId();
+    character[JSON_ID] = this->getId();
     character[J_NAME] = mName;
     character[J_NICKNAME] = mNickname;
     character[J_LABEL] = mLabel;
-    character[J_COLOR] = color;
+    character[J_COLOR] = mColor.name();
 
     return character;
 }
@@ -80,7 +63,6 @@ Character *Character::deserialize(Novel *novel, const QJsonObject &object)
     QString name = QString(), nickname = QString(), label = QString();
     QImage headshot = QImage();
     QColor color = QColor();
-    QList<Scene *> scenes = QList<Scene *>();
 
     QString headshotBuffer = QString();
 
@@ -94,9 +76,10 @@ Character *Character::deserialize(Novel *novel, const QJsonObject &object)
         label = object[J_LABEL].toString();
 
     if (object.contains(J_COLOR))
-        color = QColor(object[J_COLOR].toObject()["red"].toInt(),
-                object[J_COLOR].toObject()["green"].toInt(),
-                object[J_COLOR].toObject()["blue"].toInt());
+        color = QColor(object[J_COLOR].toString());
+
+    else
+        qWarning() << "Character color not set";
 
     // TODO: deserialize headshot.
 //    if (!vHeadshot.isNull() && vHeadshot.isString()){
@@ -104,7 +87,7 @@ Character *Character::deserialize(Novel *novel, const QJsonObject &object)
 //    }
 
     Character *character = new Character(name, nickname, label,
-                                         headshot, color, QList<Scene *>(),
+                                         headshot, color,
                                          novel, id);
     return character;
 }

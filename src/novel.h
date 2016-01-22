@@ -2,6 +2,7 @@
 #define NOVEL_H
 
 #include <QObject>
+#include <QtDebug>
 #include <stdlib.h>
 #include "plotline.h"
 #include "chapter.h"
@@ -9,6 +10,8 @@
 
 class Chapter;
 class Plotline;
+class Character;
+class Scene;
 
 class Novel : public QObject, public Serializable
 {

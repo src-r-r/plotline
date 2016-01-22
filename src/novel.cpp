@@ -164,14 +164,10 @@ QJsonObject Novel::serialize() const
 {
     QJsonObject novel = QJsonObject();
 
-    novel.insert(JSON_WORKING_TITLE, this->mWorkingTitle);
-    novel.insert(JSON_SETTING, this->mSetting);
-    novel.insert(JSON_POV, this->mPointOfView);
-    novel.insert(JSON_TENSE, this->mTense);
-
     QJsonArray jScenes = QJsonArray(),
             jChapters = QJsonArray(),
-            jCharacters = QJsonArray();
+            jCharacters = QJsonArray(),
+            jPlotlines = QJsonArray();
 
     for (Scene *s : mScenes)
         jScenes.append(s->serialize());
@@ -182,23 +178,27 @@ QJsonObject Novel::serialize() const
     for (Character *a : mCharacters)
         jCharacters.append(a->serialize());
 
-    novel.insert(JSON_CHARACTERS, jCharacters);
-    novel.insert(JSON_SCENES, jScenes);
-    novel.insert(JSON_CHAPTERS, jChapters);
+    for (Plotline *p : mPlotlines)
+        jPlotlines.append(p->serialize());
+
+    novel[JSON_ID] = QJsonValue(getId());
+    novel[JSON_WORKING_TITLE] = mWorkingTitle;
+    novel[JSON_SETTING] = mSetting;
+    novel[JSON_GENRE] = mGenre;
+    novel[JSON_POV] = QJsonValue(mPointOfView);
+    novel[JSON_TENSE] = QJsonValue(mTense);
+    novel[JSON_CHARACTERS] = jCharacters;
+    novel[JSON_SCENES] = jScenes;
+    novel[JSON_CHAPTERS] = jChapters;
+    novel[JSON_PLOTLINES] = jPlotlines;
     return novel;
 }
 
 Novel *Novel::deserialize(const QJsonObject &object)
 {
-    QJsonValue vWorkingTitle = object.value(JSON_WORKING_TITLE),
-            vGenre = object.value(JSON_GENRE),
-            vSetting = object.value(JSON_SETTING),
-            vTense = object.value(JSON_TENSE),
-            vPov = object.value(JSON_POV),
-            vScenes = object.value(JSON_SCENES),
-            vCharacters = object.value(JSON_CHARACTERS),
-            vChapters = object.value(JSON_CHAPTERS),
-            vPlotlines = object.value(JSON_PLOTLINES);
+
+    if (object.isEmpty())
+        return 0;
 
     QString workingTitle = QString(),
             genre = QString(), setting = QString();
@@ -211,41 +211,68 @@ Novel *Novel::deserialize(const QJsonObject &object)
 
     int id = Serializable::deserialize(object);
 
-    if (!vWorkingTitle.isNull() && vWorkingTitle.isString())
-        workingTitle = vWorkingTitle.toString();
+    QStringList notFound = QStringList();
 
-    if (!vGenre.isNull() && vGenre.isString())
-        genre = vGenre.toString();
+    if (object.contains(JSON_WORKING_TITLE))
+        workingTitle = object[JSON_WORKING_TITLE].toString();
+    else
+        notFound << JSON_WORKING_TITLE;
 
-    if (!vSetting.isNull() && vSetting.isString())
-        setting = vSetting.toString();
+    if (object.contains(JSON_GENRE))
+        genre = object[JSON_GENRE].toString();
+    else
+        notFound << JSON_GENRE;
 
-    if (!vTense.isNull() && vTense.isDouble())
-        tense = (Tense) vTense.toInt();
+    if (object.contains(JSON_SETTING))
+        setting = object[JSON_SETTING].toString();
+    else
+        notFound << JSON_SETTING;
 
-    if (!vPov.isNull() && vPov.isDouble())
-        pointOfView = (PointOfView) vPov.toInt();
+    if (object.contains(JSON_TENSE))
+        tense = (Tense) object[JSON_TENSE].toInt();
+    else
+        notFound << JSON_TENSE;
+
+    if (object.contains(JSON_POV))
+        pointOfView = (PointOfView) object[JSON_POV].toInt();
+    else
+        notFound << JSON_POV;
 
 
     Novel *novel = new Novel(workingTitle, genre, setting, tense,
                              pointOfView);
 
-    if (!vScenes.isNull() && vScenes.isArray())
-        scenes = Scene::deserialize(novel, vScenes.toArray());
 
-    if (!vChapters.isNull() && vChapters.isArray())
-        chapters = Chapter::deserialize(novel, vChapters.toArray());
+    if (object.contains(JSON_CHARACTERS))
+        characters = Character::deserialize(novel, object[JSON_CHARACTERS].toArray());
+    else
+        notFound << JSON_CHARACTERS;
 
-    if (!vCharacters.isNull() && vCharacters.isArray())
-        characters = Character::deserialize(novel, vCharacters.toArray());
-
-    if (!vPlotlines.isNull() && vPlotlines.isArray())
-        plotlines = Plotline::deserialize(novel, vPlotlines.toArray());
-
-    novel->setPlotlines(plotlines);
-    novel->setScenes(scenes);
-    novel->setChapters(chapters);
     novel->setCharacters(characters);
+
+    if (object.contains(JSON_PLOTLINES))
+        plotlines = Plotline::deserialize(novel, object[JSON_PLOTLINES].toArray());
+    else
+        notFound << JSON_PLOTLINES;
+    novel->setPlotlines(plotlines);
+
+    if (object.contains(JSON_SCENES))
+        scenes = Scene::deserialize(novel, object[JSON_SCENES].toArray());
+    else
+        notFound << JSON_SCENES;
+    novel->setScenes(scenes);
+
+    if (object.contains(JSON_CHAPTERS))
+        chapters = Chapter::deserialize(novel, object[JSON_CHAPTERS].toArray());
+    else
+        notFound << JSON_CHAPTERS;
+    novel->setChapters(chapters);
+
+    if (!notFound.empty()){
+        qWarning() << "The following fields could not be found: "
+                   << notFound.join(", ");
+    }
+
     novel->setId(id);
 
     return novel;

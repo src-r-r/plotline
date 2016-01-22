@@ -7,6 +7,7 @@
 #include "novel.h"
 
 class Novel;
+class Character;
 
 class Scene : public Completable, public Serializable
 {

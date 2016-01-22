@@ -8,6 +8,7 @@
 #include "serializable.h"
 
 class Novel;
+class Scene;
 
 class Chapter : public Completable, public Serializable
 {

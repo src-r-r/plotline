@@ -114,8 +114,6 @@ void TestChapter::testDeserialize()
     ch1Scenes.append(s3);
     novel->setScenes(ch1Scenes);
 
-    qDebug() << "Current directory: " << QDir::current().absolutePath();
-
     QFile *json = new QFile(QString("../../Plotline/test/fixtures/chapter-deserialize.json"));
     json->open(QFile::ReadOnly);
     QJsonDocument doc = QJsonDocument::fromJson(json->readAll());
@@ -125,3 +123,8 @@ void TestChapter::testDeserialize()
 
     QTRY_COMPARE(chapter->getContent(), QString("Once upon a time..."));
     QTRY_COMPARE(chapter->getTitle(), QString("My First Chapter"));
+    Q_ASSERT(chapter->getScenes().size() == 3);
+    QTRY_COMPARE(chapter->getScenes()[0], s1);
+    QTRY_COMPARE(chapter->getScenes()[1], s2);
+    QTRY_COMPARE(chapter->getScenes()[2], s3);
+}

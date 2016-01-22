@@ -83,15 +83,10 @@ QJsonObject Plotline::serialize() const{
     for (Scene *s : mScenes)
         jScenes.append(QJsonValue(s->getId()));
 
-    QJsonObject jColor = QJsonObject();
-    jColor["red"] = this->mColor.red();
-    jColor["green"] = this->mColor.green();
-    jColor["blue"] = this->mColor.blue();
-
     plotline[J_CHARACTERS] = jCharacters;
     plotline[J_SCENES] = jScenes;
     plotline[J_SYNOPSIS] = mSynopsis;
-    plotline[J_COLOR] = jColor;
+    plotline[J_COLOR] = mColor.name();
 
     return plotline;
 }
@@ -117,9 +112,7 @@ Plotline *Plotline::deserialize(Novel *novel, const QJsonObject &object)
             scenes.append(novel->getScene(val.toInt()));
 
     if (object.contains(J_COLOR))
-        color = QColor(object[J_COLOR].toObject()["red"].toInt(),
-                object[J_COLOR].toObject()["green"].toInt(),
-                object[J_COLOR].toObject()["blue"].toInt());
+        color = QColor(object[J_COLOR].toString());
 
     Plotline *plotline = new Plotline(synopsis, scenes, characters, color,
                                       novel, id);

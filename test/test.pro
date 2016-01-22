@@ -22,7 +22,8 @@ HEADERS += ../src/character.h \
             tst_novel.h \
             tst_scene.h \
     tst_novel.h \
-    tst_scene.h
+    tst_scene.h \
+    tst_plotline.h
 
 SOURCES += main.cpp \
            tst_chapter.cpp \
@@ -36,8 +37,11 @@ SOURCES += main.cpp \
            ../src/novel.cpp \
             ../src/plotline.cpp \
             ../src/serializable.cpp\
+    tst_plotline.cpp
 
 QMAKE_CXXFLAGS += -std=gnu++11
 
 DISTFILES += \
-    fixtures/chapter-deserialize.json
+    fixtures/chapter-deserialize.json \
+    fixtures/character-deserialize.json \
+    fixtures/novel-deserialize.json

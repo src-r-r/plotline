@@ -8,6 +8,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "../src/character.h"
+#include "../src/novel.h"
 
 class TestCharacter : public QObject
 {
@@ -23,6 +24,9 @@ private Q_SLOTS:
     void cleanupTestCase();
 
     void testConstructor();
+
+    void testSerialize();
+    void testDeserialize();
 };
 
 #endif // TST_CHARACTER_H

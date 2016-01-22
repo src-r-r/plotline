@@ -15,6 +15,8 @@ public:
 private Q_SLOTS:
     void testConstructor();
     void testSetters();
+    void testSerialize();
+    void testDeserialize();
 };
 
 #endif // TST_NOVEL_H

@@ -6,6 +6,7 @@
 #include "tst_chapter.cpp"
 #include "tst_novel.cpp"
 #include "tst_scene.cpp"
+#include "tst_plotline.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +17,7 @@ int main(int argc, char *argv[])
         new TestScene(),
         new TestChapter(),
         new TestNovel(),
+        new TestPlotline(),
 
         NULL
     };
@@ -31,5 +33,5 @@ int main(int argc, char *argv[])
         qWarning() << border << QString(nFailed)  << " tests failed. "
                  << border;
     else
-        qDebug() << border << " All tests passed " << border << std::endl;
+        qDebug() << border << " All tests passed " << border;
 }

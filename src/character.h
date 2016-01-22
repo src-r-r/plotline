@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QColor>
 #include "serializable.h"
+#include "scene.h"
 
 class Scene;
 class Novel;
@@ -26,10 +27,8 @@ private:
         J_NICKNAME,
         J_LABEL,
         J_HEADSHOT,
-        J_COLOR,
-        J_SCENES;
+        J_COLOR;
 
-    QList<Scene *> mScenes;
     Novel *mNovel;
 
 public:
@@ -38,7 +37,6 @@ public:
                        const QString &mLabel = QString(),
                        const QImage &mHeadshot = QImage(),
                        const QColor &mColor = QColor(),
-                       const QList<Scene *> scenes = QList<Scene *>(),
                        Novel *novel = 0,
                        int id = -1,
                        QObject *parent = 0);
@@ -54,9 +52,6 @@ public:
 
     QColor getColor() const;
     void setColor(const QColor &value);
-
-    QList<Scene *> getScenes() const;
-    void setScenes(const QList<Scene *> &scenes);
 
     Novel *getNovel() const;
     void setNovel(Novel *novel);

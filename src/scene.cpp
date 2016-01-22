@@ -95,36 +95,37 @@ QJsonObject Scene::serialize() const
 
 Scene *Scene::deserialize(Novel *novel, const QJsonObject &object)
 {
-    QJsonValue jHeadline = object.value(JSON_HEADLINE),
-            jAction = object.value(JSON_ACTION);
-    QJsonValue jCharacters = object.value(JSON_CHARACTERS),
-            jPovCharacters = object.value(JSON_POV_CHARACTERS);
 
     QString headline = QString(), action = QString();
 
     QList<Character *> characters = QList<Character *>(),
             povCharacters = QList<Character *>();
 
-    if (!jHeadline.isNull() && jHeadline.isString())
-        headline = object.value(JSON_HEADLINE).toString();
-    if (!jAction.isNull() && jAction.isString())
-        action = object.value(JSON_ACTION).toString();
+    QStringList missing = QStringList();
 
-    if ((!jCharacters.isNull()) && jCharacters.isArray()){
-        for (QJsonValue jCharId : jCharacters.toArray()){
-            Character *c = novel->getCharacter(jCharId.toInt());
-            if (c != 0)
-                characters.append(c);
-        }
-    }
+    if (object.contains(JSON_HEADLINE))
+        headline = object[JSON_HEADLINE].toString();
+    else
+        missing.append(JSON_HEADLINE);
 
-    if (!jPovCharacters.isNull() && jPovCharacters.isArray()){
-        for (QJsonValue jCharId : jPovCharacters.toArray()){
-            Character *c = novel->getCharacter(jCharId.toInt());
-            if (c != 0)
-                povCharacters.append(c);
-        }
-    }
+    if (object.contains(JSON_ACTION))
+        action = object[JSON_ACTION].toString();
+    else
+        missing.append(JSON_ACTION);
+
+    if (object.contains(JSON_CHARACTERS))
+        for (QJsonValue val : object[JSON_CHARACTERS].toArray())
+          characters.append(novel->getCharacter(val.toInt()));
+    else
+        missing.append(JSON_CHARACTERS);
+
+    if (object.contains(JSON_POV_CHARACTERS))
+        for (QJsonValue val : object[JSON_POV_CHARACTERS].toArray())
+          povCharacters.append(novel->getCharacter(val.toInt()));
+
+    if (!missing.empty())
+        qWarning() << "Scene missing the following fields: "
+                   << missing.join(",");
 
     Scene *scene = new Scene(headline, action, novel,
                              Serializable::deserialize(object));

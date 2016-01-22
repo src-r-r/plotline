@@ -8,6 +8,8 @@
 #include "serializable.h"
 
 class Novel;
+class Character;
+class Scene;
 
 class Plotline : public QObject, public Serializable
 {
