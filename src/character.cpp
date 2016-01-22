@@ -1,11 +1,11 @@
 #include "character.h"
 
-const QString Character::J_NAME = "name",
-    Character::J_NICKNAME = "nickname",
-    Character::J_LABEL = "label",
-    Character::J_HEADSHOT = "headshot",
-    Character::J_COLOR = "color",
-    Character::J_SCENES = "scenes";
+const QString Character::J_NAME = QString("name"),
+    Character::J_NICKNAME = QString("nickname"),
+    Character::J_LABEL = QString("label"),
+    Character::J_HEADSHOT = QString("headshot"),
+    Character::J_COLOR = QString("color"),
+    Character::J_SCENES = QString("scenes");
 
 Character::Character(const QString &name, const QString &nickname,
                      const QString &label, const QImage &headshot,
@@ -59,7 +59,16 @@ QJsonObject Character::serialize() const
 {
     QJsonObject character = QJsonObject();
 
+    QJsonObject color = QJsonObject();
+    color["red"] = mColor.red();
+    color["green"] = mColor.green();
+    color["blue"] = mColor.blue();
+
     character["id"] = this->getId();
+    character[J_NAME] = mName;
+    character[J_NICKNAME] = mNickname;
+    character[J_LABEL] = mLabel;
+    character[J_COLOR] = color;
 
     return character;
 }
@@ -71,34 +80,28 @@ Character *Character::deserialize(Novel *novel, const QJsonObject &object)
     QString name = QString(), nickname = QString(), label = QString();
     QImage headshot = QImage();
     QColor color = QColor();
+    QList<Scene *> scenes = QList<Scene *>();
 
     QString headshotBuffer = QString();
 
-    QJsonValue vName = object.value(J_NAME),
-            vNickname = object.value(J_NICKNAME),
-            vLabel = object.value(J_LABEL),
-            vHeadshot = object.value(J_HEADSHOT),
-            vColor = object.value(J_COLOR),
-            vScenes = object.value(J_SCENES);
+    if (object.contains(J_NAME))
+        name = object[J_NAME].toString();
 
-    if (!vName.isUndefined() && vName.isString())
-        name = vName.toString();
+    if (object.contains(J_NICKNAME))
+        nickname = object[J_NICKNAME].toString();
 
-    if (!vNickname.isUndefined() && vNickname.isString())
-        nickname = vNickname.toString();
+    if (object.contains(J_LABEL))
+        label = object[J_LABEL].toString();
 
-    if (!vLabel.isUndefined() && vLabel.isString())
-        label = vLabel.toString();
+    if (object.contains(J_COLOR))
+        color = QColor(object[J_COLOR].toObject()["red"].toInt(),
+                object[J_COLOR].toObject()["green"].toInt(),
+                object[J_COLOR].toObject()["blue"].toInt());
 
     // TODO: deserialize headshot.
 //    if (!vHeadshot.isNull() && vHeadshot.isString()){
 //        headshotBuffer = QBuffer(vName.toString().constData());
 //    }
-
-    if (!vColor.isUndefined() && vColor.isArray())
-        color = QColor(vColor.toArray().at(0).toInt(),
-                vColor.toArray().at(1).toInt(),
-                vColor.toArray().at(2).toInt());
 
     Character *character = new Character(name, nickname, label,
                                          headshot, color, QList<Scene *>(),

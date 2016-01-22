@@ -1,6 +1,6 @@
 #include <QTest>
 #include <QtCore>
-#include <QDebug>
+#include <QtDebug>
 
 #include "tst_character.cpp"
 #include "tst_chapter.cpp"
@@ -31,5 +31,5 @@ int main(int argc, char *argv[])
         qWarning() << border << QString(nFailed)  << " tests failed. "
                  << border;
     else
-        qDebug() << border << " All tests passed " << border << endl;
+        qDebug() << border << " All tests passed " << border << std::endl;
 }

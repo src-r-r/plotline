@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <stdlib.h>
-#include "chapter.h"
 #include "plotline.h"
+#include "chapter.h"
 #include "serializable.h"
 
 class Chapter;

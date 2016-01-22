@@ -4,7 +4,7 @@
 #include <QString>
 #include <QtTest>
 #include <QList>
-#include <QDebug>
+#include <QtDebug>
 #include <iostream>
 #include <stdlib.h>
 #include "../src/chapter.h"
@@ -26,6 +26,8 @@ private Q_SLOTS:
 
     void testConstructor();
     void testSetScenes();
+    void testSerialize();
+    void testDeserialize();
 };
 
 #endif // TST_CHAPTER_H
