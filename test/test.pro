@@ -15,6 +15,7 @@ HEADERS += ../src/character.h \
            ../src/completable.h \
            ../src/scene.h \
            ../src/novel.h \
+            ../src/serializable.h \
             tst_chapter.h \
             tst_character.h \
             tst_novel.h \
@@ -31,6 +32,7 @@ SOURCES += main.cpp \
            ../src/chapter.cpp \
            ../src/completable.cpp \
            ../src/scene.cpp \
-           ../src/novel.cpp
+           ../src/novel.cpp \
+            ../src/serializable.cpp\
 
 QMAKE_CXXFLAGS += -std=gnu++11

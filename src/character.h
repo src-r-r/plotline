@@ -5,8 +5,12 @@
 #include <bitset>
 #include <QImage>
 #include <QColor>
+#include "serializable.h"
 
-class Character : public QObject
+class Scene;
+class Novel;
+
+class Character : public QObject, public Serializable
 {
     Q_OBJECT
 
@@ -18,12 +22,25 @@ private:
     QImage mHeadshot;
     QColor mColor;
 
+    static const QString J_NAME,
+        J_NICKNAME,
+        J_LABEL,
+        J_HEADSHOT,
+        J_COLOR,
+        J_SCENES;
+
+    QList<Scene *> mScenes;
+    Novel *mNovel;
+
 public:
     explicit Character(const QString &mName,
                        const QString &mNickname = QString(),
                        const QString &mLabel = QString(),
                        const QImage &mHeadshot = QImage(),
                        const QColor &mColor = QColor(),
+                       const QList<Scene *> scenes = QList<Scene *>(),
+                       Novel *novel = 0,
+                       int id = -1,
                        QObject *parent = 0);
 
     QString getName() const;
@@ -37,6 +54,16 @@ public:
 
     QColor getColor() const;
     void setColor(const QColor &value);
+
+    QList<Scene *> getScenes() const;
+    void setScenes(const QList<Scene *> &scenes);
+
+    Novel *getNovel() const;
+    void setNovel(Novel *novel);
+
+    QJsonObject serialize() const;
+    static Character *deserialize(Novel *novel, const QJsonObject &object);
+    static QList<Character *> deserialize(Novel *novel, const QJsonArray &object);
 
 signals:
 

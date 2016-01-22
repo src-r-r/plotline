@@ -17,6 +17,7 @@ HEADERS += chapter.h \
            plotline.h \
            scene.h \
            sceneitemmodel.h \
+    serializable.h
 
 FORMS += mainwindow.ui
 SOURCES += chapter.cpp \
@@ -27,7 +28,8 @@ SOURCES += chapter.cpp \
            novel.cpp \
            plotline.cpp \
            scene.cpp \
-           sceneitemmodel.cpp
+           sceneitemmodel.cpp \
+    serializable.cpp
 RESOURCES += images.qrc
 
 QMAKE_CXXFLAGS += -std=gnu++11

@@ -4,8 +4,13 @@
 #include <QObject>
 #include <stdlib.h>
 #include "chapter.h"
+#include "plotline.h"
+#include "serializable.h"
 
-class Novel : public QObject
+class Chapter;
+class Plotline;
+
+class Novel : public QObject, public Serializable
 {
     Q_OBJECT
 
@@ -19,13 +24,16 @@ public:
         FirstPersonPlural, SecondPersonPlural, ThirdPersonPlural,
     };
 
-    explicit Novel(const QString &workingTitle,
-                   const QString &genre = QString(),
-                   const QString &setting = QString(),
+    explicit Novel(const QString &mWorkingTitle,
+                   const QString &mGenre = QString(),
+                   const QString &mSetting = QString(),
                    const Novel::Tense tense = Past,
                    const Novel::PointOfView pov = ThirdPersonSingular,
+                   const QList<Character *> characters = QList<Character *>(),
                    const QList<Scene *> scenes = QList<Scene *>(),
                    const QList<Chapter *> chapters = QList<Chapter *>(),
+                   const QList<Plotline *> plotlines = QList<Plotline *>(),
+                   int id = -1,
                    QObject *parent = 0);
 
     QString getWorkingTitle() const;
@@ -39,6 +47,7 @@ public:
 
     QList<Scene *> getScenes() const;
     void setScenes(const QList<Scene *> &value);
+    Scene *getScene(int id) const;
 
     QList<Chapter *> getChapters() const;
     void setChapters(const QList<Chapter *> &value);
@@ -46,15 +55,38 @@ public:
     Novel::PointOfView getPointOfView() const;
     void setPointOfView(const Novel::PointOfView &pointOfView);
 
+    QList<Plotline *> getPlotlines() const;
+    void setPlotlines(const QList<Plotline *> &plotlines);
+
+    QList<Character *> getCharacters() const;
+    void setCharacters(const QList<Character *> &characters);
+    Character *getCharacter(int id) const;
+    Character *getCharacter(const QString label) const;
+
+    QJsonObject serialize() const;
+    static Novel *deserialize(const QJsonObject &object);
+
 private:
 
-    QString workingTitle,
-    genre,
-    setting;
+    static const QString JSON_WORKING_TITLE,
+        JSON_GENRE,
+        JSON_SETTING,
+        JSON_TENSE,
+        JSON_POV,
+        JSON_SCENES,
+        JSON_CHARACTERS,
+        JSON_CHAPTERS,
+        JSON_PLOTLINES;
+
+    QString mWorkingTitle,
+        mGenre,
+        mSetting;
     Novel::Tense mTense;
     Novel::PointOfView mPointOfView;
+    QList<Character *> mCharacters;
     QList<Scene *> mScenes;
     QList<Chapter *> mChapters;
+    QList<Plotline *> mPlotlines;
 
 signals:
 
