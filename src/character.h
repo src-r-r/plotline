@@ -32,11 +32,11 @@ private:
     Novel *mNovel;
 
 public:
-    explicit Character(const QString &mName,
-                       const QString &mNickname = QString(),
-                       const QString &mLabel = QString(),
-                       const QImage &mHeadshot = QImage(),
-                       const QColor &mColor = QColor(),
+    explicit Character(const QString &name,
+                       const QString &nickname = QString(),
+                       const QString &label = QString(),
+                       const QImage &headshot = QImage(),
+                       const QColor &color = QColor(),
                        Novel *novel = 0,
                        int id = -1,
                        QObject *parent = 0);
