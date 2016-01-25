@@ -4,6 +4,3 @@
 [submodule "src/3rdparty/discount"]
 	path = src/3rdparty/discount
 	url = https://github.com/Orc/discount.git
-[submodule "src/3rdparty/CuteMarkEd"]
-	path = src/3rdparty/CuteMarkEd
-	url = https://github.com/cloose/CuteMarkEd

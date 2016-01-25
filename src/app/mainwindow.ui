@@ -1,0 +1,1198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>875</width>
+    <height>588</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Plotline</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="font">
+       <font>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="currentIndex">
+       <number>4</number>
+      </property>
+      <widget class="QWidget" name="tabNovel">
+       <attribute name="title">
+        <string>Novel</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QSplitter" name="splitter">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QListWidget" name="novelPartsList">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>90</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string>Overview</string>
+            </property>
+            <property name="font">
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Part 1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Part 2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Part 3</string>
+            </property>
+           </item>
+          </widget>
+          <widget class="QScrollArea" name="scrollArea">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents_2">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>737</width>
+              <height>457</height>
+             </rect>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QStackedWidget" name="stackedWidget">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="lineWidth">
+                <number>0</number>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <widget class="QWidget" name="page_overview">
+                <layout class="QVBoxLayout" name="verticalLayout_4">
+                 <item>
+                  <layout class="QFormLayout" name="formLayout">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetMaximumSize</enum>
+                   </property>
+                   <property name="fieldGrowthPolicy">
+                    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+                   </property>
+                   <property name="labelAlignment">
+                    <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="workingTitleLabel">
+                     <property name="text">
+                      <string>Working Title</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QLineEdit" name="workingTitleLineEdit"/>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="genreLabel">
+                     <property name="text">
+                      <string>Genre</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="QLineEdit" name="genreLineEdit"/>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="settingLabel">
+                     <property name="text">
+                      <string>Setting</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="QLineEdit" name="settingLineEdit"/>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QLabel" name="tenseLabel">
+                     <property name="text">
+                      <string>Tense:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="QComboBox" name="tenseCombobox">
+                     <item>
+                      <property name="text">
+                       <string>Past</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Present</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Future</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Other/Mixed</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="4" column="0">
+                    <widget class="QLabel" name="pointOfViewLabel">
+                     <property name="text">
+                      <string>Point Of View</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="4" column="1">
+                    <widget class="QComboBox" name="pointOfViewComboBox">
+                     <item>
+                      <property name="text">
+                       <string>First Person, Singular (I)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Second Person, Singular (You)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Third Person Singlar (He, She, It)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>First Person Plural (We)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Second Person Plural (You all)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Third Person Plural (They)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Other/Mixed</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_part_1"/>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_characters">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>Characters</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QSplitter" name="splitter_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="childrenCollapsible">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="layoutWidget">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinAndMaxSize</enum>
+            </property>
+            <item>
+             <widget class="QComboBox" name="comboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <property name="sizeConstraint">
+               <enum>QLayout::SetMaximumSize</enum>
+              </property>
+              <item>
+               <widget class="QLabel" name="label">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Search:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="lineEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QTableView" name="characterTable">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="characterAttrList">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>Basic</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="sizeConstraint">
+               <enum>QLayout::SetMinimumSize</enum>
+              </property>
+              <item>
+               <widget class="QPushButton" name="addCharacter">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>60</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="whatsThis">
+                 <string>Add a Character</string>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/new/prefix1/res/list-add-user.png</normaloff>:/new/prefix1/res/list-add-user.png</iconset>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">buttonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="archiveCharacter">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="whatsThis">
+                 <string>Archive or Restore Character (Safer than deleting)</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/new/prefix1/res/user-archive.png</normaloff>:/new/prefix1/res/user-archive.png</iconset>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">buttonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="deleteCharacter">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="contextMenuPolicy">
+                 <enum>Qt::CustomContextMenu</enum>
+                </property>
+                <property name="whatsThis">
+                 <string>Delete selected character</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>:/new/prefix1/res/list-remove-user.png</normaloff>:/new/prefix1/res/list-remove-user.png</iconset>
+                </property>
+                <attribute name="buttonGroup">
+                 <string notr="true">buttonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QScrollArea" name="scrollAreaUserDetails">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>532</width>
+              <height>457</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QStackedWidget" name="stackedWidget_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <widget class="QWidget" name="pageBasic">
+                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                 <item>
+                  <layout class="QGridLayout" name="gridLayout">
+                   <item row="0" column="0">
+                    <widget class="QGraphicsView" name="characterHeadshot">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>200</width>
+                       <height>120</height>
+                      </size>
+                     </property>
+                     <property name="baseSize">
+                      <size>
+                       <width>60</width>
+                       <height>60</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1" rowspan="3">
+                    <layout class="QFormLayout" name="formLayout_2">
+                     <item row="0" column="0">
+                      <widget class="QLabel" name="label_2">
+                       <property name="text">
+                        <string>Name:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1">
+                      <widget class="QLineEdit" name="lineEdit_2"/>
+                     </item>
+                     <item row="1" column="0">
+                      <widget class="QLabel" name="label_3">
+                       <property name="text">
+                        <string>Nickname:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="1">
+                      <widget class="QLineEdit" name="lineEdit_3"/>
+                     </item>
+                     <item row="2" column="0">
+                      <widget class="QLabel" name="label_4">
+                       <property name="text">
+                        <string>Label:</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="1">
+                      <widget class="QLineEdit" name="lineEdit_4">
+                       <property name="whatsThis">
+                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A short name to identify the character for plot lines and scenes (e.g. JoDo for John Doe).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QPushButton" name="chooseHeadshot">
+                     <property name="text">
+                      <string>Choose Headshot</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="page_2"/>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_plotlines">
+       <attribute name="title">
+        <string>Plot Lines</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMaximumSize</enum>
+          </property>
+          <item>
+           <layout class="QFormLayout" name="formLayout_3">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Search:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="lineEdit_5"/>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="comboBox_2"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableView">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <item>
+             <widget class="QPushButton" name="pushButton_2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Archive</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButton_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Delete</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_scenes">
+       <attribute name="title">
+        <string>Scenes</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QSplitter" name="splitter_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="childrenCollapsible">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="layoutWidget">
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <item>
+             <layout class="QFormLayout" name="formLayout_5">
+              <property name="labelAlignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Search:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="lineEdit_6"/>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="comboBox_3"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QListView" name="listView">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_8">
+              <item>
+               <widget class="QPushButton" name="pushButton_4">
+                <property name="text">
+                 <string>PushButton</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_5">
+                <property name="text">
+                 <string>PushButton</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_6">
+                <property name="text">
+                 <string>PushButton</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QScrollArea" name="scrollArea_2">
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="scrollAreaWidgetContents_3">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>400</width>
+              <height>457</height>
+             </rect>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <item>
+              <layout class="QFormLayout" name="formLayout_4">
+               <item row="0" column="0" colspan="2">
+                <widget class="QLabel" name="label_7">
+                 <property name="text">
+                  <string>Headline:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0" colspan="2">
+                <widget class="QTextEdit" name="textEdit"/>
+               </item>
+               <item row="2" column="0" colspan="2">
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>Action:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0" colspan="2">
+                <widget class="QTextEdit" name="textEdit_2"/>
+               </item>
+               <item row="4" column="0" colspan="2">
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>Characters Involved:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0" colspan="2">
+                <widget class="QWidget" name="widget" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>20</width>
+                   <height>90</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_chapters">
+       <attribute name="title">
+        <string>Chapters</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_10">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <widget class="QSplitter" name="splitter_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <widget class="QWidget" name="layoutWidget">
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <item>
+               <widget class="QComboBox" name="chapterFilter">
+                <item>
+                 <property name="text">
+                  <string>All Chapters</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Archived Chapters</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QListView" name="chapterList"/>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <item>
+                 <widget class="QPushButton" name="addChapter">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="archiveChapter">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="deleteChapter">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="assignScenes">
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="layoutWidget">
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QLineEdit" name="chapterNumber">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maxLength">
+                 <number>5</number>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="chapterTitle"/>
+              </item>
+              <item row="0" column="2">
+               <widget class="QSpinBox" name="chapterRevision"/>
+              </item>
+              <item row="1" column="0" colspan="3">
+               <widget class="QPlainTextEdit" name="chapterContent"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item alignment="Qt::AlignRight">
+           <widget class="QPushButton" name="distractionFree">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_donate">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <attribute name="title">
+        <string>Donate</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>875</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>Fi&amp;le</string>
+    </property>
+    <widget class="QMenu" name="menuNew">
+     <property name="title">
+      <string>&amp;New</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/new/prefix1/res/document-new.png</normaloff>:/new/prefix1/res/document-new.png</iconset>
+     </property>
+     <addaction name="actionNewNovel"/>
+     <addaction name="actionNewCharacter"/>
+     <addaction name="separator"/>
+     <addaction name="actionPlotline"/>
+     <addaction name="actionNewScene"/>
+     <addaction name="separator"/>
+     <addaction name="actionNewPart"/>
+     <addaction name="actionNewChapter"/>
+    </widget>
+    <addaction name="menuNew"/>
+    <addaction name="actionOpen_Novel"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport"/>
+    <addaction name="actionCreate_Book"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose_Novel"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuGo_To">
+    <property name="title">
+     <string>&amp;Go  To...</string>
+    </property>
+    <addaction name="actionGotoNovel"/>
+    <addaction name="actionGotoCharacters"/>
+    <addaction name="actionGotoScenes"/>
+    <addaction name="actionGotoChapters"/>
+    <addaction name="actionGotoDonate"/>
+   </widget>
+   <widget class="QMenu" name="menuApplication">
+    <property name="title">
+     <string>Applicatio&amp;n</string>
+    </property>
+    <addaction name="actionPreferences"/>
+    <addaction name="actionAbout"/>
+    <addaction name="actionHelp"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="menuMode">
+     <property name="title">
+      <string>&amp;Mode</string>
+     </property>
+     <addaction name="actionFocus_Mode"/>
+     <addaction name="actionEdit_Mode"/>
+    </widget>
+    <addaction name="menuMode"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuGo_To"/>
+   <addaction name="menuView"/>
+   <addaction name="menuApplication"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_Novel">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/new/prefix1/res/document-open.png</normaloff>:/new/prefix1/res/document-open.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open</string>
+   </property>
+  </action>
+  <action name="actionNovel">
+   <property name="text">
+    <string>Novel</string>
+   </property>
+  </action>
+  <action name="actionNewCharacter">
+   <property name="text">
+    <string>&amp;Character</string>
+   </property>
+  </action>
+  <action name="actionNewScene">
+   <property name="text">
+    <string>&amp;Scene</string>
+   </property>
+   <property name="toolTip">
+    <string>New Scene</string>
+   </property>
+  </action>
+  <action name="actionNewPart">
+   <property name="text">
+    <string>Pa&amp;rt</string>
+   </property>
+  </action>
+  <action name="actionNewChapter">
+   <property name="text">
+    <string>C&amp;hapter</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>&amp;Export</string>
+   </property>
+  </action>
+  <action name="actionCreate_Book">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/new/prefix1/res/book.png</normaloff>:/new/prefix1/res/book.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Bind Novel</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actionNewNovel">
+   <property name="text">
+    <string>&amp;Novel</string>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </action>
+  <action name="actionGotoNovel">
+   <property name="text">
+    <string>&amp;Novel</string>
+   </property>
+  </action>
+  <action name="actionGotoCharacters">
+   <property name="text">
+    <string>&amp;Characters</string>
+   </property>
+  </action>
+  <action name="actionGotoScenes">
+   <property name="text">
+    <string>&amp;Scenes</string>
+   </property>
+  </action>
+  <action name="actionGotoChapters">
+   <property name="text">
+    <string>C&amp;hapters</string>
+   </property>
+  </action>
+  <action name="actionGotoDonate">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/new/prefix1/res/emblem-favorite.png</normaloff>:/new/prefix1/res/emblem-favorite.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Donate</string>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>&amp;Preferences</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>&amp;Help</string>
+   </property>
+  </action>
+  <action name="actionClose_Novel">
+   <property name="text">
+    <string>&amp;Close Novel</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/new/prefix1/res/document-save.png</normaloff>:/new/prefix1/res/document-save.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+  </action>
+  <action name="actionPlotline">
+   <property name="text">
+    <string>&amp;Plotline</string>
+   </property>
+  </action>
+  <action name="actionFocus_Mode">
+   <property name="text">
+    <string>&amp;Focus Mode</string>
+   </property>
+  </action>
+  <action name="actionEdit_Mode">
+   <property name="text">
+    <string>&amp;Edit Mode</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>novelPartsList</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>66</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>196</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>characterAttrList</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>stackedWidget_2</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>357</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>669</x>
+     <y>340</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
+</ui>

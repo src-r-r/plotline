@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/application-exit.png</file>
+        <file>images/book.png</file>
+        <file>images/document-new.png</file>
+        <file>images/document-open.png</file>
+        <file>images/document-save.png</file>
+        <file>images/emblem-favorite.png</file>
+        <file>images/list-add-plotline.png</file>
+        <file>images/list-add-user.png</file>
+        <file>images/list-remove-plotline.png</file>
+        <file>images/list-remove-user.png</file>
+        <file>images/user-archive.png</file>
+        <file>images/user-identity.png</file>
+        <file>images/user-properties.png</file>
+    </qresource>
+</RCC>
