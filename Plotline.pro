@@ -5,4 +5,7 @@
 TEMPLATE = subdirs
 TARGET = Plotline
 
-SUBDIRS = src test
+SUBDIRS = src \
+    test \
+    doc
+
