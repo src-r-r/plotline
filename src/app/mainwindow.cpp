@@ -5,15 +5,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    mNovel = new Novel("Untitled");
-    ui->setupUi(this);
-
-    mIsSaved = false;
 
     // Connect signals.
     connect(this, SIGNAL(novelChanged()), this, SLOT(updateNovel()));
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
     connect(this, SIGNAL(novelLoaded()), this, SLOT(onNovelLoaded()));
+
+    mNovel = new Novel("Untitled");
+    ui->setupUi(this);
+
+    mIsSaved = false;
 
     // Set up the models
     emit characterListChanged();
@@ -65,7 +66,9 @@ void MainWindow::on_actionOpen_Novel_triggered()
     jsonFile->close();
     QJsonDocument doc = QJsonDocument::fromJson(jsonData);
     mNovel = Novel::deserialize(doc.object());
-    emit novelChanged();
+    mOpenedFile = fileName;
+    qDebug() << "Opened novel " << mNovel->getWorkingTitle();
+    emit novelLoaded();
 }
 
 void MainWindow::on_actionSave_triggered()
@@ -128,7 +131,8 @@ void MainWindow::on_pointOfViewComboBox_currentIndexChanged(int index)
     emit updateNovel();
 }
 
-void MainWindow::on_actionNovel_triggered()
+
+void MainWindow::on_actionNewNovel_triggered()
 {
     if (!mIsSaved)
     {
@@ -171,6 +175,9 @@ void MainWindow::onSaveNovel()
                                                     tr("Save Novel"),
                                                     QString(),
                                                     tr("Plotline File (*.pln)"));
+        if (mOpenedFile.isEmpty())
+            return;
+
         if (!mOpenedFile.endsWith(".pln"))
             mOpenedFile.append(".pln");
     }
@@ -185,7 +192,7 @@ void MainWindow::onSaveNovel()
 
 void MainWindow::onNovelLoaded()
 {
-    statusBar()->showMessage(tr("Novel loading..."));
+    qDebug() << "Loading novel " << mNovel->getWorkingTitle();
     int povIndex = POV_OTHER,
             tenseIndex = TENSE_OTHER;
     switch (mNovel->getPointOfView())
@@ -236,4 +243,6 @@ void MainWindow::onNovelLoaded()
     ui->settingLineEdit->setText(mNovel->getSetting());
     ui->pointOfViewComboBox->setCurrentIndex(povIndex);
     ui->tenseCombobox->setCurrentIndex(tenseIndex);
+    setWindowTitle("Plotline - " + mOpenedFile);
+    mIsSaved = true;
 }

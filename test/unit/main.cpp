@@ -2,6 +2,7 @@
 #include <QtCore>
 #include <QtDebug>
 
+#include "tst_revision.h"
 #include "tst_character.cpp"
 #include "tst_chapter.cpp"
 #include "tst_novel.cpp"
@@ -14,6 +15,7 @@ int main(int argc, char *argv[])
     QObject *tests[] = {
 
         new TestCharacter(),
+        new TestRevision(),
         new TestScene(),
         new TestChapter(),
         new TestNovel(),

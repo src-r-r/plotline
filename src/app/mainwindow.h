@@ -67,7 +67,8 @@ private slots:
 
     void on_tenseCombobox_currentIndexChanged(int index);
     void on_pointOfViewComboBox_currentIndexChanged(int index);
-    void on_actionNovel_triggered();
+
+    void on_actionNewNovel_triggered();
 
 private:
 

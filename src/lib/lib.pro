@@ -10,7 +10,8 @@ HEADERS += chapter.h \
     novel.h \
     plotline.h \
     scene.h \
-    serializable.h
+    serializable.h \
+    revision.h
 
 SOURCES += chapter.cpp \
     character.cpp \
@@ -18,6 +19,7 @@ SOURCES += chapter.cpp \
     novel.cpp \
     plotline.cpp \
     scene.cpp \
-    serializable.cpp
+    serializable.cpp \
+    revision.cpp
 
 CONFIG += c++11

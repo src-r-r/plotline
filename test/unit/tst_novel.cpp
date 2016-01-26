@@ -105,7 +105,7 @@ void TestNovel::testSerialize()
 void TestNovel::testDeserialize()
 {
 
-    QFile *json = new QFile(QString("../../Plotline/test/fixtures/novel-deserialize.json"));
+    QFile *json = new QFile(QString("../../../Plotline/test/unit/fixtures/novel-deserialize.json"));
     json->open(QFile::ReadOnly);
     QJsonDocument doc = QJsonDocument::fromJson(json->readAll());
     json->close();

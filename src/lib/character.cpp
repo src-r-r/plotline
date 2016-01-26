@@ -117,7 +117,7 @@ QList<Character *> Character::deserialize(Novel *novel, const QJsonArray &object
     QList<Character *> characters = QList<Character *>();
     for (QJsonValue obj : object)
         if (obj.isObject())
-            characters.append(Character::deserialize(novel, obj.toObject()));
+            characters << Character::deserialize(novel, obj.toObject());
     return characters;
 }
 

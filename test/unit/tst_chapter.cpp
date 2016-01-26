@@ -17,11 +17,9 @@ void TestChapter::testConstructor()
     Chapter *chapter = new Chapter();
 
     chapter = new Chapter(QString("My First Chapter"));
-    QTRY_COMPARE(chapter->getTitle(), QString("My First Chapter"));
+    QTRY_COMPARE(chapter->title(), QString("My First Chapter"));
 
-    chapter = new Chapter(QString("My First Chapter"), QString("Once upon a time..."));
-    QTRY_COMPARE(chapter->getTitle(), QString("My First Chapter"));
-    QTRY_COMPARE(chapter->getContent(), QString("Once upon a time..."));
+    // Test it with revisisons.
 
     delete chapter;
 }
@@ -59,7 +57,6 @@ void TestChapter::cleanupTestCase()
 void TestChapter::testSerialize()
 {
     Chapter *chapter1 = new Chapter(QString("My First Chapter"));
-    chapter1->setContent(QString("Once upon a time..."));
 
     Scene *s1 = new Scene(
                 QString("First test scene."),
@@ -78,13 +75,10 @@ void TestChapter::testSerialize()
     chapter1->setScenes(ch1Scenes);
 
     QJsonObject jChapter = chapter1->serialize();
-    Q_ASSERT(jChapter.contains(QString("content")));
     Q_ASSERT(jChapter.contains(QString("title")));
     Q_ASSERT(jChapter.contains(QString("scenes")));
 
-    QTRY_COMPARE(jChapter["content"].toString(), QString("Once upon a time..."));
     QTRY_COMPARE(jChapter["title"].toString(), QString("My First Chapter"));
-    QTRY_COMPARE(jChapter["content"].toString(), QString("Once upon a time..."));
 
     QJsonDocument doc = QJsonDocument(jChapter);
 }
@@ -113,15 +107,14 @@ void TestChapter::testDeserialize()
     ch1Scenes.append(s3);
     novel->setScenes(ch1Scenes);
 
-    QFile *json = new QFile(QString("../../Plotline/test/fixtures/chapter-deserialize.json"));
+    QFile *json = new QFile(QString("../../../Plotline/test/unit/fixtures/chapter-deserialize.json"));
     json->open(QFile::ReadOnly);
     QJsonDocument doc = QJsonDocument::fromJson(json->readAll());
     json->close();
 
     Chapter *chapter = Chapter::deserialize(novel, doc.object());
 
-    QTRY_COMPARE(chapter->getContent(), QString("Once upon a time..."));
-    QTRY_COMPARE(chapter->getTitle(), QString("My First Chapter"));
+    QTRY_COMPARE(chapter->title(), QString("My First Chapter"));
     Q_ASSERT(chapter->getScenes().size() == 3);
     QTRY_COMPARE(chapter->getScenes()[0], s1);
     QTRY_COMPARE(chapter->getScenes()[1], s2);

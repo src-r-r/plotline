@@ -1,10 +1,22 @@
 {
     "id" : 11,
-    "content" : "Once upon a time...",
     "title" : "My First Chapter",
     "scenes" : [
         2,
         3,
         4
+    ],
+    "revisions" : [
+        {
+            "id" : 5,
+            "content" : "Revision 1 content",
+            "isComplete" : false,
+        },
+
+        {
+            "id" : 4,
+            "content" : "Revision 2 content (was 1)"
+        }
+
     ]
 }

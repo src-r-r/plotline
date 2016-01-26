@@ -63,9 +63,9 @@ void TestCharacter::testSerialize()
 
 void TestCharacter::testDeserialize()
 {
-
-    QFile *json = new QFile(QString("../../Plotline/test/fixtures/character-deserialize.json"));
-    json->open(QFile::ReadOnly);
+    qDebug() << "Current path:" << QDir::currentPath();
+    QFile *json = new QFile(QString("../../../Plotline/test/unit/fixtures/character-deserialize.json"));
+    Q_ASSERT(json->open(QFile::ReadOnly) == true);
     QJsonDocument doc = QJsonDocument::fromJson(json->readAll());
     json->close();
 

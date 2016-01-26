@@ -1,10 +1,10 @@
 #include "chapter.h"
 
 const QString Chapter::JSON_TITLE = QString("title"),
-    Chapter::JSON_CONTENT = QString("content"),
+    Chapter::JSON_REVISIONS = QString("revisions"),
     Chapter::JSON_SCENES = QString("scenes");
 
-Novel *Chapter::getNovel() const
+Novel *Chapter::novel() const
 {
     return mNovel;
 }
@@ -14,19 +14,29 @@ void Chapter::setNovel(Novel *novel)
     mNovel = novel;
 }
 
-Chapter::Chapter(const QString &title, const QString &content,
+QList<Revision *> Chapter::getRevisions() const
+{
+    return mRevisions;
+}
+
+void Chapter::setRevisions(const QList<Revision *> &revisions)
+{
+    mRevisions = revisions;
+}
+
+Chapter::Chapter(const QString &title, const QList<Revision *> &revisions,
                  const QList<Scene *> &scenes,
                  Novel *novel,
                  int id,
-                 QObject *parent) : Completable(parent), Serializable(id)
+                 QObject *parent) : QObject(parent), Serializable(id)
 {
     mTitle = title;
-    mContent = content;
+    mRevisions = revisions;
     mNovel = novel;
     mScenes = scenes;
 }
 
-QString Chapter::getTitle() const
+QString Chapter::title() const
 {
     return mTitle;
 }
@@ -34,16 +44,6 @@ QString Chapter::getTitle() const
 void Chapter::setTitle(const QString &title)
 {
     mTitle = title;
-}
-
-QString Chapter::getContent() const
-{
-    return mContent;
-}
-
-void Chapter::setContent(const QString &content)
-{
-    mContent = content;
 }
 
 QList<Scene *> Chapter::getScenes() const
@@ -59,14 +59,18 @@ void Chapter::setScenes(const QList<Scene *> &scenes)
 QJsonObject Chapter::serialize() const {
     QJsonObject chapter = QJsonObject();
 
-    QJsonArray jScenes = QJsonArray();
+    QJsonArray jScenes = QJsonArray(),
+            jRevisions = QJsonArray();
 
     for (Scene *s : mScenes)
         jScenes.append(s->getId());
 
-    chapter.insert(JSON_TITLE, mTitle);
-    chapter.insert(JSON_CONTENT, mContent);
-    chapter.insert(JSON_SCENES, jScenes);
+    for (Revision *r : mRevisions)
+        jRevisions.append(QJsonValue(r->serialize()));
+
+    chapter[JSON_TITLE] = mTitle;
+    chapter[JSON_SCENES] = jScenes;
+    chapter[JSON_REVISIONS] = jRevisions;
 
     return chapter;
 }
@@ -75,24 +79,22 @@ Chapter *Chapter::deserialize(Novel *novel, const QJsonObject &object)
 {
     int id = Serializable::deserialize(object);
 
-    QJsonValue jTitle = object.value(JSON_TITLE),
-            jContent = object.value(JSON_CONTENT),
-            jScenes = object.value(JSON_SCENES);
-    QString title = QString(), content = QString();
+    QString title = QString();
+    QList<Revision *> revisions = QList<Revision *>();
     QList<Scene *> scenes = QList<Scene *>();
 
-    if (!jTitle.isNull() && jTitle.isString())
-        title = jTitle.toString();
+    if (object.contains(JSON_TITLE))
+        title = object[JSON_TITLE].toString();
+    if (object.contains(JSON_REVISIONS))
+        revisions = Revision::deserialize(novel, 0,
+                                          object[JSON_REVISIONS].toArray());
+    if (object.contains(JSON_SCENES))
+        scenes = Scene::deserialize(novel, object[JSON_SCENES].toArray());
 
-    if (!jContent.isNull() && jContent.isString())
-        content = jContent.toString();
+    Chapter *chapter = new Chapter(title, revisions, scenes, novel, id);
+    for (Revision *r : revisions)
+        r->setChapter(chapter);
 
-    if (!jScenes.isNull() && jScenes.isArray())
-        for (QJsonValue jScene : jScenes.toArray())
-            if (jScene.toInt() >= 0)
-                scenes.append(novel->getScene(jScene.toInt()));
-
-    Chapter *chapter = new Chapter(title, content, scenes, novel, id);
     return chapter;
 }
 
@@ -101,8 +103,7 @@ QList<Chapter *> Chapter::deserialize(Novel *novel, const QJsonArray &object)
 
     QList<Chapter *> chapters = QList<Chapter *>();
     for (QJsonValue value : object)
-        if (value.isObject())
-            chapters.append(Chapter::deserialize(novel, value.toObject()));
+        chapters << Chapter::deserialize(novel, value.toObject());
 
     return chapters;
 }
