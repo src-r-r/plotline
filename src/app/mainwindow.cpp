@@ -185,6 +185,7 @@ void MainWindow::onSaveNovel()
 
 void MainWindow::onNovelLoaded()
 {
+    statusBar()->showMessage(tr("Novel loading..."));
     int povIndex = POV_OTHER,
             tenseIndex = TENSE_OTHER;
     switch (mNovel->getPointOfView())

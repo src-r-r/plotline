@@ -4,15 +4,16 @@
 
 TEMPLATE = subdirs
 
+CONFIG += ordered
+
 SUBDIRS += \
     lib \
-    app \
-    data
+    app
 
 RESOURCES += \
     res/plotline.qrc
 
 CONFIG += gnu++11
 
-app.depends = libs app
-test.depends = libs app
+app.depends = lib
+test.depends = lib app

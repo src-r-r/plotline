@@ -78,10 +78,9 @@ void TestChapter::testSerialize()
     chapter1->setScenes(ch1Scenes);
 
     QJsonObject jChapter = chapter1->serialize();
-    QList<QString> keys = {QString("content"), QString("title"),
-                           QString("scenes")};
-    for (QString key : keys)
-        Q_ASSERT(jChapter.contains(key));
+    Q_ASSERT(jChapter.contains(QString("content")));
+    Q_ASSERT(jChapter.contains(QString("title")));
+    Q_ASSERT(jChapter.contains(QString("scenes")));
 
     QTRY_COMPARE(jChapter["content"].toString(), QString("Once upon a time..."));
     QTRY_COMPARE(jChapter["title"].toString(), QString("My First Chapter"));

@@ -11,13 +11,16 @@ HEADERS += tst_chapter.h \
     tst_plotline.h \
     tst_scene.h
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
     tst_chapter.cpp \
     tst_character.cpp \
     tst_novel.cpp \
     tst_plotline.cpp \
     tst_scene.cpp
 
-CONFIG += -std=gnu++11
+INCLUDEPATH += \
+    ../../src/lib
 
-CONFIG += console testcase
+LIBS += ../../src/lib/libplotline.so
+
+CONFIG += console testcase c++11

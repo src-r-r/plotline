@@ -40,11 +40,13 @@ Qt::ItemFlags CharacterItemModel::flags(const QModelIndex &index) const
 bool CharacterItemModel::insertRows(int position, int rows, const QModelIndex &parent)
 {
     mCharacters.insert(position, new Character(QString()));
+    return true;
 }
 
 bool CharacterItemModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
     mCharacters.removeAt(position);
+    return true;
 }
 
 QModelIndex CharacterItemModel::index(int row, int column, const QModelIndex &parent) const

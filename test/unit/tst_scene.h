@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QtTest>
-#include "src/scene.h"
+#include "scene.h"
 
 class TestScene : public QObject
 {

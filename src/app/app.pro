@@ -5,8 +5,8 @@ QT       += core gui webkitwidgets printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-INCLUDEPATH += $$PWD/../lib \
-    $$PWD/../3rdparty/
+INCLUDEPATH += \
+    ../lib
 
 TARGET = plotline
 
@@ -18,5 +18,8 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     characteritemmodel.cpp \
     sceneitemmodel.cpp
+
+LIBS += ../lib/libplotline.so
+PRE_TARGETDEPS += ../lib/libplotline.so
 
 FORMS += mainwindow.ui

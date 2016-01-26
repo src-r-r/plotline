@@ -1,5 +1,8 @@
 
 TEMPLATE = lib
+TARGET = plotline
+QT += core gui
+DEFINES += LIBPLOTLINE
 
 HEADERS += chapter.h \
     character.h \
@@ -16,3 +19,5 @@ SOURCES += chapter.cpp \
     plotline.cpp \
     scene.cpp \
     serializable.cpp
+
+CONFIG += c++11

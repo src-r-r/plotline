@@ -4,7 +4,11 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS += unit \
-    integration \
+SUBDIRS += unit
 
-CONFIG += -std=gnu++11
+INCLUDEPATH += \
+    ../src/lib
+
+LIBS += ../src/lib/libplotline.so
+
+CONFIG += c++11
