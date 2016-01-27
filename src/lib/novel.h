@@ -33,7 +33,7 @@ public:
                    const QString &mSetting = QString(),
                    const Novel::Tense tense = Past,
                    const Novel::PointOfView pov = ThirdPersonSingular,
-                   const QList<Character *> characters = QList<Character *>(),
+                   QList<Character *> characters = QList<Character *>(),
                    const QList<Scene *> scenes = QList<Scene *>(),
                    const QList<Chapter *> chapters = QList<Chapter *>(),
                    const QList<Plotline *> plotlines = QList<Plotline *>(),
@@ -44,6 +44,9 @@ public:
     QString getWorkingTitle() const;
 
     QString getGenre() const;
+    void setWorkingTitle(const QString &value);
+    void setGenre(const QString &value);
+    void setSetting(const QString &value);
 
     Novel::Tense getTense() const;
     void setTense(const Novel::Tense tense);
@@ -97,9 +100,6 @@ private:
 signals:
 
 public slots:
-    void setWorkingTitle(const QString &value);
-    void setGenre(const QString &value);
-    void setSetting(const QString &value);
 
 };
 

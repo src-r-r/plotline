@@ -31,6 +31,7 @@ public:
                      Novel *novel = 0,
                      int id = -1,
                      QObject *parent = 0);
+    ~Chapter();
 
     QString title() const;
     void setTitle(const QString &title);
@@ -47,6 +48,7 @@ public:
 
     QList<Revision *> getRevisions() const;
     void setRevisions(const QList<Revision *> &revisions);
+    Revision *addRevision();
 
 signals:
 

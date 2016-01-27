@@ -18,6 +18,7 @@ private Q_SLOTS:
     void testConstructor();
     void testSerialize();
     void testDeserialize();
+
 };
 
 #endif // TESTREVISION_H

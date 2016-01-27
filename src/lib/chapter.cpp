@@ -24,6 +24,22 @@ void Chapter::setRevisions(const QList<Revision *> &revisions)
     mRevisions = revisions;
 }
 
+/**
+ * @brief Chapter::addRevision
+ * Add a new revision to the chapter, copying over the last revision's content.
+ * @return The created revision.
+ */
+Revision *Chapter::addRevision()
+{
+    Revision *r = 0;
+    if (mRevisions.isEmpty())
+        r = new Revision();
+    else
+        r = new Revision(mRevisions.last()->content());
+    mRevisions.append(r);
+    return r;
+}
+
 Chapter::Chapter(const QString &title, const QList<Revision *> &revisions,
                  const QList<Scene *> &scenes,
                  Novel *novel,
@@ -34,6 +50,11 @@ Chapter::Chapter(const QString &title, const QList<Revision *> &revisions,
     mRevisions = revisions;
     mNovel = novel;
     mScenes = scenes;
+}
+
+Chapter::~Chapter()
+{
+    qDeleteAll(mRevisions);
 }
 
 QString Chapter::title() const

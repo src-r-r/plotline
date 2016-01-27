@@ -9,6 +9,7 @@
 #include <QtDebug>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QItemSelectionModel>
 
 #include "novel.h"
 #include "characteritemmodel.h"
@@ -64,11 +65,16 @@ private slots:
     void onNovelLoaded();
     void updateNovel();
     void onSaveNovel();
+    void onCharacterSelectionChanged(const QModelIndex &current,
+                                     const QModelIndex &previous);
 
     void on_tenseCombobox_currentIndexChanged(int index);
     void on_pointOfViewComboBox_currentIndexChanged(int index);
 
     void on_actionNewNovel_triggered();
+
+    void on_deleteCharacter_clicked();
+    void on_characterList_clicked(const QModelIndex &index);
 
 private:
 
@@ -76,6 +82,10 @@ private:
     Novel *mNovel;
     bool mIsSaved;
     QString mOpenedFile;
+    QList<Character *> mSelectedCharacters;
+
+    // Models
+    CharacterItemModel *mCharacterItemModel;
 };
 
 #endif // MAINWINDOW_H

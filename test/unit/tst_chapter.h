@@ -26,6 +26,7 @@ private Q_SLOTS:
 
     void testConstructor();
     void testSetScenes();
+    void testAddRevision();
     void testSerialize();
     void testDeserialize();
 };

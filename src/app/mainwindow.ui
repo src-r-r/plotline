@@ -24,7 +24,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tabNovel">
        <attribute name="title">
@@ -97,8 +97,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>371</width>
-              <height>185</height>
+              <width>737</width>
+              <height>457</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -269,12 +269,12 @@
           <widget class="QWidget" name="layoutWidget">
            <layout class="QVBoxLayout" name="verticalLayout">
             <property name="sizeConstraint">
-             <enum>QLayout::SetMinAndMaxSize</enum>
+             <enum>QLayout::SetMaximumSize</enum>
             </property>
             <item>
              <widget class="QComboBox" name="comboBox">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -302,7 +302,7 @@
               <item>
                <widget class="QLineEdit" name="lineEdit">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -312,7 +312,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QTableView" name="characterTable">
+             <widget class="QListView" name="characterList">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
                 <horstretch>0</horstretch>
@@ -342,7 +342,7 @@
                <number>0</number>
               </property>
               <property name="sizeConstraint">
-               <enum>QLayout::SetMinimumSize</enum>
+               <enum>QLayout::SetDefaultConstraint</enum>
               </property>
               <item>
                <widget class="QPushButton" name="addCharacter">
@@ -377,8 +377,8 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
-                  <normaloff>:/new/prefix1/res/list-add-user.png</normaloff>:/new/prefix1/res/list-add-user.png</iconset>
+                 <iconset resource="../res/plotline.qrc">
+                  <normaloff>:/images/images/list-add-user.png</normaloff>:/images/images/list-add-user.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
                  <string notr="true">buttonGroup</string>
@@ -406,8 +406,8 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
-                  <normaloff>:/new/prefix1/res/user-archive.png</normaloff>:/new/prefix1/res/user-archive.png</iconset>
+                 <iconset resource="../res/plotline.qrc">
+                  <normaloff>:/images/images/user-archive.png</normaloff>:/images/images/user-archive.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
                  <string notr="true">buttonGroup</string>
@@ -416,6 +416,9 @@
               </item>
               <item>
                <widget class="QPushButton" name="deleteCharacter">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -432,8 +435,8 @@
                  <string/>
                 </property>
                 <property name="icon">
-                 <iconset>
-                  <normaloff>:/new/prefix1/res/list-remove-user.png</normaloff>:/new/prefix1/res/list-remove-user.png</iconset>
+                 <iconset resource="../res/plotline.qrc">
+                  <normaloff>:/images/images/list-remove-user.png</normaloff>:/images/images/list-remove-user.png</iconset>
                 </property>
                 <attribute name="buttonGroup">
                  <string notr="true">buttonGroup</string>
@@ -444,7 +447,10 @@
             </item>
            </layout>
           </widget>
-          <widget class="QScrollArea" name="scrollAreaUserDetails">
+          <widget class="QScrollArea" name="scrollAreaCharDetails">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
              <horstretch>0</horstretch>
@@ -459,8 +465,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>281</width>
-              <height>197</height>
+              <width>532</width>
+              <height>457</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -728,8 +734,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>155</width>
-              <height>353</height>
+              <width>400</width>
+              <height>457</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_9">

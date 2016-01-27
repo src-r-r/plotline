@@ -28,8 +28,6 @@ void TestNovel::testConstructor()
     novel = new Novel(title, genre, setting, tense, pov);
     QTRY_COMPARE(novel->getPointOfView(), Novel::ThirdPersonPlural);
     QTRY_COMPARE(novel->getTense(), Novel::Future);
-
-    delete novel;
 }
 
 void TestNovel::testSetters()
@@ -65,8 +63,8 @@ void TestNovel::testSerialize()
 
     QList<Character *> characters = QList<Character *>();
     characters << new Character(QString("Theodore Roosevelt"))
-               << new Character(QString("Abraham Lincoln"))
-               << new Character(QString("Benjamin Franklin"));
+                  << new Character(QString("Abraham Lincoln"))
+                  << new Character(QString("Benjamin Franklin"));
 
     QList<Scene *> scenes = QList<Scene *>();
     scenes << new Scene(QString("Healine 1"), QString("Action 1"))

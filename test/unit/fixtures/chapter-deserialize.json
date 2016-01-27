@@ -10,12 +10,13 @@
         {
             "id" : 5,
             "content" : "Revision 1 content",
-            "isComplete" : false,
+            "isComplete" : true
         },
 
         {
-            "id" : 4,
-            "content" : "Revision 2 content (was 1)"
+            "id" : 6,
+            "content" : "Revision 2 content (was 1)",
+            "isComplete" : false
         }
 
     ]

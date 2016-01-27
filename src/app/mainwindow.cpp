@@ -6,19 +6,26 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
 
+    ui->setupUi(this);
+
+
+    mIsSaved = false;
+    mSelectedCharacters = QList<Character *>();
+
+    // Set up the models
+    mNovel = new Novel("Untitled");
+    mCharacterItemModel = new CharacterItemModel(mNovel);
+    ui->characterList->setModel(mCharacterItemModel);
+
     // Connect signals.
     connect(this, SIGNAL(novelChanged()), this, SLOT(updateNovel()));
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
     connect(this, SIGNAL(novelLoaded()), this, SLOT(onNovelLoaded()));
+    connect(ui->characterList->selectionModel(),
+            SIGNAL(QItemSelectionModel::currentChanged()),
+            this, SLOT(onCharacterSelectionChanged()));
 
-    mNovel = new Novel("Untitled");
-    ui->setupUi(this);
-
-    mIsSaved = false;
-
-    // Set up the models
     emit characterListChanged();
-
 }
 
 MainWindow::~MainWindow()
@@ -29,6 +36,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_addCharacter_clicked()
 {
+    qDebug() << "Inserting a character";
+    mCharacterItemModel->addCharacter();
+    emit characterListChanged();
 }
 
 void MainWindow::on_workingTitleLineEdit_textEdited(const QString &arg1)
@@ -166,6 +176,11 @@ void MainWindow::updateNovel()
 
 void MainWindow::onCharacterListChanged()
 {
+    mCharacterItemModel = new CharacterItemModel(mNovel);
+    if (mNovel->getCharacters().size() > 0)
+        ui->scrollAreaCharDetails->setEnabled(true);
+    else
+        ui->scrollAreaCharDetails->setEnabled(false);
 }
 
 void MainWindow::onSaveNovel()
@@ -188,6 +203,15 @@ void MainWindow::onSaveNovel()
     outFile->close();
     setWindowTitle("Plotline - " + (mOpenedFile.isEmpty() ? "Untitled"
                                                           : mOpenedFile));
+}
+
+void MainWindow::onCharacterSelectionChanged(const QModelIndex &current,
+                                             const QModelIndex &previous)
+{
+    ui->scrollAreaCharDetails->setEnabled(current.isValid());
+    ui->deleteCharacter->setEnabled(current.isValid());
+    if (!current.isValid())
+        return;
 }
 
 void MainWindow::onNovelLoaded()
@@ -243,6 +267,38 @@ void MainWindow::onNovelLoaded()
     ui->settingLineEdit->setText(mNovel->getSetting());
     ui->pointOfViewComboBox->setCurrentIndex(povIndex);
     ui->tenseCombobox->setCurrentIndex(tenseIndex);
+
+    // Load the models
+    mCharacterItemModel = new CharacterItemModel(mNovel);
+    ui->characterList->setModel(mCharacterItemModel);
+
     setWindowTitle("Plotline - " + mOpenedFile);
     mIsSaved = true;
+}
+
+void MainWindow::on_deleteCharacter_clicked()
+{
+    QItemSelectionModel *model = ui->characterList->selectionModel();
+    QModelIndexList rows = model->selectedRows();
+    QStringList names = QStringList();
+    for (QModelIndex i : rows)
+        names << mNovel->getCharacters()[i.row()]->getName();
+
+    QMessageBox *confirmSave = new QMessageBox(tr("DeleteCharacters"),
+        QString("Do you want to delete the characters:") + names.join("\n- "),
+        QMessageBox::Question, QMessageBox::Yes, QMessageBox::No,
+                                          QMessageBox::NoButton,
+                                          this);
+    confirmSave->setModal(true);
+    if (QMessageBox::Yes == confirmSave->exec()){
+        for (QModelIndex i : rows)
+            mNovel->getCharacters().removeAt(i.row());
+    }
+    emit characterListChanged();
+}
+
+void MainWindow::on_characterList_clicked(const QModelIndex &index)
+{
+    ui->deleteCharacter->setEnabled(index.isValid());
+    ui->scrollAreaCharDetails->setEnabled(index.isValid());
 }

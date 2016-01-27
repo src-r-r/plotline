@@ -115,7 +115,7 @@ Scene *Scene::deserialize(Novel *novel, const QJsonObject &object)
 
     if (object.contains(JSON_CHARACTERS))
         for (QJsonValue val : object[JSON_CHARACTERS].toArray())
-          characters.append(novel->getCharacter(val.toInt()));
+          characters << novel->getCharacter(val.toInt());
     else
         missing.append(JSON_CHARACTERS);
 
@@ -137,9 +137,12 @@ Scene *Scene::deserialize(Novel *novel, const QJsonObject &object)
 QList<Scene *> Scene::deserialize(Novel *novel, const QJsonArray &object)
 {
     QList<Scene *> scenes;
-    for (QJsonValue obj : object)
+    for (QJsonValue obj : object){
         if (obj.isObject())
-            scenes.append(Scene::deserialize(novel, obj.toObject()));
+            scenes << Scene::deserialize(novel, obj.toObject());
+        else
+            scenes << novel->getScene(obj.toInt());
+    }
 
     return scenes;
 }

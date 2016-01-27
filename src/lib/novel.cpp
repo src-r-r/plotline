@@ -15,7 +15,7 @@ Novel::Novel(const QString &workingTitle,
              const QString &setting,
              const Novel::Tense tense,
              const Novel::PointOfView pov,
-             const QList<Character *> characters,
+             QList<Character *> characters,
              const QList<Scene *> scenes,
              const QList<Chapter *> chapters,
              const QList<Plotline *> plotlines,
@@ -169,7 +169,7 @@ Character *Novel::getCharacter(const QString label) const
  */
 void Novel::addCharacter(Character *character)
 {
-    mCharacters.append(character);
+    mCharacters << character;
 }
 
 void Novel::setCharacters(const QList<Character *> &characters)

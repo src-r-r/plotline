@@ -48,6 +48,28 @@ void TestChapter::testSetScenes()
     Q_ASSERT(chapter1->getScenes().size() == 3);
 }
 
+void TestChapter::testAddRevision()
+{
+    Chapter *c = new Chapter("Chapter");
+    Revision *r1 = c->addRevision();
+
+    Q_ASSERT(c->getRevisions().length() == 1);
+    Q_ASSERT(c->getRevisions()[0]->content().isNull());
+
+    QString s1 = "Hte quick brown fox jumps over teh lazy dog.",
+            s2 = "The quick brown fox jumps over the lazy dog.";
+
+    r1->setContent(s1);
+    Revision *r2 = c->addRevision();
+
+    Q_ASSERT(c->getRevisions().length() == 2);
+    QTRY_COMPARE(c->getRevisions()[0]->content(), s1);
+    QTRY_COMPARE(c->getRevisions()[1]->content(), s1);
+
+    r2->setContent(s2);
+    QTRY_COMPARE(c->getRevisions()[1]->content(), s2);
+}
+
 void TestChapter::cleanupTestCase()
 {
     delete mTestCharacters;
@@ -108,9 +130,17 @@ void TestChapter::testDeserialize()
     novel->setScenes(ch1Scenes);
 
     QFile *json = new QFile(QString("../../../Plotline/test/unit/fixtures/chapter-deserialize.json"));
-    json->open(QFile::ReadOnly);
-    QJsonDocument doc = QJsonDocument::fromJson(json->readAll());
+    Q_ASSERT(json->open(QFile::ReadOnly) == true);
+    QByteArray jsonContent = json->readAll();
+    qDebug() << "Parsing content" << jsonContent;
+    QJsonParseError *error = new QJsonParseError();
+    QJsonDocument doc = QJsonDocument::fromJson(jsonContent, error);
     json->close();
+
+    if (doc.isEmpty() || doc.isNull()){
+        qDebug() << error->errorString();
+        qFatal("Could not open json file.");
+    }
 
     Chapter *chapter = Chapter::deserialize(novel, doc.object());
 
