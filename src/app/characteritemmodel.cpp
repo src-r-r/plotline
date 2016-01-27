@@ -45,7 +45,7 @@ QVariant CharacterItemModel::data(const QModelIndex &index, int role) const
         QBrush value = QBrush();
         value.setColor(c->getColor());
         return value;
-    } else if (role == Qt::UserRole) {
+    } else if (role == Qt::DisplayRole || role ==  Qt::EditRole) {
         return c->getName();
     }
     return QVariant();
@@ -69,7 +69,8 @@ QVariant CharacterItemModel::headerData(int section,
 
 //}
 
-bool CharacterItemModel::insertRows(int row, int count, const QModelIndex &parent)
+bool CharacterItemModel::insertRows(int row, int count,
+                                    const QModelIndex &parent)
 {
     qDebug() << "Inserting rows for novel" << mNovel->getWorkingTitle();
     if (parent.isValid() || row + count <=0 )
@@ -81,6 +82,7 @@ bool CharacterItemModel::insertRows(int row, int count, const QModelIndex &paren
 
     for (int i = 0; i < count; ++i){
         mNovel->getCharacters().insert(row+i, new Character(QString()));
+        setData(createIndex(i, 0), QString("New Character"), Qt::EditRole|Qt::DisplayRole);
         inserted = true;
     }
 

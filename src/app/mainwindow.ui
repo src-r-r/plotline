@@ -493,7 +493,7 @@
                      <property name="maximumSize">
                       <size>
                        <width>200</width>
-                       <height>120</height>
+                       <height>200</height>
                       </size>
                      </property>
                      <property name="baseSize">
@@ -998,54 +998,15 @@
      <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>Fi&amp;le</string>
-    </property>
-    <widget class="QMenu" name="menuNew">
-     <property name="title">
-      <string>&amp;New</string>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/new/prefix1/res/document-new.png</normaloff>:/new/prefix1/res/document-new.png</iconset>
-     </property>
-     <addaction name="actionNewNovel"/>
-     <addaction name="actionNewCharacter"/>
-     <addaction name="separator"/>
-     <addaction name="actionPlotline"/>
-     <addaction name="actionNewScene"/>
-     <addaction name="separator"/>
-     <addaction name="actionNewPart"/>
-     <addaction name="actionNewChapter"/>
-    </widget>
-    <addaction name="menuNew"/>
-    <addaction name="actionOpen_Novel"/>
-    <addaction name="actionSave"/>
-    <addaction name="separator"/>
-    <addaction name="actionExport"/>
-    <addaction name="actionCreate_Book"/>
-    <addaction name="separator"/>
-    <addaction name="actionClose_Novel"/>
-    <addaction name="actionQuit"/>
-   </widget>
-   <widget class="QMenu" name="menuGo_To">
-    <property name="title">
-     <string>&amp;Go  To...</string>
-    </property>
-    <addaction name="actionGotoNovel"/>
-    <addaction name="actionGotoCharacters"/>
-    <addaction name="actionGotoScenes"/>
-    <addaction name="actionGotoChapters"/>
-    <addaction name="actionGotoDonate"/>
-   </widget>
    <widget class="QMenu" name="menuApplication">
     <property name="title">
-     <string>Applicatio&amp;n</string>
+     <string>Appli&amp;cation</string>
     </property>
     <addaction name="actionPreferences"/>
     <addaction name="actionAbout"/>
     <addaction name="actionHelp"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit_2"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -1060,10 +1021,30 @@
     </widget>
     <addaction name="menuMode"/>
    </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuGo_To"/>
-   <addaction name="menuView"/>
+   <widget class="QMenu" name="menuNovel">
+    <property name="title">
+     <string>Nove&amp;l</string>
+    </property>
+    <addaction name="actionNovelNew"/>
+    <addaction name="actionNovelOpen"/>
+    <addaction name="actionNovelSave"/>
+    <addaction name="actionNovelSaveAs"/>
+    <addaction name="separator"/>
+    <addaction name="actionNovelRevisions"/>
+    <addaction name="actionNovelExport"/>
+    <addaction name="actionNovelBind"/>
+    <addaction name="separator"/>
+    <addaction name="actionNovelClose"/>
+   </widget>
+   <widget class="QMenu" name="menuScene">
+    <property name="title">
+     <string>S&amp;cene</string>
+    </property>
+   </widget>
    <addaction name="menuApplication"/>
+   <addaction name="menuView"/>
+   <addaction name="menuNovel"/>
+   <addaction name="menuScene"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -1230,6 +1211,71 @@
   <action name="actionEdit_Mode">
    <property name="text">
     <string>&amp;Edit Mode</string>
+   </property>
+  </action>
+  <action name="actionNovelNew">
+   <property name="icon">
+    <iconset resource="../res/plotline.qrc">
+     <normaloff>:/images/images/document-new.png</normaloff>:/images/images/document-new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionNovelOpen">
+   <property name="icon">
+    <iconset resource="../res/plotline.qrc">
+     <normaloff>:/images/images/document-open.png</normaloff>:/images/images/document-open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionNovelSave">
+   <property name="icon">
+    <iconset resource="../res/plotline.qrc">
+     <normaloff>:/images/images/document-save.png</normaloff>:/images/images/document-save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionNovelRevisions">
+   <property name="text">
+    <string>Revisions</string>
+   </property>
+  </action>
+  <action name="actionNovelExport">
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </action>
+  <action name="actionNovelBind">
+   <property name="icon">
+    <iconset resource="../res/plotline.qrc">
+     <normaloff>:/images/images/book.png</normaloff>:/images/images/book.png</iconset>
+   </property>
+   <property name="text">
+    <string>Bind</string>
+   </property>
+  </action>
+  <action name="actionNovelSaveAs">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+  </action>
+  <action name="actionNovelClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionQuit_2">
+   <property name="icon">
+    <iconset resource="../res/plotline.qrc">
+     <normaloff>:/images/images/application-exit.png</normaloff>:/images/images/application-exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
    </property>
   </action>
  </widget>

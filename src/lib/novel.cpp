@@ -294,3 +294,38 @@ Novel *Novel::deserialize(const QJsonObject &object)
 
     return novel;
 }
+
+QString Novel::writeTo(const QString &filePath)
+{
+    QJsonObject jNovel = serialize();
+    QFile *outFile = new QFile(filePath);
+    int opened = outFile->open(QFile::WriteOnly);
+    if (!opened)
+        return QString();
+    outFile->write(QJsonDocument(jNovel).toJson());
+    outFile->close();
+    return filePath;
+}
+
+Novel *Novel::readFrom(const QString &filePath)
+{
+    QFile *jsonFile = new QFile(filePath);
+    bool opened = jsonFile->open(QFile::ReadOnly);
+
+    if (!opened){
+        qWarning() << "Could not open" << filePath;
+        return 0;
+    }
+
+    QByteArray jsonData = jsonFile->readAll();
+    jsonFile->close();
+    QJsonParseError *error = new QJsonParseError();
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData, error);
+    if (error->error == QJsonParseError::NoError)
+        return Novel::deserialize(doc.object());
+
+    qCritical() << "Failed to parse" << filePath << ":"
+                << error->errorString();
+
+    return 0;
+}

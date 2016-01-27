@@ -11,7 +11,8 @@ HEADERS += chapter.h \
     plotline.h \
     scene.h \
     serializable.h \
-    revision.h
+    revision.h \
+    utils.h
 
 SOURCES += chapter.cpp \
     character.cpp \
@@ -20,6 +21,7 @@ SOURCES += chapter.cpp \
     plotline.cpp \
     scene.cpp \
     serializable.cpp \
-    revision.cpp
+    revision.cpp \
+    utils.cpp
 
 CONFIG += c++11

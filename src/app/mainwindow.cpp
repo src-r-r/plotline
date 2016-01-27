@@ -63,101 +63,16 @@ void MainWindow::on_settingLineEdit_textChanged(const QString &arg1)
     emit novelChanged();
 }
 
-void MainWindow::on_actionOpen_Novel_triggered()
-{
-    QString fileTypes = tr("Plotline Files (*.json *.pln);;All Files (*.*)");
-    QString fileName = QFileDialog::getOpenFileName(this,
-        tr("Load Novel"), QString(), fileTypes);
-    if (fileName.isEmpty())
-        return;
-    QFile *jsonFile = new QFile(fileName);
-    jsonFile->open(QFile::ReadOnly);
-    QByteArray jsonData = jsonFile->readAll();
-    jsonFile->close();
-    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
-    mNovel = Novel::deserialize(doc.object());
-    mOpenedFile = fileName;
-    qDebug() << "Opened novel " << mNovel->getWorkingTitle();
-    emit novelLoaded();
-}
-
-void MainWindow::on_actionSave_triggered()
-{
-    emit saveNovel();
-}
-
 void MainWindow::on_tenseCombobox_currentIndexChanged(int index)
 {
-    switch (index) {
-    case TENSE_PAST:
-        mNovel->setTense(Novel::Past);
-        break;
-    case TENSE_PRESENT:
-        mNovel->setTense(Novel::Present);
-        break;
-    case TENSE_FUTURE:
-        mNovel->setTense(Novel::Future);
-        break;
-    case TENSE_OTHER:
-    default:
-        mNovel->setTense(Novel::OtherTense);
-        break;
-    }
-
+    mNovel->setTense((Novel::Tense) index);
     emit updateNovel();
 }
 
 void MainWindow::on_pointOfViewComboBox_currentIndexChanged(int index)
 {
-    Novel::PointOfView pointOfView = Novel::FirstPersonSingular;
-    switch (index)
-    {
-    case POV_1_1:
-        pointOfView = Novel::FirstPersonSingular;
-        break;
-    case POV_1_P:
-        pointOfView = Novel::FirstPersonPlural;
-        break;
-    case POV_2_1:
-        pointOfView = Novel::SecondPersonSingular;
-        break;
-    case POV_2_P:
-        pointOfView = Novel::SecondPersonPlural;
-        break;
-    case POV_3_1:
-        pointOfView = Novel::ThirdPersonSingular;
-        break;
-    case POV_3_P:
-        pointOfView = Novel::ThirdPersonPlural;
-        break;
-    case POV_OTHER:
-    default:
-        pointOfView = Novel::OtherPointOfView;
-        break;
-    }
-
-    mNovel->setPointOfView(pointOfView);
-
+    mNovel->setPointOfView((Novel::PointOfView) index);
     emit updateNovel();
-}
-
-
-void MainWindow::on_actionNewNovel_triggered()
-{
-    if (!mIsSaved)
-    {
-        QMessageBox *confirmSave = new QMessageBox(tr("New Novel"),
-            tr("Do you want to save the current novel?"),
-            QMessageBox::Question, QMessageBox::Yes, QMessageBox::No,
-                                              QMessageBox::NoButton,
-                                              this);
-        confirmSave->setModal(true);
-        int result = confirmSave->exec();
-        if (result == QMessageBox::Yes && mOpenedFile.isEmpty())
-            emit saveNovel();
-    }
-    mNovel = new Novel(QString());
-    emit novelLoaded();
 }
 
 ///////
@@ -183,28 +98,6 @@ void MainWindow::onCharacterListChanged()
         ui->scrollAreaCharDetails->setEnabled(false);
 }
 
-void MainWindow::onSaveNovel()
-{
-    if (mOpenedFile.isEmpty()){
-        mOpenedFile = QFileDialog::getSaveFileName(this,
-                                                    tr("Save Novel"),
-                                                    QString(),
-                                                    tr("Plotline File (*.pln)"));
-        if (mOpenedFile.isEmpty())
-            return;
-
-        if (!mOpenedFile.endsWith(".pln"))
-            mOpenedFile.append(".pln");
-    }
-    QJsonObject jNovel = mNovel->serialize();
-    QFile *outFile = new QFile(mOpenedFile);
-    outFile->open(QFile::WriteOnly);
-    outFile->write(QJsonDocument(jNovel).toJson());
-    outFile->close();
-    setWindowTitle("Plotline - " + (mOpenedFile.isEmpty() ? "Untitled"
-                                                          : mOpenedFile));
-}
-
 void MainWindow::onCharacterSelectionChanged(const QModelIndex &current)
 {
     qDebug() << "Updating UI to match character" << mSelectedCharacter->getId();
@@ -212,6 +105,8 @@ void MainWindow::onCharacterSelectionChanged(const QModelIndex &current)
     ui->deleteCharacter->setEnabled(current.isValid());
     if (!current.isValid())
         return;
+
+    setCurrentCharacterHeadshot();
     ui->characterName->setText(mSelectedCharacter->getName());
     ui->characterNickname->setText(mSelectedCharacter->getNickname());
     ui->characterLabel->setText(mSelectedCharacter->getLabel());
@@ -230,61 +125,19 @@ void MainWindow::onCurrentCharacterChanged()
     mCharacterItemModel->setData(index, mSelectedCharacter->getName());
 
     //mSelectedCharacter->setHeadshot();
+
+    emit novelChanged();
 }
 
 void MainWindow::onNovelLoaded()
 {
     qDebug() << "Loading novel " << mNovel->getWorkingTitle();
-    int povIndex = POV_OTHER,
-            tenseIndex = TENSE_OTHER;
-    switch (mNovel->getPointOfView())
-    {
-    case Novel::FirstPersonSingular:
-        povIndex = POV_1_1;
-        break;
-    case Novel::FirstPersonPlural:
-        povIndex = POV_1_P;
-        break;
-    case Novel::SecondPersonSingular:
-        povIndex = POV_2_1;
-        break;
-    case Novel::SecondPersonPlural:
-        povIndex = POV_2_P;
-        break;
-    case Novel::ThirdPersonSingular:
-        povIndex = POV_3_1;
-        break;
-    case Novel::ThirdPersonPlural:
-        povIndex = POV_3_P;
-        break;
-    case Novel::OtherPointOfView:
-    default:
-        povIndex = POV_OTHER;
-        break;
-    }
-
-    switch(mNovel->getTense())
-    {
-    case Novel::Past:
-        tenseIndex = TENSE_PAST;
-        break;
-    case Novel::Present:
-        tenseIndex = TENSE_PRESENT;
-        break;
-    case Novel::Future:
-        tenseIndex = TENSE_FUTURE;
-        break;
-    case Novel::OtherTense:
-    default:
-        tenseIndex = TENSE_OTHER;
-        break;
-    }
 
     ui->workingTitleLineEdit->setText(mNovel->getWorkingTitle());
     ui->genreLineEdit->setText(mNovel->getGenre());
     ui->settingLineEdit->setText(mNovel->getSetting());
-    ui->pointOfViewComboBox->setCurrentIndex(povIndex);
-    ui->tenseCombobox->setCurrentIndex(tenseIndex);
+    ui->pointOfViewComboBox->setCurrentIndex(mNovel->getPointOfView());
+    ui->tenseCombobox->setCurrentIndex(mNovel->getTense());
 
     // Load the models
     mCharacterItemModel = new CharacterItemModel(mNovel);
@@ -292,6 +145,13 @@ void MainWindow::onNovelLoaded()
 
     setWindowTitle("Plotline - " + mOpenedFile);
     mIsSaved = true;
+}
+
+void MainWindow::onSaveNovel()
+{
+    mNovel->writeTo(mOpenedFile);
+    setWindowTitle("Plotline - " + (mOpenedFile.isEmpty() ? "Untitled"
+                                                          : mOpenedFile));
 }
 
 void MainWindow::on_deleteCharacter_clicked()
@@ -317,6 +177,7 @@ void MainWindow::on_deleteCharacter_clicked()
             mNovel->getCharacters().removeAt(rows[i].row());
             mCharacterItemModel->removeRow(rows[i].row());
         }
+        mSelectedCharacter = 0;
     }
     emit characterListChanged();
 }
@@ -339,4 +200,159 @@ void MainWindow::on_characterName_textChanged(const QString &arg1)
     mSelectedCharacter->setName(arg1);
     ui->characterLabel->setText(Character::generateLabel(arg1));
     emit currentCharacterChanged();
+}
+
+void MainWindow::on_characterNickname_textChanged(const QString &arg1)
+{
+    mSelectedCharacter->setNickname(arg1);
+    emit currentCharacterChanged();
+}
+
+void MainWindow::on_characterLabel_textChanged(const QString &arg1)
+{
+    mSelectedCharacter->setLabel(arg1);
+    emit currentCharacterChanged();
+}
+
+void MainWindow::on_chooseHeadshot_clicked()
+{
+    QSettings settings;
+    QString defaultDir = settings.value(PreferencesDialog
+                                        ::DEFAULT_HEADSHOT_DIRECTORY,
+                                        QDir::homePath()).toString();
+    QString fileTypes = tr("Image Files (*.png *.jpg *.jpeg *.gif)");
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Open Headshot"), defaultDir, fileTypes);
+    if (fileName.isNull())
+        return;
+
+    QImage headshot = QImage(fileName);
+    mSelectedCharacter->setHeadshot(headshot);
+    emit currentCharacterChanged();
+}
+
+void MainWindow::setCurrentCharacterHeadshot()
+{
+    if (!mSelectedCharacter)
+        return;
+
+    QGraphicsScene *scene = new QGraphicsScene();
+    QPixmap headshotPix = QPixmap::fromImage(mSelectedCharacter->getHeadshot())
+            .scaledToHeight(ui->characterHeadshot->size().height()-2)
+            .scaledToWidth(ui->characterHeadshot->size().width()-2);
+
+    // Scale so that we won't have to scroll the GraphicsView
+    scene->addPixmap(headshotPix);
+
+    ui->characterHeadshot->setScene(scene);
+}
+
+void MainWindow::on_actionPreferences_triggered()
+{
+    mPrefDialog = new PreferencesDialog(this);
+    int result = mPrefDialog->exec();
+}
+
+void MainWindow::on_actionNovelNew_triggered()
+{
+    if (!mIsSaved)
+    {
+        QMessageBox *confirmSave = new QMessageBox(tr("New Novel"),
+            tr("Do you want to save the current novel?"),
+            QMessageBox::Question, QMessageBox::Yes, QMessageBox::No,
+                                              QMessageBox::NoButton,
+                                              this);
+        confirmSave->setModal(true);
+        int result = confirmSave->exec();
+        if (result == QMessageBox::Yes && mOpenedFile.isEmpty())
+            emit saveNovel();
+    }
+    mNovel = new Novel(QString());
+    emit novelLoaded();
+}
+
+void MainWindow::on_actionNovelOpen_triggered()
+{
+    QString fileTypes = tr("Plotline Files (*.json *.pln);;All Files (*.*)");
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Load Novel"), QString(), fileTypes);
+    if (fileName.isEmpty())
+        return;
+
+    mOpenedFile = fileName;
+    mNovel = Novel::readFrom(mOpenedFile);
+    qDebug() << "Opened novel" << mNovel->getWorkingTitle();
+    emit novelLoaded();
+
+}
+
+void MainWindow::on_actionNovelSave_triggered()
+{
+    QSettings settings;
+    QString defaultDir = settings.value(PreferencesDialog
+                                    ::DEFAULT_PROJECT_DIRECTORY,
+                                    QDir::homePath()).toString();
+    if (mOpenedFile.isEmpty()){
+        mOpenedFile = QFileDialog::getSaveFileName(this,
+                                                    tr("Save Novel"),
+                                                    defaultDir,
+                                                    tr("Plotline File (*.pln)"));
+        if (mOpenedFile.isEmpty())
+            return;
+
+        if (!mOpenedFile.endsWith(".pln"))
+            mOpenedFile.append(".pln");
+    }
+    emit saveNovel();
+}
+
+void MainWindow::on_actionNovelRevisions_triggered()
+{
+
+}
+
+void MainWindow::on_actionNovelExport_triggered()
+{
+
+}
+
+void MainWindow::on_actionNovelBind_triggered()
+{
+
+}
+
+void MainWindow::on_actionNovelSaveAs_triggered()
+{
+    QString otherFile = QFileDialog::getSaveFileName(this,
+                                                tr("Save Novel"),
+                                                QString(),
+                                                tr("Plotline File (*.pln)"));
+    if (otherFile.isEmpty())
+        return;
+    if (!otherFile.endsWith(".pln"))
+        otherFile.append(".pln");
+    mOpenedFile = otherFile;
+
+    emit saveNovel();
+}
+
+void MainWindow::on_actionNovelClose_triggered()
+{
+    emit MainWindow::destroy();
+}
+
+void MainWindow::on_MainWindow_destroyed()
+{
+    if (!mIsSaved)
+    {
+        QMessageBox *confirmSave = new QMessageBox(tr("Quit"),
+            tr("Do you want to save the current novel?"),
+            QMessageBox::Question, QMessageBox::Yes, QMessageBox::No,
+                                              QMessageBox::NoButton,
+                                              this);
+        confirmSave->setModal(true);
+        int result = confirmSave->exec();
+        if (result == QMessageBox::Yes && mOpenedFile.isEmpty())
+            emit saveNovel();
+    }
 }

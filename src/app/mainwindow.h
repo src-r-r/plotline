@@ -13,6 +13,7 @@
 
 #include "novel.h"
 #include "characteritemmodel.h"
+#include "preferencesdialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -53,11 +54,8 @@ private slots:
     void on_workingTitleLineEdit_textEdited(const QString &arg1);
     void on_genreLineEdit_textChanged(const QString &arg1);
     void on_settingLineEdit_textChanged(const QString &arg1);
-    void on_actionOpen_Novel_triggered();
-    void on_actionSave_triggered();
     void on_tenseCombobox_currentIndexChanged(int index);
     void on_pointOfViewComboBox_currentIndexChanged(int index);
-    void on_actionNewNovel_triggered();
     void on_deleteCharacter_clicked();
     void on_characterList_clicked(const QModelIndex &index);
     void on_characterName_textChanged(const QString &arg1);
@@ -72,9 +70,26 @@ private slots:
     void onCharacterSelectionChanged(const QModelIndex &index);
     void onCurrentCharacterChanged();
 
+    void on_characterNickname_textChanged(const QString &arg1);
+    void on_characterLabel_textChanged(const QString &arg1);
+    void on_chooseHeadshot_clicked();
+    void on_actionPreferences_triggered();
+    void on_actionNovelNew_triggered();
+    void on_actionNovelOpen_triggered();
+    void on_actionNovelSave_triggered();
+    void on_actionNovelRevisions_triggered();
+    void on_actionNovelExport_triggered();
+    void on_actionNovelBind_triggered();
+    void on_actionNovelSaveAs_triggered();
+    void on_actionNovelClose_triggered();
+    void on_MainWindow_destroyed();
+
 private:
 
+    // Window & Dialogs
     Ui::MainWindow *ui;
+    PreferencesDialog *mPrefDialog;
+
     Novel *mNovel;
     bool mIsSaved;
     QString mOpenedFile;
@@ -82,6 +97,9 @@ private:
 
     // Models
     CharacterItemModel *mCharacterItemModel;
+
+    // functions
+    void setCurrentCharacterHeadshot();
 };
 
 #endif // MAINWINDOW_H

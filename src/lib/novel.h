@@ -19,11 +19,11 @@ class Novel : public QObject, public Serializable
 
 public:
     enum Tense {
-        Past, Present, Future, OtherTense,
+        Past=0, Present, Future, OtherTense,
     };
 
     enum PointOfView {
-        FirstPersonSingular, SecondPersonSingular, ThirdPersonSingular,
+        FirstPersonSingular=0, SecondPersonSingular, ThirdPersonSingular,
         FirstPersonPlural, SecondPersonPlural, ThirdPersonPlural,
         OtherPointOfView,
     };
@@ -74,6 +74,8 @@ public:
 
     QJsonObject serialize() const;
     static Novel *deserialize(const QJsonObject &object);
+    QString writeTo(const QString &filePath);
+    static Novel *readFrom(const QString &filePath);
 
 private:
 

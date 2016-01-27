@@ -4,9 +4,11 @@
 #include <QObject>
 #include <bitset>
 #include <QImage>
+#include <QPixmap>
 #include <QColor>
 #include "serializable.h"
 #include "scene.h"
+#include "utils.h"
 
 class Scene;
 class Novel;

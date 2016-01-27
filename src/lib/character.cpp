@@ -60,17 +60,11 @@ QJsonObject Character::serialize() const
     QJsonObject character = QJsonObject();
     QJsonArray scenes = QJsonArray();
 
-    // Thanks to http://tinyurl.com/jv5a9wb
-    QByteArray bytes;
-    QBuffer buffer(&bytes);
-    buffer.open(QIODevice::WriteOnly);
-    mHeadshot.save(&buffer, "PNG");
-
     character[JSON_ID] = this->getId();
     character[J_NAME] = mName;
     character[J_NICKNAME] = mNickname;
     character[J_LABEL] = mLabel;
-    character[J_HEADSHOT] = QString(bytes);
+    character[J_HEADSHOT] = jsonValFromImage(mHeadshot);
     character[J_COLOR] = mColor.name();
     character[J_IS_ARCHIVED] = QJsonValue(mIsArchived);
 
@@ -105,11 +99,7 @@ Character *Character::deserialize(Novel *novel, const QJsonObject &object)
         qWarning() << "Character color not set";
 
     if (object.contains(J_HEADSHOT))
-    {
-        QString jHeadshot = object[J_HEADSHOT].toString();
-        QByteArray data = QByteArray::fromStdString(jHeadshot.toStdString());
-        headshot.loadFromData(data);
-    }
+        headshot = imageFrom(object[J_HEADSHOT]);
 
     Character *character = new Character(name, nickname, label,
                                          headshot, color, isArchived,
