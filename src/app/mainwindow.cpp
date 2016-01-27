@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     mIsSaved = false;
-    mSelectedCharacters = QList<Character *>();
+    mSelectedCharacter = 0;
 
     // Set up the models
     mNovel = new Novel("Untitled");
@@ -21,9 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(novelChanged()), this, SLOT(updateNovel()));
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
     connect(this, SIGNAL(novelLoaded()), this, SLOT(onNovelLoaded()));
-    connect(ui->characterList->selectionModel(),
-            SIGNAL(QItemSelectionModel::currentChanged()),
-            this, SLOT(onCharacterSelectionChanged()));
+    connect(this, SIGNAL(characterSelectionChanged(const QModelIndex&)),
+            this, SLOT(onCharacterSelectionChanged(const QModelIndex &)));
 
     emit characterListChanged();
 }
@@ -32,6 +31,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete mNovel;
+    delete mSelectedCharacter;
 }
 
 void MainWindow::on_addCharacter_clicked()
@@ -205,13 +205,31 @@ void MainWindow::onSaveNovel()
                                                           : mOpenedFile));
 }
 
-void MainWindow::onCharacterSelectionChanged(const QModelIndex &current,
-                                             const QModelIndex &previous)
+void MainWindow::onCharacterSelectionChanged(const QModelIndex &current)
 {
+    qDebug() << "Updating UI to match character" << mSelectedCharacter->getId();
     ui->scrollAreaCharDetails->setEnabled(current.isValid());
     ui->deleteCharacter->setEnabled(current.isValid());
     if (!current.isValid())
         return;
+    ui->characterName->setText(mSelectedCharacter->getName());
+    ui->characterNickname->setText(mSelectedCharacter->getNickname());
+    ui->characterLabel->setText(mSelectedCharacter->getLabel());
+}
+
+void MainWindow::onCurrentCharacterChanged()
+{
+    if (!mSelectedCharacter)
+        return;
+    mSelectedCharacter->setName(ui->characterName->text());
+    mSelectedCharacter->setNickname(ui->characterNickname->text());
+    mSelectedCharacter->setLabel(ui->characterLabel->text());
+
+    // Update the list view
+    QModelIndex index = ui->characterList->selectionModel()->currentIndex();
+    mCharacterItemModel->setData(index, mSelectedCharacter->getName());
+
+    //mSelectedCharacter->setHeadshot();
 }
 
 void MainWindow::onNovelLoaded()
@@ -281,8 +299,11 @@ void MainWindow::on_deleteCharacter_clicked()
     QItemSelectionModel *model = ui->characterList->selectionModel();
     QModelIndexList rows = model->selectedRows();
     QStringList names = QStringList();
-    for (QModelIndex i : rows)
-        names << mNovel->getCharacters()[i.row()]->getName();
+    Character *c = 0;
+    for (int i = 0; i < rows.size(); ++i){
+        c = mNovel->getCharacters()[rows[i].row()];
+        names << c->getName();
+    }
 
     QMessageBox *confirmSave = new QMessageBox(tr("DeleteCharacters"),
         QString("Do you want to delete the characters:") + names.join("\n- "),
@@ -290,9 +311,12 @@ void MainWindow::on_deleteCharacter_clicked()
                                           QMessageBox::NoButton,
                                           this);
     confirmSave->setModal(true);
-    if (QMessageBox::Yes == confirmSave->exec()){
-        for (QModelIndex i : rows)
-            mNovel->getCharacters().removeAt(i.row());
+    int res = confirmSave->exec();
+    if (QMessageBox::Yes == res){
+        for (int i = 0; i < rows.size(); ++i){
+            mNovel->getCharacters().removeAt(rows[i].row());
+            mCharacterItemModel->removeRow(rows[i].row());
+        }
     }
     emit characterListChanged();
 }
@@ -301,4 +325,18 @@ void MainWindow::on_characterList_clicked(const QModelIndex &index)
 {
     ui->deleteCharacter->setEnabled(index.isValid());
     ui->scrollAreaCharDetails->setEnabled(index.isValid());
+    if (index.isValid()){
+        qDebug() << "Selecting new character at index" << index.row();
+        mSelectedCharacter = mNovel->getCharacters()[index.row()];
+    } else {
+        qDebug() << "Invalid index:" << index;
+    }
+    emit characterSelectionChanged(index);
+}
+
+void MainWindow::on_characterName_textChanged(const QString &arg1)
+{
+    mSelectedCharacter->setName(arg1);
+    ui->characterLabel->setText(Character::generateLabel(arg1));
+    emit currentCharacterChanged();
 }

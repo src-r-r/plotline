@@ -45,6 +45,8 @@ public:
                        QObject *parent = 0);
     ~Character();
 
+    static QString generateLabel(const QString &name);
+
     QString getName() const;
 
     QString getNickname() const;

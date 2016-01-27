@@ -514,7 +514,7 @@
                       </widget>
                      </item>
                      <item row="0" column="1">
-                      <widget class="QLineEdit" name="lineEdit_2"/>
+                      <widget class="QLineEdit" name="characterName"/>
                      </item>
                      <item row="1" column="0">
                       <widget class="QLabel" name="label_3">
@@ -524,7 +524,7 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QLineEdit" name="lineEdit_3"/>
+                      <widget class="QLineEdit" name="characterNickname"/>
                      </item>
                      <item row="2" column="0">
                       <widget class="QLabel" name="label_4">
@@ -534,7 +534,7 @@
                       </widget>
                      </item>
                      <item row="2" column="1">
-                      <widget class="QLineEdit" name="lineEdit_4">
+                      <widget class="QLineEdit" name="characterLabel">
                        <property name="whatsThis">
                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A short name to identify the character for plot lines and scenes (e.g. JoDo for John Doe).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                        </property>

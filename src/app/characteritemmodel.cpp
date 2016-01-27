@@ -18,10 +18,10 @@ CharacterItemModel::CharacterItemModel(Novel *novel, QObject *parent)
 void CharacterItemModel::addCharacter()
 {
     QModelIndex index;
-    Character *c = new Character("");
+    Character *c = new Character("New Character");
     mNovel->addCharacter(c);
     this->insertRow(this->rowCount(), index);
-    this->setData(index, c->getName());
+    this->setData(index, c->getName(), Qt::DisplayRole|Qt::EditRole);
 }
 
 void CharacterItemModel::setCharacters(const QList<Character *> &characters)

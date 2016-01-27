@@ -21,15 +21,11 @@ Character::Character(const QString &name, const QString &nickname,
     this->mHeadshot = headshot;
     this->mNovel = novel;
     this->mIsArchived = isArchived;
-    QString lbl = QString();
 
     // If a label is not given, make the label the name parts in title-case,
     // so the name "John Doe" will appear as "JoDo"
     if (label == 0){
-        QStringList nameParts = name.split(QChar(' '));
-        for (QString namePart : nameParts)
-            lbl.append(namePart[0].toUpper()).append(namePart[1].toLower());
-        this->mLabel = lbl;
+        this->mLabel = Character::generateLabel(name);
     } else {
         this->mLabel = label;
     }
@@ -38,6 +34,15 @@ Character::Character(const QString &name, const QString &nickname,
 Character::~Character()
 {
     // nothing to delete
+}
+
+QString Character::generateLabel(const QString &name)
+{
+    QString label = QString();
+    QStringList nameParts = name.split(QChar(' '));
+    for (QString namePart : nameParts)
+        label.append(namePart[0].toUpper()).append(namePart[1].toLower());
+    return label;
 }
 
 Novel *Character::getNovel() const

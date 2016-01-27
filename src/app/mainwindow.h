@@ -44,19 +44,23 @@ signals:
     void novelChanged();
     void novelLoaded();
     void characterListChanged();
+    void characterSelectionChanged(const QModelIndex &index);
+    void currentCharacterChanged();
 
 private slots:
 
     void on_addCharacter_clicked();
     void on_workingTitleLineEdit_textEdited(const QString &arg1);
-
     void on_genreLineEdit_textChanged(const QString &arg1);
-
     void on_settingLineEdit_textChanged(const QString &arg1);
-
     void on_actionOpen_Novel_triggered();
-
     void on_actionSave_triggered();
+    void on_tenseCombobox_currentIndexChanged(int index);
+    void on_pointOfViewComboBox_currentIndexChanged(int index);
+    void on_actionNewNovel_triggered();
+    void on_deleteCharacter_clicked();
+    void on_characterList_clicked(const QModelIndex &index);
+    void on_characterName_textChanged(const QString &arg1);
 
     /**
      * custom slots
@@ -65,16 +69,8 @@ private slots:
     void onNovelLoaded();
     void updateNovel();
     void onSaveNovel();
-    void onCharacterSelectionChanged(const QModelIndex &current,
-                                     const QModelIndex &previous);
-
-    void on_tenseCombobox_currentIndexChanged(int index);
-    void on_pointOfViewComboBox_currentIndexChanged(int index);
-
-    void on_actionNewNovel_triggered();
-
-    void on_deleteCharacter_clicked();
-    void on_characterList_clicked(const QModelIndex &index);
+    void onCharacterSelectionChanged(const QModelIndex &index);
+    void onCurrentCharacterChanged();
 
 private:
 
@@ -82,7 +78,7 @@ private:
     Novel *mNovel;
     bool mIsSaved;
     QString mOpenedFile;
-    QList<Character *> mSelectedCharacters;
+    Character *mSelectedCharacter;
 
     // Models
     CharacterItemModel *mCharacterItemModel;
