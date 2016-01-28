@@ -24,7 +24,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tabNovel">
        <attribute name="title">
@@ -98,7 +98,7 @@
               <x>0</x>
               <y>0</y>
               <width>737</width>
-              <height>457</height>
+              <height>430</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -466,7 +466,7 @@
               <x>0</x>
               <y>0</y>
               <width>532</width>
-              <height>457</height>
+              <height>430</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -586,7 +586,7 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_5"/>
+             <widget class="QLineEdit" name="searcPlotlines"/>
             </item>
             <item row="1" column="1">
              <widget class="QComboBox" name="comboBox_2"/>
@@ -594,9 +594,9 @@
            </layout>
           </item>
           <item>
-           <widget class="QTableView" name="tableView">
+           <widget class="QTableView" name="plotlineTable">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -609,7 +609,7 @@
              <enum>QLayout::SetMinimumSize</enum>
             </property>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="addPlotline">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -622,7 +622,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="archivePlotline">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -635,7 +635,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_3">
+             <widget class="QPushButton" name="deletePlotline">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -735,7 +735,7 @@
               <x>0</x>
               <y>0</y>
               <width>400</width>
-              <height>457</height>
+              <height>430</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -1000,7 +1000,7 @@
    </property>
    <widget class="QMenu" name="menuApplication">
     <property name="title">
-     <string>Appli&amp;cation</string>
+     <string>App&amp;lication</string>
     </property>
     <addaction name="actionPreferences"/>
     <addaction name="actionAbout"/>
@@ -1041,10 +1041,19 @@
      <string>S&amp;cene</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuCharacter">
+    <property name="title">
+     <string>&amp;Character</string>
+    </property>
+    <addaction name="actionNewCharacter"/>
+    <addaction name="actionExportCharacter"/>
+    <addaction name="actionImportCharacter"/>
+   </widget>
    <addaction name="menuApplication"/>
-   <addaction name="menuView"/>
    <addaction name="menuNovel"/>
+   <addaction name="menuCharacter"/>
    <addaction name="menuScene"/>
+   <addaction name="menuView"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -1053,6 +1062,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNovelNew"/>
+   <addaction name="actionNovelSave"/>
+   <addaction name="actionNovelOpen"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpen_Novel">
@@ -1062,36 +1074,6 @@
    </property>
    <property name="text">
     <string>&amp;Open</string>
-   </property>
-  </action>
-  <action name="actionNewCharacter">
-   <property name="icon">
-    <iconset resource="../res/plotline.qrc">
-     <normaloff>:/images/images/list-add-user.png</normaloff>:/images/images/list-add-user.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Character</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+C</string>
-   </property>
-  </action>
-  <action name="actionNewScene">
-   <property name="text">
-    <string>&amp;Scene</string>
-   </property>
-   <property name="toolTip">
-    <string>New Scene</string>
-   </property>
-  </action>
-  <action name="actionNewPart">
-   <property name="text">
-    <string>Pa&amp;rt</string>
-   </property>
-  </action>
-  <action name="actionNewChapter">
-   <property name="text">
-    <string>C&amp;hapter</string>
    </property>
   </action>
   <action name="actionExport">
@@ -1219,7 +1201,7 @@
      <normaloff>:/images/images/document-new.png</normaloff>:/images/images/document-new.png</iconset>
    </property>
    <property name="text">
-    <string>New</string>
+    <string>&amp;New</string>
    </property>
   </action>
   <action name="actionNovelOpen">
@@ -1228,7 +1210,7 @@
      <normaloff>:/images/images/document-open.png</normaloff>:/images/images/document-open.png</iconset>
    </property>
    <property name="text">
-    <string>Open</string>
+    <string>&amp;Open</string>
    </property>
   </action>
   <action name="actionNovelSave">
@@ -1237,17 +1219,17 @@
      <normaloff>:/images/images/document-save.png</normaloff>:/images/images/document-save.png</iconset>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
   </action>
   <action name="actionNovelRevisions">
    <property name="text">
-    <string>Revisions</string>
+    <string>&amp;Revisions</string>
    </property>
   </action>
   <action name="actionNovelExport">
    <property name="text">
-    <string>Export</string>
+    <string>&amp;Export</string>
    </property>
   </action>
   <action name="actionNovelBind">
@@ -1256,17 +1238,17 @@
      <normaloff>:/images/images/book.png</normaloff>:/images/images/book.png</iconset>
    </property>
    <property name="text">
-    <string>Bind</string>
+    <string>&amp;Bind</string>
    </property>
   </action>
   <action name="actionNovelSaveAs">
    <property name="text">
-    <string>Save As...</string>
+    <string>Sa&amp;ve As...</string>
    </property>
   </action>
   <action name="actionNovelClose">
    <property name="text">
-    <string>Close</string>
+    <string>&amp;Close</string>
    </property>
   </action>
   <action name="actionQuit_2">
@@ -1275,7 +1257,22 @@
      <normaloff>:/images/images/application-exit.png</normaloff>:/images/images/application-exit.png</iconset>
    </property>
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
+   </property>
+  </action>
+  <action name="actionImportCharacter">
+   <property name="text">
+    <string>&amp;Import</string>
+   </property>
+  </action>
+  <action name="actionExportCharacter">
+   <property name="text">
+    <string>&amp;Export</string>
+   </property>
+  </action>
+  <action name="actionNewCharacter">
+   <property name="text">
+    <string>&amp;New</string>
    </property>
   </action>
  </widget>

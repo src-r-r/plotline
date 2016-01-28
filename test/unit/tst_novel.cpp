@@ -77,9 +77,9 @@ void TestNovel::testSerialize()
              << new Chapter(QString("Chapter 2"));
 
     QList<Plotline *> plotlines = QList<Plotline *>();
-    plotlines << new Plotline(QString("Plotline 1"))
-              << new Plotline(QString("Plotline 2"))
-              << new Plotline(QString("Plotline 3"));
+    plotlines << new Plotline(QString("Plotline 1"), QString("Synopsis 1"))
+              << new Plotline(QString("Plotline 2"), QString("Synopsis 1"))
+              << new Plotline(QString("Plotline 3"), QString("Synopsis 1"));
 
     Novel *novel = new Novel(title, genre, setting, tense, pointOfView,
                              characters, scenes, chapters, plotlines);

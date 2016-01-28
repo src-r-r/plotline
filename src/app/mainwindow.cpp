@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -16,6 +17,18 @@ MainWindow::MainWindow(QWidget *parent) :
     mNovel = new Novel("Untitled");
     mCharacterItemModel = new CharacterItemModel(mNovel);
     ui->characterList->setModel(mCharacterItemModel);
+    mPlotlineItemModel = new PlotlineItemModel(mNovel);
+    ui->plotlineTable->setModel(mPlotlineItemModel);
+    PlotlineItemDelegate plotlineItemDelegate;
+    ui->plotlineTable->setItemDelegate(&plotlineItemDelegate);
+
+    // Set the widths for the plotline table.
+    float widths[3] = {0.50, 0.50, 0.30};
+    float totalWidth = ui->plotlineTable->width();
+    for (int i = 0; i < 3; ++i){
+        float w = totalWidth * widths[i];
+        ui->plotlineTable->setColumnWidth(i, w);
+    }
 
     // Connect signals.
     connect(this, SIGNAL(novelChanged()), this, SLOT(updateNovel()));
@@ -143,6 +156,14 @@ void MainWindow::onNovelLoaded()
     mCharacterItemModel = new CharacterItemModel(mNovel);
     ui->characterList->setModel(mCharacterItemModel);
 
+    // Set default selections
+    if (!mNovel->getCharacters().isEmpty()){
+        QModelIndex i = mCharacterItemModel->index(0);
+        ui->characterList->setCurrentIndex(i);
+        mSelectedCharacter = mNovel->getCharacters()[0];
+        emit characterSelectionChanged(i);
+    }
+
     setWindowTitle("Plotline - " + mOpenedFile);
     mIsSaved = true;
 }
@@ -228,18 +249,30 @@ void MainWindow::on_chooseHeadshot_clicked()
 
     QImage headshot = QImage(fileName);
     mSelectedCharacter->setHeadshot(headshot);
+    setCurrentCharacterHeadshot();
     emit currentCharacterChanged();
 }
 
+/**
+ * @brief MainWindow::setCurrentCharacterHeadshot
+ * For the selected character (in the character tab) set the GraphicsView
+ * from the stored QImage.
+ */
 void MainWindow::setCurrentCharacterHeadshot()
 {
     if (!mSelectedCharacter)
         return;
 
+    int height = ui->characterHeadshot->size().height(),
+            width = ui->characterHeadshot->size().width();
+    QPixmap headshotPix = QPixmap::fromImage(mSelectedCharacter->getHeadshot());
+    // Determine how (if at all) the image should be scaled.
+    if (height > width)
+        headshotPix = headshotPix.scaledToWidth(width);
+    else if (width > height)
+        headshotPix = headshotPix.scaledToHeight(height);
+
     QGraphicsScene *scene = new QGraphicsScene();
-    QPixmap headshotPix = QPixmap::fromImage(mSelectedCharacter->getHeadshot())
-            .scaledToHeight(ui->characterHeadshot->size().height()-2)
-            .scaledToWidth(ui->characterHeadshot->size().width()-2);
 
     // Scale so that we won't have to scroll the GraphicsView
     scene->addPixmap(headshotPix);
@@ -355,4 +388,10 @@ void MainWindow::on_MainWindow_destroyed()
         if (result == QMessageBox::Yes && mOpenedFile.isEmpty())
             emit saveNovel();
     }
+}
+
+void MainWindow::on_addPlotline_clicked()
+{
+    mPlotlineItemModel->insertRows(mPlotlineItemModel->rowCount(),
+                                   1, QModelIndex());
 }

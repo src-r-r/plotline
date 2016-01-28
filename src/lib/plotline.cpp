@@ -3,9 +3,11 @@
 const QString Plotline::J_CHARACTERS = "characters",
     Plotline::J_SCENES = "scenes",
     Plotline::J_SYNOPSIS = "synopsis",
+    Plotline::J_BRIEF = "brief",
     Plotline::J_COLOR = "color";
 
-Plotline::Plotline(const QString &synopsis,
+Plotline::Plotline(const QString &brief,
+                   const QString &synopsis,
                    const QList<Scene *> &scenes,
                    const QList<Character *> &characters,
                    const QColor &color,
@@ -14,6 +16,7 @@ Plotline::Plotline(const QString &synopsis,
                    QObject *parent)
     : QObject(parent), Serializable(id)
 {
+    this->mBrief = brief;
     this->mSynopsis = synopsis;
     this->mColor = color;
     this->mScenes = scenes;
@@ -21,6 +24,16 @@ Plotline::Plotline(const QString &synopsis,
     this->mCharacters = characters;
 }
 
+
+QString Plotline::getBrief() const
+{
+    return mBrief;
+}
+
+void Plotline::setBrief(const QString &brief)
+{
+    mBrief = brief;
+}
 
 QColor Plotline::getColor() const
 {
@@ -85,6 +98,7 @@ QJsonObject Plotline::serialize() const{
 
     plotline[J_CHARACTERS] = jCharacters;
     plotline[J_SCENES] = jScenes;
+    plotline[J_BRIEF] = mBrief;
     plotline[J_SYNOPSIS] = mSynopsis;
     plotline[J_COLOR] = mColor.name();
 
@@ -95,10 +109,13 @@ Plotline *Plotline::deserialize(Novel *novel, const QJsonObject &object)
 {
     int id = Serializable::deserialize(object);
 
-    QString synopsis = QString();
+    QString brief = QString(), synopsis = QString();
     QList<Character *> characters;
     QList<Scene *> scenes;
     QColor color = QColor();
+
+    if (object.contains(J_BRIEF))
+        brief = object[J_BRIEF].toString();
 
     if (object.contains(J_SYNOPSIS))
         synopsis = object[J_SYNOPSIS].toString();
@@ -114,8 +131,8 @@ Plotline *Plotline::deserialize(Novel *novel, const QJsonObject &object)
     if (object.contains(J_COLOR))
         color = QColor(object[J_COLOR].toString());
 
-    Plotline *plotline = new Plotline(synopsis, scenes, characters, color,
-                                      novel, id);
+    Plotline *plotline = new Plotline(brief, synopsis, scenes, characters,
+                                      color, novel, id);
 
     return plotline;
 }

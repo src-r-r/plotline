@@ -13,16 +13,24 @@ TARGET = plotline
 HEADERS +=  mainwindow.h \
     characteritemmodel.h \
     sceneitemmodel.h \
-    preferencesdialog.h
+    preferencesdialog.h \
+    plotlineitemmodel.h \
+    plotlineitemdelegate.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
     characteritemmodel.cpp \
     sceneitemmodel.cpp \
-    preferencesdialog.cpp
+    preferencesdialog.cpp \
+    plotlineitemmodel.cpp \
+    plotlineitemdelegate.cpp
 
-LIBS += ../lib/libplotline.so
+LIBS += \
+    ../lib/libplotline.so
+
 PRE_TARGETDEPS += ../lib/libplotline.so
 
 FORMS += mainwindow.ui \
     preferencesdialog.ui
+
+RESOURCES += ../res/plotline.qrc

@@ -10,9 +10,6 @@ SUBDIRS += \
     lib \
     app
 
-RESOURCES += \
-    res/plotline.qrc
-
 CONFIG += gnu++11
 
 app.depends = lib

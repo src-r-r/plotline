@@ -13,6 +13,8 @@
 
 #include "novel.h"
 #include "characteritemmodel.h"
+#include "plotlineitemmodel.h"
+#include "plotlineitemdelegate.h"
 #include "preferencesdialog.h"
 
 namespace Ui {
@@ -84,6 +86,8 @@ private slots:
     void on_actionNovelClose_triggered();
     void on_MainWindow_destroyed();
 
+    void on_addPlotline_clicked();
+
 private:
 
     // Window & Dialogs
@@ -93,10 +97,14 @@ private:
     Novel *mNovel;
     bool mIsSaved;
     QString mOpenedFile;
+
+    // Currently-selected items
     Character *mSelectedCharacter;
+    Plotline *mSelectedPlotline;
 
     // Models
     CharacterItemModel *mCharacterItemModel;
+    PlotlineItemModel *mPlotlineItemModel;
 
     // functions
     void setCurrentCharacterHeadshot();
