@@ -65,6 +65,7 @@ public:
 
     QList<Plotline *> getPlotlines() const;
     void setPlotlines(const QList<Plotline *> &plotlines);
+    void addPlotline(Plotline *plotline, int before=-1);
 
     QList<Character *> getCharacters() const;
     void setCharacters(const QList<Character *> &characters);

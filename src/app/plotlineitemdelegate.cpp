@@ -9,33 +9,32 @@ QWidget *PlotlineItemDelegate::createEditor(QWidget *parent,
                                          const QStyleOptionViewItem &option,
                                          const QModelIndex &index) const
 {
+    QWidget *widget = 0;
     switch(index.column()){
     case BRIEF:
-        return new QLineEdit(parent);
-        break;
     case SYNOPSIS:
-        return new QLineEdit(parent);
+        widget = (QWidget *) new QTextEdit();
         break;
     case CHARACTERS:
-        return new QPushButton(parent);
+        widget = new QPushButton(parent);
         break;
     }
 
-    return new QWidget();
+    return widget;
 }
 
 void PlotlineItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     if (editor == 0) return;
 
-    QLineEdit *lineEditor = 0;
+    QTextEdit *textEdit = 0;
     QPushButton *button = 0;
 
     switch (index.column()){
     case BRIEF:
     case SYNOPSIS:
-        lineEditor = static_cast<QLineEdit *>(editor);
-        lineEditor->setText(index.model()->data(index, Qt::EditRole).toString());
+        textEdit = static_cast<QTextEdit *>(editor);
+        textEdit->setText(index.model()->data(index, Qt::EditRole).toString());
         break;
     case CHARACTERS:
         button = static_cast<QPushButton *>(editor);

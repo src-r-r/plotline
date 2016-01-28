@@ -34,6 +34,8 @@ public:
                     const QModelIndex &parent = QModelIndex());
     Qt::ItemFlags flags(const QModelIndex & index) const;
 
+    Plotline *addPlotline();
+
 private:
 
     Novel *mNovel;

@@ -48,8 +48,9 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
     } else if (col == CHARACTERS) {
         if (role == Qt::DisplayRole || role == Qt::EditRole){
             QStringList charList = QStringList();
-            for (Character *c : plotline->getCharacters())
-                charList << c->getName();
+            if (!plotline->getCharacters().isEmpty())
+                for (Character *c : plotline->getCharacters())
+                    charList << c->getName();
             return QString(charList.join(","));
         } else if (role == Qt::DisplayRole || role == Qt::EditRole) {
             QJsonArray charList = QJsonArray();
@@ -87,24 +88,36 @@ QVariant PlotlineItemModel::headerData(int section, Qt::Orientation orientation,
 bool PlotlineItemModel::setData(const QModelIndex &index,
                                const QVariant &value, int role)
 {
-    if (!index.isValid())
+    if (!index.isValid()){
+        qWarning() << "Invalid index" << index;
         return false;
+    }
 
     int row = index.row(), col = index.column();
 
-    if (mNovel->getPlotlines().isEmpty() || row > mNovel->getPlotlines().size())
+    if (row > mNovel->getPlotlines().size()){
+        qWarning() << "Cannot insert at row" << row << ": Only"
+                   << mNovel->getPlotlines().size() << "plotlines";
         return false;
+    }
 
     Plotline *plotline = mNovel->getPlotlines()[row];
-    if (col == BRIEF)
-        plotline->setBrief(value.toString());
-    else if (col == SYNOPSIS)
-        plotline->setSynopsis(value.toString());
-    else if (col == CHARACTERS){
-        QList<Character *> characterList = QList<Character *>();
-        for (QJsonValue v : value.toJsonArray())
-            characterList << mNovel->getCharacter(v.toInt());
-        plotline->setCharacters(characterList);
+    if (role == Qt::EditRole || role == Qt::DisplayRole){
+        switch (col){
+        case BRIEF:
+            plotline->setBrief(value.toString());
+            break;
+        case SYNOPSIS:
+            plotline->setSynopsis(value.toString());
+            break;
+        case CHARACTERS:
+            QList<Character *> characterList = QList<Character *>();
+            if (!value.toJsonArray().isEmpty())
+                for (QJsonValue v : value.toJsonArray())
+                    characterList << mNovel->getCharacter(v.toInt());
+            plotline->setCharacters(characterList);
+            break;
+        }
     }
 
     return (col >= BRIEF && col <= CHARACTERS);
@@ -112,18 +125,23 @@ bool PlotlineItemModel::setData(const QModelIndex &index,
 
 bool PlotlineItemModel::insertRows(int row, int count, const QModelIndex &parent)
 {
-    if (parent.isValid() || row < 0  || row > mNovel->getPlotlines().size() )
+    if (parent.isValid())
         return false;
+
+    if (row < 0){
+        qWarning() << "Invalid row " << row;
+        return false;
+    }
+
     bool wasInserted = false;
 
     beginInsertRows(parent, row, row+count);
 
-    for (int i = row; i < row+count-1; ++i){
-        mNovel->getPlotlines().insert(i, new Plotline("", ""));
-        setData(createIndex(i, 0), QString(""));
-        setData(createIndex(i, 1), QString(""));
-        setData(createIndex(i, 2), QString(""));
+    for (int i = row; i < row+count; ++i){
+        mNovel->addPlotline(new Plotline("", ""));
         wasInserted = true;
+        qDebug() << "Novel now has" << mNovel->getPlotlines().size()
+                 << "plotlines";
     }
 
     endInsertRows();
@@ -149,8 +167,18 @@ bool PlotlineItemModel::removeRows(int row, int count, const QModelIndex &parent
     return wasRemoved ;
 }
 
+Plotline *PlotlineItemModel::addPlotline(){
+    int r = this->rowCount();
+    if (this->insertRows(r, 1, QModelIndex())){
+        setData(index(r, 0), "Brief");
+        setData(index(r, 1), "Synopsis");
+        setData(index(r, 2), QJsonArray());
+        return this->mNovel->getPlotlines().last();
+    }
+}
+
 Qt::ItemFlags PlotlineItemModel::flags(const QModelIndex &index) const
 {
-    return Qt::ItemIsEditable;
+    return Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsEnabled;
 }
 

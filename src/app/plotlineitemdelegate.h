@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QLineEdit>
+#include <QTextEdit>
 #include <QPushButton>
 #include <QStyleOptionViewItem>
 #include <QStyledItemDelegate>

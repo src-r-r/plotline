@@ -106,6 +106,9 @@ private:
     CharacterItemModel *mCharacterItemModel;
     PlotlineItemModel *mPlotlineItemModel;
 
+    // Delegates
+    PlotlineItemDelegate *mPlotlineItemDelegate;
+
     // functions
     void setCurrentCharacterHeadshot();
 };

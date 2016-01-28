@@ -19,8 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->characterList->setModel(mCharacterItemModel);
     mPlotlineItemModel = new PlotlineItemModel(mNovel);
     ui->plotlineTable->setModel(mPlotlineItemModel);
-    PlotlineItemDelegate plotlineItemDelegate;
-    ui->plotlineTable->setItemDelegate(&plotlineItemDelegate);
+    mPlotlineItemDelegate = new PlotlineItemDelegate();
+    ui->plotlineTable->setItemDelegate(mPlotlineItemDelegate);
 
     // Set the widths for the plotline table.
     float widths[3] = {0.50, 0.50, 0.30};
@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
         float w = totalWidth * widths[i];
         ui->plotlineTable->setColumnWidth(i, w);
     }
+    ui->plotlineTable->horizontalHeader()->setStretchLastSection(true);
 
     // Connect signals.
     connect(this, SIGNAL(novelChanged()), this, SLOT(updateNovel()));
@@ -392,6 +393,6 @@ void MainWindow::on_MainWindow_destroyed()
 
 void MainWindow::on_addPlotline_clicked()
 {
-    mPlotlineItemModel->insertRows(mPlotlineItemModel->rowCount(),
-                                   1, QModelIndex());
+    QModelIndex index;
+    mPlotlineItemModel->addPlotline();
 }

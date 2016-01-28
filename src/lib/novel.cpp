@@ -130,6 +130,14 @@ void Novel::setPlotlines(const QList<Plotline *> &plotlines)
     mPlotlines = plotlines;
 }
 
+void Novel::addPlotline(Plotline *plotline, int before)
+{
+    if (before > 0)
+        mPlotlines.append(plotline);
+    else
+        mPlotlines.insert(before, plotline);
+}
+
 QList<Character *> Novel::getCharacters() const
 {
     return mCharacters;
