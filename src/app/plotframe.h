@@ -1,22 +1,32 @@
 #ifndef PLOTFRAME_H
 #define PLOTFRAME_H
 
-#include <QFrame>
+#include "plotlineappframe.h"
+#include "plotlineitemmodel.h"
 
 namespace Ui {
 class PlotFrame;
 }
 
-class PlotFrame : public QFrame
+class PlotFrame : public PlotlineAppFrame
 {
     Q_OBJECT
 
 public:
-    explicit PlotFrame(QWidget *parent = 0);
+    explicit PlotFrame(Novel *novel, QWidget *parent = 0);
     ~PlotFrame();
+
+public slots:
+    void onNovelLoad();
+    void onNovelNew();
+
+private slots:
+    void on_addPlotline_clicked();
 
 private:
     Ui::PlotFrame *ui;
+
+    PlotlineItemModel *mModel;
 };
 
 #endif // PLOTFRAME_H

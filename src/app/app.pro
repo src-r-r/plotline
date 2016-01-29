@@ -21,7 +21,8 @@ HEADERS +=  mainwindow.h \
     plotframe.h \
     sceneframe.h \
     chaptersframe.h \
-    novelframe.h
+    novelframe.h \
+    plotlineappframe.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -35,7 +36,8 @@ SOURCES += main.cpp \
     plotframe.cpp \
     sceneframe.cpp \
     chaptersframe.cpp \
-    novelframe.cpp
+    novelframe.cpp \
+    plotlineappframe.cpp
 
 LIBS += \
     ../lib/libplotline.so

@@ -1,8 +1,8 @@
 #include "chaptersframe.h"
 #include "ui_chaptersframe.h"
 
-ChaptersFrame::ChaptersFrame(QWidget *parent) :
-    QFrame(parent),
+ChaptersFrame::ChaptersFrame(Novel *novel, QWidget *parent) :
+    PlotlineAppFrame(novel, parent),
     ui(new Ui::ChaptersFrame)
 {
     ui->setupUi(this);
@@ -11,4 +11,14 @@ ChaptersFrame::ChaptersFrame(QWidget *parent) :
 ChaptersFrame::~ChaptersFrame()
 {
     delete ui;
+}
+
+void ChaptersFrame::onNovelLoad()
+{
+
+}
+
+void ChaptersFrame::onNovelNew()
+{
+
 }

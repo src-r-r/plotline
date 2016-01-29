@@ -24,55 +24,8 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>-1</number>
       </property>
-      <widget class="QWidget" name="tabNovel">
-       <attribute name="title">
-        <string>Novel</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_5"/>
-      </widget>
-      <widget class="QWidget" name="tab_characters">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <attribute name="title">
-        <string>Characters</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_4"/>
-      </widget>
-      <widget class="QWidget" name="tab_plotlines">
-       <attribute name="title">
-        <string>Plot Lines</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6"/>
-      </widget>
-      <widget class="QWidget" name="tab_scenes">
-       <attribute name="title">
-        <string>Scenes</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_10"/>
-      </widget>
-      <widget class="QWidget" name="tab_chapters">
-       <attribute name="title">
-        <string>Chapters</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_10"/>
-      </widget>
-      <widget class="QWidget" name="tab_donate">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <attribute name="title">
-        <string>Donate</string>
-       </attribute>
-      </widget>
      </widget>
     </item>
    </layout>
@@ -369,7 +322,4 @@
   <include location="../res/plotline.qrc"/>
  </resources>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
- </buttongroups>
 </ui>

@@ -18,6 +18,12 @@
 #include "plotlinedialog.h"
 #include "preferencesdialog.h"
 
+#include "novelframe.h"
+#include "characterframe.h"
+#include "plotframe.h"
+#include "sceneframe.h"
+#include "chaptersframe.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -47,36 +53,13 @@ signals:
     void saveNovel();
     void novelChanged();
     void novelLoaded();
-    void characterListChanged();
-    void characterSelectionChanged(const QModelIndex &index);
-    void currentCharacterChanged();
-    void plotlinesChanged();
+    void novelNew();
 
 private slots:
 
-    void on_addCharacter_clicked();
-    void on_workingTitleLineEdit_textEdited(const QString &arg1);
-    void on_genreLineEdit_textChanged(const QString &arg1);
-    void on_settingLineEdit_textChanged(const QString &arg1);
-    void on_tenseCombobox_currentIndexChanged(int index);
-    void on_pointOfViewComboBox_currentIndexChanged(int index);
-    void on_deleteCharacter_clicked();
-    void on_characterList_clicked(const QModelIndex &index);
-    void on_characterName_textChanged(const QString &arg1);
-
-    /**
-     * custom slots
-     */
-    void onCharacterListChanged();
-    void onNovelLoaded();
-    void updateNovel();
+    void onNovelModified();
     void onSaveNovel();
-    void onCharacterSelectionChanged(const QModelIndex &index);
-    void onCurrentCharacterChanged();
 
-    void on_characterNickname_textChanged(const QString &arg1);
-    void on_characterLabel_textChanged(const QString &arg1);
-    void on_chooseHeadshot_clicked();
     void on_actionPreferences_triggered();
     void on_actionNovelNew_triggered();
     void on_actionNovelOpen_triggered();
@@ -88,9 +71,17 @@ private slots:
     void on_actionNovelClose_triggered();
     void on_MainWindow_destroyed();
 
-    void on_addPlotline_clicked();
-
 private:
+
+    static const QStringList frameTitles;
+
+    // Frames
+    NovelFrame *mNovelFrame;
+    CharacterFrame *mCharacterFrame;
+    PlotFrame *mPlotFrame;
+    SceneFrame *mSceneFrame;
+    ChaptersFrame *mChapterFrame;
+    QList<PlotlineAppFrame *> frames;
 
     // Window & Dialogs
     Ui::MainWindow *ui;
@@ -100,19 +91,6 @@ private:
     bool mIsSaved;
     QString mOpenedFile;
 
-    // Currently-selected items
-    Character *mSelectedCharacter;
-    Plotline *mSelectedPlotline;
-
-    // Models
-    CharacterItemModel *mCharacterItemModel;
-    PlotlineItemModel *mPlotlineItemModel;
-
-    // Delegates
-    PlotlineItemDelegate *mPlotlineItemDelegate;
-
-    // functions
-    void setCurrentCharacterHeadshot();
 };
 
 #endif // MAINWINDOW_H

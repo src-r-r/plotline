@@ -1,13 +1,13 @@
 #ifndef NOVELFRAME_H
 #define NOVELFRAME_H
 
-#include <QFrame>
+#include "plotlineappframe.h"
 
 namespace Ui {
 class NovelFrame;
 }
 
-class NovelFrame : public QFrame
+class NovelFrame : public PlotlineAppFrame
 {
     Q_OBJECT
 
@@ -15,13 +15,19 @@ public:
     explicit NovelFrame(Novel *novel, QWidget *parent = 0);
     ~NovelFrame();
 
-    Novel *novel() const;
-    void setNovel(Novel *novel);
+private slots:
+    void on_tense_activated(int index);
+    void on_pointofView_activated(int index);
+    void on_workingTitle_textEdited(const QString &arg1);
+    void on_genre_textEdited(const QString &arg1);
+    void on_setting_textEdited(const QString &arg1);
+
+public slots:
+    void onNovelLoad();
+    void onNovelNew();
 
 private:
     Ui::NovelFrame *ui;
-
-    Novel *mNovel;
 };
 
 #endif // NOVELFRAME_H

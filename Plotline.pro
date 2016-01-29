@@ -9,3 +9,5 @@ SUBDIRS = src \
     test \
     doc
 
+OTHER_FILES = \
+    README.markdown
