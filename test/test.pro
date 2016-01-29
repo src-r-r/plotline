@@ -4,7 +4,8 @@
 
 TEMPLATE = subdirs
 
-SUBDIRS += unit
+SUBDIRS += \
+    unit
 
 INCLUDEPATH += \
     ../src/lib

@@ -4,11 +4,12 @@ PlotlineItemModel::PlotlineItemModel(Novel *novel, QObject *parent)
     : QAbstractTableModel(parent)
 {
     mNovel = novel;
+    connect(mNovel, SIGNAL(plotlinesChanged()), this, SLOT(onNovelPlotlinesChanged()));
 }
 
 int PlotlineItemModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mNovel->getPlotlines().size();
+    return parent.isValid() ? 0 : mNovel->getPlotlines().count();
 }
 
 int PlotlineItemModel::columnCount(const QModelIndex &parent) const
@@ -25,11 +26,18 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
     int row = index.row(),
             col = index.column();
 
-    if ( !index.isValid() || mNovel->getPlotlines().isEmpty() ||
-         row > mNovel->getPlotlines().size())
+    if (mNovel->getPlotlines().count() == 0)
         return QVariant();
 
+    if ( !index.isValid() || mNovel->getPlotlines().isEmpty() ||
+         row > mNovel->getPlotlines().count())
+        return QVariant();
+
+    int count = mNovel->getPlotlines().count();
     Plotline *plotline = mNovel->getPlotlines()[row];
+
+    if (!plotline)
+        return QVariant();
 
     // Paint the background color for any column.
     if (role == Qt::BackgroundRole) {
@@ -37,6 +45,9 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
         brush.setColor(plotline->getColor());
         return brush;
     }
+
+    if (role == ROLE_PLOTLINE_ID)
+        return QVariant(plotline->getId());
 
     // Otherwise, just set column data accordingly.
     if (col == BRIEF) {
@@ -167,18 +178,41 @@ bool PlotlineItemModel::removeRows(int row, int count, const QModelIndex &parent
     return wasRemoved ;
 }
 
-Plotline *PlotlineItemModel::addPlotline(){
-    int r = this->rowCount();
-    if (this->insertRows(r, 1, QModelIndex())){
-        setData(index(r, 0), "Brief");
-        setData(index(r, 1), "Synopsis");
-        setData(index(r, 2), QJsonArray());
-        return this->mNovel->getPlotlines().last();
+void PlotlineItemModel::onNovelPlotlinesChanged()
+{
+    if (rowCount() != 0)
+        removeRows(0, rowCount());
+    QList<Plotline *> plotlines = mNovel->getPlotlines();
+    int count = plotlines.count();
+
+    if (!insertRows(0, count, QModelIndex())){
+        qWarning() << "Could not insert" << count << "rows";
+        return;
+    }
+
+    for (int i = 0; i < count; ++i){
+        setData(index(i, BRIEF), plotlines[i]->getBrief());
+        setData(index(i, SYNOPSIS), plotlines[i]->getSynopsis());
+        QJsonArray characters = QJsonArray();
+        if (!plotlines[i]->getCharacters().empty())
+            for (Character *c : plotlines[i]->getCharacters())
+                characters << QJsonValue(c->getId());
+        setData(index(i, CHARACTERS), characters);
+        // Also set the background color and Character ID for all columns.
+        for (int j = 0; j < columnCount(); ++j){
+            setData(index(i, j), plotlines[i]->getColor(), Qt::BackgroundRole);
+            setData(index(i, j), QVariant(plotlines[i]->getId()), ROLE_PLOTLINE_ID);
+        }
     }
 }
 
 Qt::ItemFlags PlotlineItemModel::flags(const QModelIndex &index) const
 {
-    return Qt::ItemIsEditable|Qt::ItemIsSelectable|Qt::ItemIsEnabled;
+    return Qt::ItemIsSelectable|Qt::ItemIsEnabled;
 }
 
+Plotline *PlotlineItemModel::getPlotlineAt(const QModelIndex &index)
+{
+    int id = this->data(index, ROLE_PLOTLINE_ID).toInt();
+    return mNovel->getPlotline(id);
+}

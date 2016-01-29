@@ -65,6 +65,26 @@ void Plotline::setCharacters(const QList<Character *> &characters)
     this->mCharacters = characters;
 }
 
+void Plotline::addCharacter(Character *character, const int before)
+{
+    if (before > 0)
+        mCharacters.insert(before, character);
+    else
+        mCharacters.append(character);
+}
+
+void Plotline::removeCharacter(Character *character)
+{
+    this->mCharacters.removeAll(character);
+}
+
+void Plotline::removeCharacter(const QString &label)
+{
+    for (Character *c : mCharacters)
+        if (c->getLabel() == label)
+            mCharacters.removeAll(c);
+}
+
 QList<Scene *> Plotline::getScenes() const
 {
     return this->mScenes;

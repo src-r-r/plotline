@@ -15,7 +15,7 @@ Novel::Novel(const QString &workingTitle,
              const QString &setting,
              const Novel::Tense tense,
              const Novel::PointOfView pov,
-             QList<Character *> characters,
+             const QList<Character *> characters,
              const QList<Scene *> scenes,
              const QList<Chapter *> chapters,
              const QList<Plotline *> plotlines,
@@ -125,6 +125,14 @@ QList<Plotline *> Novel::getPlotlines() const
     return mPlotlines;
 }
 
+Plotline *Novel::getPlotline(int id) const
+{
+    for (Plotline *p : mPlotlines)
+        if (p->getId() == id)
+            return p;
+    return 0;
+}
+
 void Novel::setPlotlines(const QList<Plotline *> &plotlines)
 {
     mPlotlines = plotlines;
@@ -177,12 +185,12 @@ Character *Novel::getCharacter(const QString label) const
  */
 void Novel::addCharacter(Character *character)
 {
-    mCharacters << character;
+    this->mCharacters.append(character);
 }
 
 void Novel::setCharacters(const QList<Character *> &characters)
 {
-    mCharacters = characters;
+    this->mCharacters = characters;
 }
 
 QJsonObject Novel::serialize() const

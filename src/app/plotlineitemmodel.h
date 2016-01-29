@@ -13,6 +13,7 @@ class Novel;
 
 class PlotlineItemModel : public QAbstractTableModel
 {
+    Q_OBJECT
 public:
     PlotlineItemModel(Novel *novel = 0, QObject *parent = 0);
 
@@ -34,7 +35,8 @@ public:
                     const QModelIndex &parent = QModelIndex());
     Qt::ItemFlags flags(const QModelIndex & index) const;
 
-    Plotline *addPlotline();
+    Plotline *getPlotlineAt(const QModelIndex & index);
+    Plotline *getPlotlineAt(const int index);
 
 private:
 
@@ -49,11 +51,15 @@ private:
         SYNOPSIS_WIDTH = 200,
         CHARACTERS_WIDTH = 100,
     // Heights
-        DEFAULT_HEIGHT = 25;
+        DEFAULT_HEIGHT = 25,
+    // Custom roles
+        ROLE_PLOTLINE_ID = Qt::UserRole;
 
 signals:
 
 public slots:
+
+    void onNovelPlotlinesChanged();
 };
 
 #endif // PLOTLINEITEMVIEW_H

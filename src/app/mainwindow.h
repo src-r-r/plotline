@@ -15,6 +15,7 @@
 #include "characteritemmodel.h"
 #include "plotlineitemmodel.h"
 #include "plotlineitemdelegate.h"
+#include "plotlinedialog.h"
 #include "preferencesdialog.h"
 
 namespace Ui {
@@ -49,6 +50,7 @@ signals:
     void characterListChanged();
     void characterSelectionChanged(const QModelIndex &index);
     void currentCharacterChanged();
+    void plotlinesChanged();
 
 private slots:
 

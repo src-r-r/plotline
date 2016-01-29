@@ -48,6 +48,9 @@ public:
 
     QList<Character *> getCharacters() const;
     void setCharacters(const QList<Character *> &characters);
+    void addCharacter(Character *character, const int before = -1);
+    void removeCharacter(Character *character);
+    void removeCharacter(const QString &label);
 
     QList<Scene *> getScenes() const;
     void setScenes(const QList<Scene *> &scenes);

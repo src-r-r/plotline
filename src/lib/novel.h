@@ -33,7 +33,7 @@ public:
                    const QString &mSetting = QString(),
                    const Novel::Tense tense = Past,
                    const Novel::PointOfView pov = ThirdPersonSingular,
-                   QList<Character *> characters = QList<Character *>(),
+                   const QList<Character *> characters = QList<Character *>(),
                    const QList<Scene *> scenes = QList<Scene *>(),
                    const QList<Chapter *> chapters = QList<Chapter *>(),
                    const QList<Plotline *> plotlines = QList<Plotline *>(),
@@ -64,6 +64,7 @@ public:
     void setPointOfView(const Novel::PointOfView &pointOfView);
 
     QList<Plotline *> getPlotlines() const;
+    Plotline *getPlotline(int id) const;
     void setPlotlines(const QList<Plotline *> &plotlines);
     void addPlotline(Plotline *plotline, int before=-1);
 
@@ -101,6 +102,8 @@ private:
     QList<Plotline *> mPlotlines;
 
 signals:
+
+    void plotlinesChanged();
 
 public slots:
 

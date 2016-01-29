@@ -13,14 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
     mIsSaved = false;
     mSelectedCharacter = 0;
 
-    // Set up the models
+
     mNovel = new Novel("Untitled");
+    // Load the models
     mCharacterItemModel = new CharacterItemModel(mNovel);
     ui->characterList->setModel(mCharacterItemModel);
     mPlotlineItemModel = new PlotlineItemModel(mNovel);
     ui->plotlineTable->setModel(mPlotlineItemModel);
-    mPlotlineItemDelegate = new PlotlineItemDelegate();
-    ui->plotlineTable->setItemDelegate(mPlotlineItemDelegate);
+
+    emit novelLoaded();
+
 
     // Set the widths for the plotline table.
     float widths[3] = {0.50, 0.50, 0.30};
@@ -45,12 +47,13 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete mNovel;
-    delete mSelectedCharacter;
+    delete mCharacterItemModel;
+    delete mPlotlineItemDelegate;
+    delete mPlotlineItemModel;
 }
 
 void MainWindow::on_addCharacter_clicked()
 {
-    qDebug() << "Inserting a character";
     mCharacterItemModel->addCharacter();
     emit characterListChanged();
 }
@@ -128,8 +131,9 @@ void MainWindow::onCharacterSelectionChanged(const QModelIndex &current)
 
 void MainWindow::onCurrentCharacterChanged()
 {
-    if (!mSelectedCharacter)
+    if (!mSelectedCharacter){
         return;
+    }
     mSelectedCharacter->setName(ui->characterName->text());
     mSelectedCharacter->setNickname(ui->characterNickname->text());
     mSelectedCharacter->setLabel(ui->characterLabel->text());
@@ -153,12 +157,16 @@ void MainWindow::onNovelLoaded()
     ui->pointOfViewComboBox->setCurrentIndex(mNovel->getPointOfView());
     ui->tenseCombobox->setCurrentIndex(mNovel->getTense());
 
-    // Load the models
-    mCharacterItemModel = new CharacterItemModel(mNovel);
-    ui->characterList->setModel(mCharacterItemModel);
+    emit mNovel->plotlinesChanged();
+
+    // Clear the character detail area.
+    ui->characterName->clear();
+    ui->characterLabel->clear();
+    ui->characterNickname->clear();
+    ui->scrollAreaCharDetails->setDisabled(true);
 
     // Set default selections
-    if (!mNovel->getCharacters().isEmpty()){
+    if (!mNovel->getCharacters().empty()){
         QModelIndex i = mCharacterItemModel->index(0);
         ui->characterList->setCurrentIndex(i);
         mSelectedCharacter = mNovel->getCharacters()[0];
@@ -393,6 +401,6 @@ void MainWindow::on_MainWindow_destroyed()
 
 void MainWindow::on_addPlotline_clicked()
 {
-    QModelIndex index;
-    mPlotlineItemModel->addPlotline();
+    PlotlineDialog *plotlineDialog = new PlotlineDialog(mNovel);
+    plotlineDialog->exec();
 }

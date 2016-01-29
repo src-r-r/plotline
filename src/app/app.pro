@@ -15,7 +15,13 @@ HEADERS +=  mainwindow.h \
     sceneitemmodel.h \
     preferencesdialog.h \
     plotlineitemmodel.h \
-    plotlineitemdelegate.h
+    plotlineitemdelegate.h \
+    plotlinedialog.h \
+    characterframe.h \
+    plotframe.h \
+    sceneframe.h \
+    chaptersframe.h \
+    novelframe.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -23,7 +29,13 @@ SOURCES += main.cpp \
     sceneitemmodel.cpp \
     preferencesdialog.cpp \
     plotlineitemmodel.cpp \
-    plotlineitemdelegate.cpp
+    plotlineitemdelegate.cpp \
+    plotlinedialog.cpp \
+    characterframe.cpp \
+    plotframe.cpp \
+    sceneframe.cpp \
+    chaptersframe.cpp \
+    novelframe.cpp
 
 LIBS += \
     ../lib/libplotline.so
@@ -31,6 +43,14 @@ LIBS += \
 PRE_TARGETDEPS += ../lib/libplotline.so
 
 FORMS += mainwindow.ui \
-    preferencesdialog.ui
+    preferencesdialog.ui \
+    plotlinedialog.ui \
+    characterframe.ui \
+    plotframe.ui \
+    sceneframe.ui \
+    chaptersframe.ui \
+    novelframe.ui
 
 RESOURCES += ../res/plotline.qrc
+
+CONFIG += c++11
