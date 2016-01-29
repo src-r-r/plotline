@@ -63,16 +63,16 @@ distribution's package manager (in the case of Linux) or download from
 
 Installing Qt should have also installed QtCreator. Open QtCreator and go to
 **File > New File or Project > Import Project > Git Clone**. In *Repository*
-enter `https://github.com/plotline.git`. Check **Recursive** --this will import
-submodules. If the current version doesn't have submodules, most likely others
-will.
+enter `https://github.com/freckles-the-pirate/plotline.git`. Check
+**Recursive** --this will import submodules. If the current version doesn't
+have submodules, most likely others will.
 
 #### Command line
 
 Alternatively, if you're a command-line mastro, you can git clone the
 repository:
 
-    $ git clone https://github.com/plotline.git
+    $ git clone https://github.com/freckles-the-pirate/plotline.git
     $ cd plotline
     $ git submodule init
     $ git submdoule sync
