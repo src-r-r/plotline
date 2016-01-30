@@ -18,11 +18,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mNovel = new Novel("Untitled");
 
-    mNovelFrame = new NovelFrame(mNovel);
-    mCharacterFrame = new CharacterFrame(mNovel);
-    mPlotFrame = new PlotFrame(mNovel);
-    mSceneFrame = new SceneFrame(mNovel);
-    mChapterFrame = new ChaptersFrame(mNovel);
+    mNovelFrame = new NovelFrame(this);
+    mCharacterFrame = new CharacterFrame(this);
+    mPlotFrame = new PlotFrame(this);
+    mSceneFrame = new SceneFrame(this);
+    mChapterFrame = new ChaptersFrame(this);
 
     frames = QList<PlotlineAppFrame *>();
     frames << mNovelFrame
@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
+    connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew));
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +59,10 @@ void MainWindow::onSaveNovel()
     mNovel->writeTo(mOpenedFile);
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle("Plotline - " + path);
+}
+
+void MainWindow::onNovelNew()
+{
 }
 
 void MainWindow::on_actionPreferences_triggered()
@@ -81,7 +86,7 @@ void MainWindow::on_actionNovelNew_triggered()
             emit saveNovel();
     }
     mNovel = new Novel(QString());
-    emit novelNew();
+    emit novelLoaded();
 }
 
 void MainWindow::on_actionNovelOpen_triggered()
@@ -167,4 +172,14 @@ void MainWindow::on_MainWindow_destroyed()
         if (result == QMessageBox::Yes && mOpenedFile.isEmpty())
             emit saveNovel();
     }
+}
+
+Novel *MainWindow::novel() const
+{
+    return mNovel;
+}
+
+void MainWindow::setNovel(Novel *novel)
+{
+    mNovel = novel;
 }

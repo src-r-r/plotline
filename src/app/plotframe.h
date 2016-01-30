@@ -4,6 +4,8 @@
 #include "plotlineappframe.h"
 #include "plotlineitemmodel.h"
 
+class PlotlineAppFrame;
+
 namespace Ui {
 class PlotFrame;
 }
@@ -13,7 +15,7 @@ class PlotFrame : public PlotlineAppFrame
     Q_OBJECT
 
 public:
-    explicit PlotFrame(Novel *novel, QWidget *parent = 0);
+    explicit PlotFrame(MainWindow *mainWindow, QWidget *parent = 0);
     ~PlotFrame();
 
 public slots:

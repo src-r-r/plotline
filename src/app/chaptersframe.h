@@ -3,6 +3,8 @@
 
 #include "plotlineappframe.h"
 
+class PlotlineAppFrame;
+
 namespace Ui {
 class ChaptersFrame;
 }
@@ -12,14 +14,11 @@ class ChaptersFrame : public PlotlineAppFrame
     Q_OBJECT
 
 public:
-    explicit ChaptersFrame(Novel *novel, QWidget *parent = 0);
+    explicit ChaptersFrame(MainWindow *mainWindow, QWidget *parent = 0);
     ~ChaptersFrame();
 
 private:
     Ui::ChaptersFrame *ui;
-
-signals:
-    void novelModified();
 
 public slots:
     void onNovelLoad();

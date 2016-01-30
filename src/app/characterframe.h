@@ -14,7 +14,7 @@ class CharacterFrame : public PlotlineAppFrame
     Q_OBJECT
 
 public:
-    explicit CharacterFrame(Novel *novel, QWidget *parent = 0);
+    explicit CharacterFrame(MainWindow *mainWindow, QWidget *parent = 0);
     ~CharacterFrame();
 
 public slots:

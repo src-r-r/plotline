@@ -1,12 +1,12 @@
 #include "characterframe.h"
 #include "ui_characterframe.h"
 
-CharacterFrame::CharacterFrame(Novel *novel, QWidget *parent) :
-    PlotlineAppFrame(novel, parent),
+CharacterFrame::CharacterFrame(MainWindow *mainWindow, QWidget *parent) :
+    PlotlineAppFrame(mainWindow, parent),
     ui(new Ui::CharacterFrame)
 {
     ui->setupUi(this);
-    mItemModel = new CharacterItemModel(mNovel);
+    mItemModel = new CharacterItemModel(mMainWindow->novel());
 }
 
 CharacterFrame::~CharacterFrame()
@@ -16,12 +16,12 @@ CharacterFrame::~CharacterFrame()
 
 void CharacterFrame::onNovelLoad()
 {
-    mItemModel = new CharacterItemModel(mNovel);
+    mItemModel = new CharacterItemModel(mainWindow()->novel());
 }
 
 void CharacterFrame::onNovelNew()
 {
-    mItemModel = new CharacterItemModel(mNovel);
+    mItemModel = new CharacterItemModel(mainWindow()->novel());
 }
 
 void CharacterFrame::on_addCharacter_clicked()

@@ -12,7 +12,7 @@ class SceneFrame : public PlotlineAppFrame
     Q_OBJECT
 
 public:
-    explicit SceneFrame(Novel *novel, QWidget *parent = 0);
+    explicit SceneFrame(MainWindow *mainWindow, QWidget *parent = 0);
     ~SceneFrame();
 
 public slots:

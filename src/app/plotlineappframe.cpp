@@ -2,18 +2,17 @@
 
 #include "novel.h"
 
-PlotlineAppFrame::PlotlineAppFrame(Novel *novel, QWidget *parent) : QFrame(parent)
+PlotlineAppFrame::PlotlineAppFrame(MainWindow *mainWindow, QWidget *parent) : QFrame(parent)
 {
-    mNovel = novel;
+    mMainWindow = mainWindow;
 }
 
-
-Novel *PlotlineAppFrame::novel() const
+MainWindow *PlotlineAppFrame::mainWindow() const
 {
-    return mNovel;
+    return mMainWindow;
 }
 
-void PlotlineAppFrame::setNovel(Novel *novel)
+void PlotlineAppFrame::setMainWindow(MainWindow *mainWindow)
 {
-    mNovel = novel;
+    mMainWindow = mainWindow;
 }

@@ -7,12 +7,14 @@ namespace Ui {
 class NovelFrame;
 }
 
+//class PlotlineAppFrame;
+
 class NovelFrame : public PlotlineAppFrame
 {
     Q_OBJECT
 
 public:
-    explicit NovelFrame(Novel *novel, QWidget *parent = 0);
+    explicit NovelFrame(MainWindow *novel, QWidget *parent = 0);
     ~NovelFrame();
 
 private slots:

@@ -1,8 +1,8 @@
 #include "plotframe.h"
 #include "ui_plotframe.h"
 
-PlotFrame::PlotFrame(Novel *novel, QWidget *parent) :
-    PlotlineAppFrame(novel, parent),
+PlotFrame::PlotFrame(MainWindow *mainWindow, QWidget *parent) :
+    PlotlineAppFrame(mainWindow, parent),
     ui(new Ui::PlotFrame)
 {
     ui->setupUi(this);
@@ -15,16 +15,16 @@ PlotFrame::~PlotFrame()
 
 void PlotFrame::onNovelLoad()
 {
-    mModel = new PlotlineItemModel(mNovel);
+    mModel = new PlotlineItemModel(mainWindow()->novel());
 }
 
 void PlotFrame::onNovelNew()
 {
-    mModel = new PlotlineItemModel(mNovel);
+    mModel = new PlotlineItemModel(mainWindow()->novel());
 }
 
 void PlotFrame::on_addPlotline_clicked()
 {
-    mNovel->addPlotline(new Plotline("", ""));
-    emit mNovel->plotlinesChanged();
+    mainWindow()->novel()->addPlotline(new Plotline("", ""));
+    emit mainWindow()->novel()->plotlinesChanged();
 }

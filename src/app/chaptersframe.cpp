@@ -1,8 +1,8 @@
 #include "chaptersframe.h"
 #include "ui_chaptersframe.h"
 
-ChaptersFrame::ChaptersFrame(Novel *novel, QWidget *parent) :
-    PlotlineAppFrame(novel, parent),
+ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
+    PlotlineAppFrame(mainWindow, parent),
     ui(new Ui::ChaptersFrame)
 {
     ui->setupUi(this);

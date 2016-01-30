@@ -1,8 +1,8 @@
 #include "sceneframe.h"
 #include "ui_sceneframe.h"
 
-SceneFrame::SceneFrame(Novel *novel, QWidget *parent) :
-    PlotlineAppFrame(novel, parent),
+SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
+    PlotlineAppFrame(mainWindow, parent),
     ui(new Ui::SceneFrame)
 {
     ui->setupUi(this);

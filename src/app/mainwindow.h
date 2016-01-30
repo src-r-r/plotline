@@ -24,6 +24,13 @@
 #include "sceneframe.h"
 #include "chaptersframe.h"
 
+class PlotlineAppFrame;
+class CharacterFrame;
+class PlotFrame;
+class SceneFrame;
+class ChaptersFrame;
+class NovelFrame;
+
 namespace Ui {
 class MainWindow;
 }
@@ -49,6 +56,9 @@ public:
         POV_3_P = 5,
         POV_OTHER = 6;
 
+    Novel *novel() const;
+    void setNovel(Novel *novel);
+
 signals:
     void saveNovel();
     void novelChanged();
@@ -59,6 +69,7 @@ private slots:
 
     void onNovelModified();
     void onSaveNovel();
+    void onNovelNew();
 
     void on_actionPreferences_triggered();
     void on_actionNovelNew_triggered();
