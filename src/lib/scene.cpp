@@ -80,10 +80,10 @@ QJsonObject Scene::serialize() const
             jPovCharacters = QJsonArray();
 
     for (Character *c : mCharacters)
-        jCharacters.append(c->getId());
+        jCharacters.append(c->id());
 
     for (Character *c : mPovCharacters)
-        jPovCharacters.append(c->getId());
+        jPovCharacters.append(c->id());
 
     scene.insert(JSON_HEADLINE, mHeadline);
     scene.insert(JSON_ACTION, mAction);
@@ -115,13 +115,13 @@ Scene *Scene::deserialize(Novel *novel, const QJsonObject &object)
 
     if (object.contains(JSON_CHARACTERS))
         for (QJsonValue val : object[JSON_CHARACTERS].toArray())
-          characters << novel->getCharacter(val.toInt());
+          characters << novel->character(val.toInt());
     else
         missing.append(JSON_CHARACTERS);
 
     if (object.contains(JSON_POV_CHARACTERS))
         for (QJsonValue val : object[JSON_POV_CHARACTERS].toArray())
-          povCharacters.append(novel->getCharacter(val.toInt()));
+          povCharacters.append(novel->character(val.toInt()));
 
     if (!missing.empty())
         qWarning() << "Scene missing the following fields: "

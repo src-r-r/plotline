@@ -13,5 +13,8 @@
         <file>images/user-archive.png</file>
         <file>images/user-identity.png</file>
         <file>images/user-properties.png</file>
+        <file>images/document-save-as.png</file>
+        <file>images/edit-clear-locationbar-rtl.png</file>
+        <file>images/fill-color.png</file>
     </qresource>
 </RCC>

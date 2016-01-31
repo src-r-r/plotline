@@ -47,7 +47,7 @@ void TestRevision::testDeserialize()
 
     Revision *revision = Revision::deserialize(novel, chapter, doc.object());
     QTRY_COMPARE(revision->content(), QString("Revision Content"));
-    Q_ASSERT(revision->getId() == 2);
+    Q_ASSERT(revision->id() == 2);
     Q_ASSERT(revision->isComplete() == true);
 }
 

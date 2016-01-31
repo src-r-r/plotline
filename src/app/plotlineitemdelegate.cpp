@@ -9,6 +9,7 @@ QWidget *PlotlineItemDelegate::createEditor(QWidget *parent,
                                          const QStyleOptionViewItem &option,
                                          const QModelIndex &index) const
 {
+    Q_UNUSED(option);
     QWidget *widget = 0;
     switch(index.column()){
     case BRIEF:
@@ -38,6 +39,7 @@ void PlotlineItemDelegate::setEditorData(QWidget *editor, const QModelIndex &ind
         break;
     case CHARACTERS:
         button = static_cast<QPushButton *>(editor);
+        Q_UNUSED(button);
         break;
     }
 }
@@ -57,6 +59,7 @@ void PlotlineItemDelegate::setModelData(QWidget *editor,
         break;
     case CHARACTERS:
         button = static_cast<QPushButton *>(editor);
+        Q_UNUSED(button);
         break;
     }
 }
@@ -65,6 +68,7 @@ void PlotlineItemDelegate::updateEditorGeometry(QWidget *editor,
                                                 const QStyleOptionViewItem &option,
                                                 const QModelIndex &index) const
 {
+    Q_UNUSED(index);
     editor->setGeometry(option.rect);
 }
 

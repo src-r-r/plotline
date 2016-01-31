@@ -5,7 +5,7 @@ const QString Revision::J_CONTENT = "content",
     Revision::J_IS_COMPLETE = "isComplete";
 
 Revision::Revision(const QString &content, Chapter *chapter, bool isComplete,
-                   int id, QObject *parent) : Serializable(id)
+                   int id, QObject *parent) : QObject(parent), Serializable(id)
 {
     mContent = content;
     mChapter = chapter;
@@ -24,7 +24,7 @@ void Revision::setContent(const QString &content)
 
 QJsonObject Revision::serialize() const
 {
-    int id = this->getId();
+    int id = this->id();
 
     QJsonObject object = QJsonObject();
     object[JSON_ID] = QJsonValue(id);
@@ -37,6 +37,7 @@ QJsonObject Revision::serialize() const
 Revision *Revision::deserialize(Novel *novel, Chapter *chapter,
                                 const QJsonObject &object)
 {
+    Q_UNUSED(novel);
     QString content = QString();
     bool isComplete = false;
     int id = -1;

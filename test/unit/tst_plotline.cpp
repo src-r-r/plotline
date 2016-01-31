@@ -40,7 +40,7 @@ void TestPlotline::testConstructor()
     QTRY_COMPARE(p->getSynopsis(), QString("Synopsis 1"));
     QTRY_COMPARE(p->getBrief(), QString("Something happens"));
     QTRY_COMPARE(p->getCharacters(), characters);
-    Q_ASSERT(p->getId() == 12);
+    Q_ASSERT(p->id() == 12);
     QTRY_COMPARE(p->getColor(), QColor("#ffaabb"));
     QTRY_COMPARE(p->getScenes(), scenes);
 

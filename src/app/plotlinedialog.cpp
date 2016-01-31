@@ -13,11 +13,11 @@ PlotlineDialog::PlotlineDialog(Novel *novel, Plotline *plotline, QWidget *parent
     }
     mIsNew = false;
 
-    QList<Character *> characters = mNovel->getCharacters();
+    QList<Character *> characters = mNovel->characters();
     for (Character *c : characters){
         if (!c->getIsArchived()){
-            qDebug() << "Fetching character" << c->getId();
-            ui->plotlineCharacterSelect->addItem(c->getName(), QVariant(c->getId()));
+            qDebug() << "Fetching character" << c->id();
+            ui->plotlineCharacterSelect->addItem(c->name(), QVariant(c->id()));
         }
     }
 
@@ -73,8 +73,8 @@ void PlotlineDialog::on_plotlineCharacterSelect_activated(int index)
     // Remove the item from the combobox.
     ui->plotlineCharacterSelect->removeItem(index);
 
-    Character *character = mNovel->getCharacter(charId);
-    QListWidgetItem *item = new QListWidgetItem(character->getName());
+    Character *character = mNovel->character(charId);
+    QListWidgetItem *item = new QListWidgetItem(character->name());
     item->setData(Qt::UserRole, QVariant(charId));
     item->setData(Qt::UserRole+1, QVariant(index));
     ui->plotlineCharacterList->addItem(item);
@@ -87,8 +87,8 @@ void PlotlineDialog::on_plotlineCharacterList_activated(const QModelIndex &index
     QListWidgetItem *item = ui->plotlineCharacterList->item(index.row());
     int charId = item->data(Qt::UserRole).toInt();
     int row = item->data(Qt::UserRole+1).toInt();
-    Character *c = mNovel->getCharacter(charId);
-    ui->plotlineCharacterSelect->insertItem(row, c->getName());
+    Character *c = mNovel->character(charId);
+    ui->plotlineCharacterSelect->insertItem(row, c->name());
 
     // Also remove from the plotline character list.
     mPlotline->removeCharacter(c);

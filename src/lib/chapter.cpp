@@ -84,7 +84,7 @@ QJsonObject Chapter::serialize() const {
             jRevisions = QJsonArray();
 
     for (Scene *s : mScenes)
-        jScenes.append(s->getId());
+        jScenes.append(s->id());
 
     for (Revision *r : mRevisions)
         jRevisions.append(QJsonValue(r->serialize()));

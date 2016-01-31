@@ -23,7 +23,7 @@ public:
     virtual QJsonObject serialize() const = 0;
     static int deserialize(const QJsonObject &object);
 
-    int getId() const;
+    int id() const;
     void setId(const int id);
 };
 

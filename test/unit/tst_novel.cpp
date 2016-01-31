@@ -113,8 +113,8 @@ void TestNovel::testDeserialize()
     QTRY_COMPARE(novel->getWorkingTitle(), QString("My Novel"));
     Q_ASSERT(novel->getChapters().size() == 3);
     Q_ASSERT(novel->getScenes().size() == 3);
-    QVERIFY(novel->getCharacter("AbLi") != 0);
-    QVERIFY(novel->getCharacter("AbLi")->getId() > 0);
+    QVERIFY(novel->character("AbLi") != 0);
+    QVERIFY(novel->character("AbLi")->id() > 0);
     QVERIFY(novel->getScenes()[0]->getCharacters().size() == 3);
     QVERIFY(novel->getScenes()[0]->getPointsOfView().size() == 1);
     QVERIFY(novel->getScenes()[1]->getCharacters().size() == 2);

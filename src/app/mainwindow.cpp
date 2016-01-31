@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
            << mPlotFrame
            << mSceneFrame
            << mChapterFrame;
+
     for (int i = 0; i < frames.count(); ++i) {
         ui->tabWidget->insertTab(i, frames[i], frameTitles[i]);
         connect(frames[i], SIGNAL(novelModified()), this,
@@ -39,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
-    connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew));
+    connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew()));
 }
 
 MainWindow::~MainWindow()
@@ -68,7 +69,7 @@ void MainWindow::onNovelNew()
 void MainWindow::on_actionPreferences_triggered()
 {
     mPrefDialog = new PreferencesDialog(this);
-    int result = mPrefDialog->exec();
+    mPrefDialog->exec();
 }
 
 void MainWindow::on_actionNovelNew_triggered()

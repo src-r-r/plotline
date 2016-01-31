@@ -22,7 +22,7 @@ int Serializable::deserialize(const QJsonObject &object)
     return -1;
 }
 
-int Serializable::getId() const
+int Serializable::id() const
 {
     return mId;
 }

@@ -14,6 +14,7 @@ int PlotlineItemModel::rowCount(const QModelIndex &parent) const
 
 int PlotlineItemModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     // This will return 3:
     //  1 - Brief
     //  2 - Synopsis
@@ -33,7 +34,7 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
          row > mNovel->getPlotlines().count())
         return QVariant();
 
-    int count = mNovel->getPlotlines().count();
+//    int count = mNovel->getPlotlines().count();
     Plotline *plotline = mNovel->getPlotlines()[row];
 
     if (!plotline)
@@ -47,7 +48,7 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == ROLE_PLOTLINE_ID)
-        return QVariant(plotline->getId());
+        return QVariant(plotline->id());
 
     // Otherwise, just set column data accordingly.
     if (col == BRIEF) {
@@ -61,12 +62,12 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
             QStringList charList = QStringList();
             if (!plotline->getCharacters().isEmpty())
                 for (Character *c : plotline->getCharacters())
-                    charList << c->getName();
+                    charList << c->name();
             return QString(charList.join(","));
         } else if (role == Qt::DisplayRole || role == Qt::EditRole) {
             QJsonArray charList = QJsonArray();
             for (Character *c : plotline->getCharacters())
-                charList << QJsonValue(c->getId());
+                charList << QJsonValue(c->id());
         }
     }
 
@@ -125,7 +126,7 @@ bool PlotlineItemModel::setData(const QModelIndex &index,
             QList<Character *> characterList = QList<Character *>();
             if (!value.toJsonArray().isEmpty())
                 for (QJsonValue v : value.toJsonArray())
-                    characterList << mNovel->getCharacter(v.toInt());
+                    characterList << mNovel->character(v.toInt());
             plotline->setCharacters(characterList);
             break;
         }
@@ -196,18 +197,19 @@ void PlotlineItemModel::onNovelPlotlinesChanged()
         QJsonArray characters = QJsonArray();
         if (!plotlines[i]->getCharacters().empty())
             for (Character *c : plotlines[i]->getCharacters())
-                characters << QJsonValue(c->getId());
+                characters << QJsonValue(c->id());
         setData(index(i, CHARACTERS), characters);
         // Also set the background color and Character ID for all columns.
         for (int j = 0; j < columnCount(); ++j){
             setData(index(i, j), plotlines[i]->getColor(), Qt::BackgroundRole);
-            setData(index(i, j), QVariant(plotlines[i]->getId()), ROLE_PLOTLINE_ID);
+            setData(index(i, j), QVariant(plotlines[i]->id()), ROLE_PLOTLINE_ID);
         }
     }
 }
 
 Qt::ItemFlags PlotlineItemModel::flags(const QModelIndex &index) const
 {
+    Q_UNUSED(index);
     return Qt::ItemIsSelectable|Qt::ItemIsEnabled;
 }
 

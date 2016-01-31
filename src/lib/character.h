@@ -49,16 +49,16 @@ public:
 
     static QString generateLabel(const QString &name);
 
-    QString getName() const;
+    QString name() const;
 
-    QString getNickname() const;
+    QString nickname() const;
 
-    QString getLabel() const;
+    QString label() const;
 
     QImage getHeadshot() const;
     void setHeadshot(const QImage &value);
 
-    QColor getColor() const;
+    QColor color() const;
     void setColor(const QColor &value);
 
     Novel *getNovel() const;

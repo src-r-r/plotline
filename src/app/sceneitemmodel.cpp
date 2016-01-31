@@ -18,6 +18,7 @@ void SceneItemModel::setScenes(const QList<Scene *> &scenes)
 
 int SceneItemModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent);
     return this->mScenes.size();
 }
 
@@ -35,5 +36,9 @@ QVariant SceneItemModel::data(const QModelIndex &index, int role) const
 QVariant SceneItemModel::headerData(int section, Qt::Orientation orientation,
                                     int role) const
 {
-    return QString("Scene");
+    Q_UNUSED(section);
+    Q_UNUSED(orientation);
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
+        return QString("Scene");
+    return QVariant();
 }

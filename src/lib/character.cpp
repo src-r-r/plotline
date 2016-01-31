@@ -60,7 +60,7 @@ QJsonObject Character::serialize() const
     QJsonObject character = QJsonObject();
     QJsonArray scenes = QJsonArray();
 
-    character[JSON_ID] = this->getId();
+    character[JSON_ID] = this->id();
     character[J_NAME] = mName;
     character[J_NICKNAME] = mNickname;
     character[J_LABEL] = mLabel;
@@ -126,7 +126,7 @@ void Character::setIsArchived(bool isArchived)
     mIsArchived = isArchived;
 }
 
-QString Character::getName() const
+QString Character::name() const
 {
     return mName;
 }
@@ -136,7 +136,7 @@ void Character::setName(const QString &value)
     mName = value;
 }
 
-QString Character::getNickname() const
+QString Character::nickname() const
 {
     return mNickname;
 }
@@ -146,7 +146,7 @@ void Character::setNickname(const QString &value)
     mNickname = value;
 }
 
-QString Character::getLabel() const
+QString Character::label() const
 {
     return mLabel;
 }
@@ -166,7 +166,7 @@ void Character::setHeadshot(const QImage &value)
     mHeadshot = value;
 }
 
-QColor Character::getColor() const
+QColor Character::color() const
 {
     return mColor;
 }

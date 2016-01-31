@@ -68,10 +68,10 @@ public:
     void setPlotlines(const QList<Plotline *> &plotlines);
     void addPlotline(Plotline *plotline, int before=-1);
 
-    QList<Character *> getCharacters() const;
+    QList<Character *> characters() const;
     void setCharacters(const QList<Character *> &characters);
-    Character *getCharacter(int id) const;
-    Character *getCharacter(const QString label) const;
+    Character *character(int id) const;
+    Character *character(const QString label) const;
     void addCharacter(Character *character);
 
     QJsonObject serialize() const;

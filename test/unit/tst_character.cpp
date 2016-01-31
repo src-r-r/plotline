@@ -19,19 +19,19 @@ void TestCharacter::testConstructor()
 {
     Character *character = new Character( QString("David Caine") );
 
-    QTRY_COMPARE(character->getLabel(), QString("DaCa"));
+    QTRY_COMPARE(character->label(), QString("DaCa"));
     delete character;
 
     character = new Character( QString("Matthew"));
-    QTRY_COMPARE(character->getLabel(), QString("Ma"));
+    QTRY_COMPARE(character->label(), QString("Ma"));
     delete character;
 
     character = new Character( QString("Galactron of the 4th World Order"));
-    QTRY_COMPARE(character->getLabel(), QString("GaOfTh4tWoOr"));
+    QTRY_COMPARE(character->label(), QString("GaOfTh4tWoOr"));
 
     character = new Character( QString("Samuel Ricker"), QString("Sammy"),
                                QString("SaRk"));
-    QTRY_COMPARE(character->getLabel(), QString("SaRk"));
+    QTRY_COMPARE(character->label(), QString("SaRk"));
 }
 
 void TestCharacter::testSerialize()
@@ -83,8 +83,8 @@ void TestCharacter::testDeserialize()
     QJsonObject jCharacter = doc.object();
     Character *character = Character::deserialize(novel, jCharacter);
 
-    qDebug() << "Character's color: " << character->getColor().name();
-    QTRY_COMPARE(character->getName(), QString("Theodore Roosevelt"));
-    QTRY_COMPARE(character->getLabel(), QString("ThRo"));
-    QTRY_COMPARE(character->getColor(), QColor("#ffaaff"));
+    qDebug() << "Character's color: " << character->color().name();
+    QTRY_COMPARE(character->name(), QString("Theodore Roosevelt"));
+    QTRY_COMPARE(character->label(), QString("ThRo"));
+    QTRY_COMPARE(character->color(), QColor("#ffaaff"));
 }

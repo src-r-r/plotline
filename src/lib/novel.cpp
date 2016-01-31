@@ -90,7 +90,7 @@ QList<Scene *> Novel::getScenes() const
 Scene *Novel::getScene(int id) const
 {
     for (Scene *s : mScenes)
-        if (s->getId() == id)
+        if (s->id() == id)
             return s;
     return 0;
 }
@@ -128,7 +128,7 @@ QList<Plotline *> Novel::getPlotlines() const
 Plotline *Novel::getPlotline(int id) const
 {
     for (Plotline *p : mPlotlines)
-        if (p->getId() == id)
+        if (p->id() == id)
             return p;
     return 0;
 }
@@ -146,7 +146,7 @@ void Novel::addPlotline(Plotline *plotline, int before)
         mPlotlines.insert(before, plotline);
 }
 
-QList<Character *> Novel::getCharacters() const
+QList<Character *> Novel::characters() const
 {
     return mCharacters;
 }
@@ -157,10 +157,10 @@ QList<Character *> Novel::getCharacters() const
  * @param id the character ID
  * @return The character whose ID is id, or NULL if not found.
  */
-Character *Novel::getCharacter(int id) const
+Character *Novel::character(int id) const
 {
     for (Character *c : mCharacters)
-        if (c->getId() == id)
+        if (c->id() == id)
             return c;
     return 0;
 }
@@ -171,10 +171,10 @@ Character *Novel::getCharacter(int id) const
  * @param label The label for the character (e.g. "JoDo")
  * @return The character found, or 0 if no character is found.
  */
-Character *Novel::getCharacter(const QString label) const
+Character *Novel::character(const QString label) const
 {
     for (Character *c : mCharacters)
-        if (c->getLabel() == label)
+        if (c->label() == label)
             return c;
     return 0;
 }
@@ -214,7 +214,7 @@ QJsonObject Novel::serialize() const
     for (Plotline *p : mPlotlines)
         jPlotlines.append(p->serialize());
 
-    novel[JSON_ID] = QJsonValue(getId());
+    novel[JSON_ID] = QJsonValue(id());
     novel[JSON_WORKING_TITLE] = mWorkingTitle;
     novel[JSON_SETTING] = mSetting;
     novel[JSON_GENRE] = mGenre;

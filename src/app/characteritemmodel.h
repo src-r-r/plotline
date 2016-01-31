@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include <QObject>
-#include <QAbstractListModel>
+#include <QAbstractItemModel>
 #include <QBrush>
 #include "scene.h"
 
@@ -12,21 +12,24 @@ class CharacterItemModel : public QAbstractListModel
 public:
     CharacterItemModel(Novel *novel, QObject *parent = 0);
 
-    void addCharacter();
-    void setCharacters(const QList<Character *> &characters);
+    const static int CharacterIdRole = Qt::UserRole;
 
-private:
+    void addCharacter();
 
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+
     QVariant data(const QModelIndex & index,
                                       int role = Qt::DisplayRole) const;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
 //    bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
-//    Qt::ItemFlags flags(const QModelIndex & index) const;
-    bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
-    bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    Qt::ItemFlags flags(const QModelIndex & index) const;
 
+    QModelIndex lastRow() const;
+
+private:
     Character *rootItem;
 
 signals:

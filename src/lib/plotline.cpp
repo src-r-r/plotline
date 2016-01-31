@@ -81,7 +81,7 @@ void Plotline::removeCharacter(Character *character)
 void Plotline::removeCharacter(const QString &label)
 {
     for (Character *c : mCharacters)
-        if (c->getLabel() == label)
+        if (c->label() == label)
             mCharacters.removeAll(c);
 }
 
@@ -110,11 +110,11 @@ QJsonObject Plotline::serialize() const{
 
     QJsonArray jCharacters = QJsonArray();
     for (Character *c : mCharacters)
-        jCharacters.append(QJsonValue(c->getId()));
+        jCharacters.append(QJsonValue(c->id()));
 
     QJsonArray jScenes = QJsonArray();
     for (Scene *s : mScenes)
-        jScenes.append(QJsonValue(s->getId()));
+        jScenes.append(QJsonValue(s->id()));
 
     plotline[J_CHARACTERS] = jCharacters;
     plotline[J_SCENES] = jScenes;
@@ -142,7 +142,7 @@ Plotline *Plotline::deserialize(Novel *novel, const QJsonObject &object)
 
     if (object.contains(J_CHARACTERS))
         for (QJsonValue val : object[J_CHARACTERS].toArray())
-            characters.append(novel->getCharacter(val.toInt()));
+            characters.append(novel->character(val.toInt()));
 
     if (object.contains(J_SCENES))
         for (QJsonValue val : object[J_SCENES].toArray())
