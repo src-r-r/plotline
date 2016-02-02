@@ -142,9 +142,8 @@ bool PlotlineItemModel::insertRows(int row, int count, const QModelIndex &parent
 
     beginInsertRows(parent, row, row+(count-1));
 
-    for (int i = row; i < row+(count-1); ++i){
+    for (int i = row; i < row+count; ++i){
         ++mRowCount;
-        mNovel->addPlotline(new Plotline("", ""));
         wasInserted = true;
         qDebug() << "Novel now has" << mNovel->plotlines().size()
                  << "plotlines";

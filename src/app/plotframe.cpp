@@ -14,6 +14,8 @@ PlotFrame::PlotFrame(MainWindow *mainWindow, QWidget *parent) :
     // Signals
     connect(ui->plotlineTable, SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(onPlotlineDoubleClicked(QModelIndex)));
+    connect(this, SIGNAL(plotlineListModified()),
+            this, SLOT(onPlotlineListModified()));
 
     // Properties for table headers.
     ui->plotlineTable->setColumnWidth(PlotlineItemModel::BRIEF,
@@ -55,8 +57,7 @@ void PlotFrame::on_addPlotline_clicked()
 {
     PlotlineDialog *dialog = new PlotlineDialog(this);
     dialog->exec();
-    connect(dialog, SIGNAL(plotlineListModified()),
-            this, SLOT(onPlotlineListModified()));
+    emit
 }
 
 void PlotFrame::fillPlotlineList()
@@ -67,7 +68,9 @@ void PlotFrame::fillPlotlineList()
 
 void PlotFrame::on_editPlotline_clicked()
 {
-
+    QModelIndex index = ui->plotlineTable->selectionModel()->currentIndex();
+    PlotlineDialog *dialog = new PlotlineDialog(this, index);
+    dialog->exec();
 }
 
 void PlotFrame::on_archivePlotline_clicked()

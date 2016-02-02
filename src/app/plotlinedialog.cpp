@@ -37,11 +37,6 @@ PlotlineDialog::PlotlineDialog(PlotFrame *plotFrame, const QModelIndex &index,
         mCharacterList.insert(checkbox, c);
         ui->characterListLayout->addWidget(checkbox);
     }
-
-    // connect signals
-
-    connect(this, SIGNAL(plotlineListModified()),
-            mPlotFrame, SLOT(onPlotlineListModified()));
 }
 
 PlotlineDialog::~PlotlineDialog()

@@ -36,7 +36,6 @@ private slots:
     void on_buttonBox_accepted();
 
 signals:
-    void plotlineListModified();
 
 private:
     Ui::PlotlineDialog *ui;

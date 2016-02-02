@@ -21,6 +21,9 @@ public:
     PlotlineItemModel *model() const;
     void setModel(PlotlineItemModel *model);
 
+signals:
+    void plotlineListModified();
+
 public slots:
     void onNovelLoad();
     void onNovelNew();
@@ -30,15 +33,10 @@ public slots:
 
 private slots:
     void on_addPlotline_clicked();
-
     void on_editPlotline_clicked();
-
     void on_archivePlotline_clicked();
-
     void on_deletePlotline_clicked();
-
     void on_searchPlotlines_textChanged(const QString &arg1);
-
     void on_filterPlotlines_activated(int index);
 
 private:
