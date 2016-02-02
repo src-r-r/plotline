@@ -63,8 +63,8 @@ public:
     Novel::PointOfView getPointOfView() const;
     void setPointOfView(const Novel::PointOfView &pointOfView);
 
-    QList<Plotline *> getPlotlines() const;
-    Plotline *getPlotline(int id) const;
+    QList<Plotline *> plotlines() const;
+    Plotline *plotline(int id) const;
     void setPlotlines(const QList<Plotline *> &plotlines);
     void addPlotline(Plotline *plotline, int before=-1);
 

@@ -41,6 +41,8 @@ public slots:
 private slots:
     void on_characterName_cursorPositionChanged(int arg1, int arg2);
 
+    void on_characterColor_clicked();
+
 private:
     Ui::CharacterFrame *ui;
 
@@ -50,6 +52,9 @@ private:
     // methods
     void setCharacterHeadshot(Character *c);
     void clearCharacterHeadshot();
+
+    void setButtonColor(const QColor &color);
+    void clearButtonColor();
 };
 
 #endif // CHARACTERFRAME_H

@@ -104,8 +104,9 @@ void CharacterFrame::on_characterList_activated(const QModelIndex &index)
         return;
     }
 
-    int characterId = mItemModel->data(
-                index, CharacterItemModel::CharacterIdRole).toInt();
+    int characterId = mItemModel->data(index,
+                                       CharacterItemModel::CharacterIdRole)
+            .toInt();
 
     ui->scrollAreaCharDetails->setEnabled(true);
 
@@ -115,7 +116,10 @@ void CharacterFrame::on_characterList_activated(const QModelIndex &index)
     ui->characterName->setText(mSelectedCharacter->name());
     ui->characterNickname->setText(mSelectedCharacter->nickname());
     ui->characterLabel->setText(mSelectedCharacter->label());
+
     setCharacterHeadshot(mSelectedCharacter);
+
+    setButtonColor(mSelectedCharacter->color());
 
     ui->deleteCharacter->setEnabled(true);
     ui->archiveCharacter->setEnabled(true);
@@ -141,6 +145,21 @@ void CharacterFrame::clearCharacterHeadshot()
         ui->characterHeadshot->scene()->removeItem(item);
 }
 
+void CharacterFrame::setButtonColor(const QColor &color)
+{
+    if (!color.isValid())
+        clearButtonColor();
+    QImage image = QImage(40, 20, QImage::Format_RGB32);
+    image.fill(color);
+    ui->characterColor->setIcon(QIcon(QPixmap::fromImage(image)));
+}
+
+void CharacterFrame::clearButtonColor()
+{
+    QString filename = "qrc:/images/images/edit-clear-locationbar-rtl.png";
+    ui->characterColor->setIcon(QIcon(QPixmap(filename)));
+}
+
 void CharacterFrame::on_characterList_clicked(const QModelIndex &index)
 {
     on_characterList_activated(index);
@@ -156,5 +175,14 @@ void CharacterFrame::on_characterName_textChanged(const QString &arg1)
 
 void CharacterFrame::on_characterName_cursorPositionChanged(int arg1, int arg2)
 {
+    Q_UNUSED(arg1);
+    Q_UNUSED(arg2);
     emit ui->characterName->textChanged(ui->characterName->text());
+}
+
+void CharacterFrame::on_characterColor_clicked()
+{
+    QColor color = QColorDialog::getColor(mSelectedCharacter->color());
+    mSelectedCharacter->setColor(color);
+    emit characterModified();
 }

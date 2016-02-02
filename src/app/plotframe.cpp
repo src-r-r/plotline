@@ -6,6 +6,21 @@ PlotFrame::PlotFrame(MainWindow *mainWindow, QWidget *parent) :
     ui(new Ui::PlotFrame)
 {
     ui->setupUi(this);
+
+    // Models
+    mModel = new PlotlineItemModel(mMainWindow->novel());
+    ui->plotlineTable->setModel(mModel);
+
+    // Signals
+    connect(ui->plotlineTable, SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(onPlotlineDoubleClicked(QModelIndex)));
+
+    // Properties for table headers.
+    ui->plotlineTable->setColumnWidth(PlotlineItemModel::BRIEF,
+                                      PlotlineItemModel::BRIEF_WIDTH);
+    ui->plotlineTable->setColumnWidth(PlotlineItemModel::SYNOPSIS,
+                                      PlotlineItemModel::SYNOPSIS_WIDTH);
+    ui->plotlineTable->horizontalHeader()->setStretchLastSection(true);
 }
 
 PlotFrame::~PlotFrame()
@@ -23,8 +38,64 @@ void PlotFrame::onNovelNew()
     mModel = new PlotlineItemModel(mainWindow()->novel());
 }
 
+void PlotFrame::onPlotlineDoubleClicked(QModelIndex index)
+{
+    int plotlineId = mModel->data(index, PlotlineItemModel::PlotlineId).toInt();
+    PlotlineDialog *dialog = new PlotlineDialog(this, index);
+    dialog->exec();
+}
+
+void PlotFrame::onPlotlineListModified()
+{
+    mModel->removeRows(0, mModel->rowCount());
+    fillPlotlineList();
+}
+
 void PlotFrame::on_addPlotline_clicked()
 {
-    mainWindow()->novel()->addPlotline(new Plotline("", ""));
-    emit mainWindow()->novel()->plotlinesChanged();
+    PlotlineDialog *dialog = new PlotlineDialog(this);
+    dialog->exec();
+    connect(dialog, SIGNAL(plotlineListModified()),
+            this, SLOT(onPlotlineListModified()));
+}
+
+void PlotFrame::fillPlotlineList()
+{
+    for (Plotline *p : mainWindow()->novel()->plotlines())
+        mModel->addPlotline(p);
+}
+
+void PlotFrame::on_editPlotline_clicked()
+{
+
+}
+
+void PlotFrame::on_archivePlotline_clicked()
+{
+
+}
+
+void PlotFrame::on_deletePlotline_clicked()
+{
+
+}
+
+void PlotFrame::on_searchPlotlines_textChanged(const QString &arg1)
+{
+
+}
+
+void PlotFrame::on_filterPlotlines_activated(int index)
+{
+
+}
+
+PlotlineItemModel *PlotFrame::model() const
+{
+    return mModel;
+}
+
+void PlotFrame::setModel(PlotlineItemModel *model)
+{
+    mModel = model;
 }

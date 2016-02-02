@@ -120,12 +120,12 @@ void Novel::setPointOfView(const Novel::PointOfView &pointOfView)
     mPointOfView = pointOfView;
 }
 
-QList<Plotline *> Novel::getPlotlines() const
+QList<Plotline *> Novel::plotlines() const
 {
     return mPlotlines;
 }
 
-Plotline *Novel::getPlotline(int id) const
+Plotline *Novel::plotline(int id) const
 {
     for (Plotline *p : mPlotlines)
         if (p->id() == id)
@@ -141,14 +141,14 @@ void Novel::setPlotlines(const QList<Plotline *> &plotlines)
 void Novel::addPlotline(Plotline *plotline, int before)
 {
     if (before > 0)
-        mPlotlines.append(plotline);
-    else
         mPlotlines.insert(before, plotline);
+    else
+        mPlotlines.append(plotline);
 }
 
 QList<Character *> Novel::characters() const
 {
-    return mCharacters;
+    return this->mCharacters;
 }
 
 /**

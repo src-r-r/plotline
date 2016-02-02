@@ -40,13 +40,13 @@ public:
                       int id = -1,
                       QObject *parent = 0);
 
-    QString getSynopsis() const;
+    QString synopsis() const;
     void setSynopsis(const QString &value);
 
     QColor getColor() const;
     void setColor(const QColor &value);
 
-    QList<Character *> getCharacters() const;
+    QList<Character *> characters() const;
     void setCharacters(const QList<Character *> &characters);
     void addCharacter(Character *character, const int before = -1);
     void removeCharacter(Character *character);
@@ -55,14 +55,14 @@ public:
     QList<Scene *> getScenes() const;
     void setScenes(const QList<Scene *> &scenes);
 
-    Novel *getNovel();
+    Novel *novel();
     void setNovel(Novel *novel);
 
     QJsonObject serialize() const;
     static Plotline *deserialize(Novel *novel, const QJsonObject &object);
     static QList<Plotline *> deserialize(Novel *novel, const QJsonArray &object);
 
-    QString getBrief() const;
+    QString brief() const;
     void setBrief(const QString &brief);
 
 signals:

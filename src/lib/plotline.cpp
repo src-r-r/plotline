@@ -25,7 +25,7 @@ Plotline::Plotline(const QString &brief,
 }
 
 
-QString Plotline::getBrief() const
+QString Plotline::brief() const
 {
     return mBrief;
 }
@@ -45,7 +45,7 @@ void Plotline::setColor(const QColor &color)
     this->mColor = color;
 }
 
-QString Plotline::getSynopsis() const
+QString Plotline::synopsis() const
 {
     return mSynopsis;
 }
@@ -55,7 +55,7 @@ void Plotline::setSynopsis(const QString &synopsis)
     this->mSynopsis = synopsis;
 }
 
-QList<Character *> Plotline::getCharacters() const
+QList<Character *> Plotline::characters() const
 {
     return mCharacters;
 }
@@ -95,7 +95,7 @@ void Plotline::setScenes(const QList<Scene *> &scenes)
     mScenes = scenes;
 }
 
-Novel *Plotline::getNovel()
+Novel *Plotline::novel()
 {
     return this->mNovel;
 }

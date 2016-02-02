@@ -3,9 +3,11 @@
 
 #include <QtCore>
 #include <QAbstractTableModel>
+#include <QAbstractItemModel>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QTextDocumentFragment>
 #include <QBrush>
 #include "novel.h"
 
@@ -37,29 +39,27 @@ public:
 
     Plotline *getPlotlineAt(const QModelIndex & index);
     Plotline *getPlotlineAt(const int index);
+    void addPlotline(Plotline *p);
 
-private:
-
-    Novel *mNovel;
+    // Custom roles
+    static const int PlotlineId = Qt::UserRole;
 
     // Column numbers
     static const int BRIEF = 0,
         SYNOPSIS = 1,
         CHARACTERS = 2,
     // Column widths
-        BRIEF_WIDTH = 50,
-        SYNOPSIS_WIDTH = 200,
-        CHARACTERS_WIDTH = 100,
-    // Heights
-        DEFAULT_HEIGHT = 25,
-    // Custom roles
-        ROLE_PLOTLINE_ID = Qt::UserRole;
+        BRIEF_WIDTH = 200,
+        SYNOPSIS_WIDTH = 420,
+        CHARACTERS_WIDTH = 100;
+private:
+
+    Novel *mNovel;
+    int mRowCount;
 
 signals:
 
 public slots:
-
-    void onNovelPlotlinesChanged();
 };
 
 #endif // PLOTLINEITEMVIEW_H

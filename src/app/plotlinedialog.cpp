@@ -1,26 +1,47 @@
 #include "plotlinedialog.h"
 #include "ui_plotlinedialog.h"
 
-PlotlineDialog::PlotlineDialog(Novel *novel, Plotline *plotline, QWidget *parent) :
+PlotlineDialog::PlotlineDialog(PlotFrame *plotFrame, const QModelIndex &index,
+                               QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PlotlineDialog)
 {
     ui->setupUi(this);
-    mNovel = novel;
-    if (!plotline){
-        mPlotline = new Plotline("", "");
+    mPlotFrame = plotFrame;
+    mIndex = index;
+    mCharacterList = QMap<QCheckBox *, Character *>();
+    if (index.isValid()){
+        mIsNew = false;
+
+        int plotlineId = mPlotFrame->model()->data(index, PlotlineItemModel
+                                                  ::PlotlineId).toInt();
+        mPlotline = mPlotFrame->mainWindow()->novel()->plotline(plotlineId);
+
+        setWindowTitle(mPlotline->brief());
+
+        ui->plotlineBrief->setText(mPlotline->brief());
+        ui->plotlineSynopsis->setText(mPlotline->synopsis());
+        onColorSelected(mPlotline->getColor());
+    } else {
         mIsNew = true;
-    }
-    mIsNew = false;
 
-    QList<Character *> characters = mNovel->characters();
-    for (Character *c : characters){
-        if (!c->getIsArchived()){
-            qDebug() << "Fetching character" << c->id();
-            ui->plotlineCharacterSelect->addItem(c->name(), QVariant(c->id()));
-        }
+        mPlotline = new Plotline("", "");
+        mPlotline->setNovel(plotFrame->mainWindow()->novel());
+        setWindowTitle(tr("New Plotline"));
     }
 
+    for (Character *c : mPlotline->novel()->characters()) {
+        QCheckBox *checkbox = new QCheckBox(c->name());
+        bool checked = (mPlotline->characters().indexOf(c) >= 0);
+        checkbox->setChecked(checked);
+        mCharacterList.insert(checkbox, c);
+        ui->characterListLayout->addWidget(checkbox);
+    }
+
+    // connect signals
+
+    connect(this, SIGNAL(plotlineListModified()),
+            mPlotFrame, SLOT(onPlotlineListModified()));
 }
 
 PlotlineDialog::~PlotlineDialog()
@@ -40,7 +61,7 @@ void PlotlineDialog::on_plotlineColor_clicked()
 void PlotlineDialog::onColorSelected(const QColor &color)
 {
     mPlotline->setColor(color);
-    QImage image = QImage(30, 10, QImage::Format_RGB32);
+    QImage image = QImage(40, 30, QImage::Format_RGB32);
     image.fill(mPlotline->getColor());
     QIcon icon = QIcon(QPixmap::fromImage(image));
     ui->plotlineColor->setIcon(icon);
@@ -55,41 +76,21 @@ void PlotlineDialog::on_clearPlotlineColor_clicked()
 void PlotlineDialog::on_buttonBox_accepted()
 {
     mPlotline->setBrief(ui->plotlineBrief->text());
-    mPlotline->setSynopsis(ui->plotlineSynopsis->toHtml());
-    // Color and character list is modified by slots.
+    mPlotline->setSynopsis(ui->plotlineSynopsis->toPlainText());
+    QList<Character *> characters = QList<Character *>();
+    for (QCheckBox *cb : mCharacterList.keys())
+        if (cb->isChecked())
+            characters << mCharacterList.value(cb);
+    mPlotline->setCharacters(characters);
 
-    if (mIsNew)
-        mNovel->addPlotline(mPlotline);
+    qDebug() << "Modified plotline: " << mPlotline->serialize();
 
-    emit mNovel->plotlinesChanged();
-}
+    // Color is modified by slots.
 
-void PlotlineDialog::on_plotlineCharacterSelect_activated(int index)
-{
-    // We'll be sneaky here and hide the character ID within the list. This
-    // way we can easily remove the user from the plotline.
-    int charId = ui->plotlineCharacterSelect->itemData(index).toInt();
-
-    // Remove the item from the combobox.
-    ui->plotlineCharacterSelect->removeItem(index);
-
-    Character *character = mNovel->character(charId);
-    QListWidgetItem *item = new QListWidgetItem(character->name());
-    item->setData(Qt::UserRole, QVariant(charId));
-    item->setData(Qt::UserRole+1, QVariant(index));
-    ui->plotlineCharacterList->addItem(item);
-}
-
-void PlotlineDialog::on_plotlineCharacterList_activated(const QModelIndex &index)
-{
-    // Remove the user from the list and add back to the QComboBox in the
-    // original spot.
-    QListWidgetItem *item = ui->plotlineCharacterList->item(index.row());
-    int charId = item->data(Qt::UserRole).toInt();
-    int row = item->data(Qt::UserRole+1).toInt();
-    Character *c = mNovel->character(charId);
-    ui->plotlineCharacterSelect->insertItem(row, c->name());
-
-    // Also remove from the plotline character list.
-    mPlotline->removeCharacter(c);
+    PlotlineItemModel *m = 0;
+    m = mPlotFrame->model();
+    if (mIsNew){
+        mPlotFrame->mainWindow()->novel()->addPlotline(mPlotline);
+        mPlotFrame->model()->addPlotline(mPlotline);
+    }
 }

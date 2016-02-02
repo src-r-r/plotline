@@ -16,5 +16,8 @@
         <file>images/document-save-as.png</file>
         <file>images/edit-clear-locationbar-rtl.png</file>
         <file>images/fill-color.png</file>
+        <file>images/list-add.png</file>
+        <file>images/list-remove.png</file>
+        <file>images/utilities-file-archiver.png</file>
     </qresource>
 </RCC>

@@ -41,7 +41,18 @@
         <widget class="QLineEdit" name="searchPlotlines"/>
        </item>
        <item row="1" column="1">
-        <widget class="QComboBox" name="filterPlotlines"/>
+        <widget class="QComboBox" name="filterPlotlines">
+         <item>
+          <property name="text">
+           <string>All Plotlines</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Archived Plotlines</string>
+          </property>
+         </item>
+        </widget>
        </item>
       </layout>
      </item>
@@ -71,6 +82,17 @@
          <property name="text">
           <string>Add</string>
          </property>
+         <property name="icon">
+          <iconset resource="../res/plotline.qrc">
+           <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="editPlotline">
+         <property name="text">
+          <string>Edit</string>
+         </property>
         </widget>
        </item>
        <item alignment="Qt::AlignLeft">
@@ -83,6 +105,10 @@
          </property>
          <property name="text">
           <string>Archive</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../res/plotline.qrc">
+           <normaloff>:/images/images/utilities-file-archiver.png</normaloff>:/images/images/utilities-file-archiver.png</iconset>
          </property>
         </widget>
        </item>
@@ -97,7 +123,24 @@
          <property name="text">
           <string>Delete</string>
          </property>
+         <property name="icon">
+          <iconset resource="../res/plotline.qrc">
+           <normaloff>:/images/images/list-remove.png</normaloff>:/images/images/list-remove.png</iconset>
+         </property>
         </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </item>
@@ -105,6 +148,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/plotline.qrc"/>
+ </resources>
  <connections/>
 </ui>
