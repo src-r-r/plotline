@@ -58,6 +58,7 @@ public:
 
     Novel *novel() const;
     void setNovel(Novel *novel);
+    void openNovel(const QString &path);
 
 signals:
     void saveNovel();
@@ -70,6 +71,7 @@ private slots:
     void onNovelModified();
     void onSaveNovel();
     void onNovelNew();
+    void onNovelLoaded();
 
     void on_actionPreferences_triggered();
     void on_actionNovelNew_triggered();

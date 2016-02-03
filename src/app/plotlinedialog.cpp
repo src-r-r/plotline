@@ -12,13 +12,8 @@ PlotlineDialog::PlotlineDialog(PlotFrame *plotFrame, const QModelIndex &index,
     mCharacterList = QMap<QCheckBox *, Character *>();
     if (index.isValid()){
         mIsNew = false;
-
-        int plotlineId = mPlotFrame->model()->data(index, PlotlineItemModel
-                                                  ::PlotlineId).toInt();
-        mPlotline = mPlotFrame->mainWindow()->novel()->plotline(plotlineId);
-
+        mPlotline = mPlotFrame->mainWindow()->novel()->plotlines()[index.row()];
         setWindowTitle(mPlotline->brief());
-
         ui->plotlineBrief->setText(mPlotline->brief());
         ui->plotlineSynopsis->setText(mPlotline->synopsis());
         onColorSelected(mPlotline->getColor());
@@ -55,9 +50,9 @@ void PlotlineDialog::on_plotlineColor_clicked()
 
 void PlotlineDialog::onColorSelected(const QColor &color)
 {
-    mPlotline->setColor(color);
+    mColor = color;
     QImage image = QImage(40, 30, QImage::Format_RGB32);
-    image.fill(mPlotline->getColor());
+    image.fill(color);
     QIcon icon = QIcon(QPixmap::fromImage(image));
     ui->plotlineColor->setIcon(icon);
 }
@@ -65,13 +60,14 @@ void PlotlineDialog::onColorSelected(const QColor &color)
 
 void PlotlineDialog::on_clearPlotlineColor_clicked()
 {
-    mPlotline->setColor(QColor());
+    onColorSelected(QColor());
 }
 
 void PlotlineDialog::on_buttonBox_accepted()
 {
     mPlotline->setBrief(ui->plotlineBrief->text());
     mPlotline->setSynopsis(ui->plotlineSynopsis->toPlainText());
+    mPlotline->setColor(mColor);
     QList<Character *> characters = QList<Character *>();
     for (QCheckBox *cb : mCharacterList.keys())
         if (cb->isChecked())
@@ -80,12 +76,10 @@ void PlotlineDialog::on_buttonBox_accepted()
 
     qDebug() << "Modified plotline: " << mPlotline->serialize();
 
-    // Color is modified by slots.
-
     PlotlineItemModel *m = 0;
     m = mPlotFrame->model();
-    if (mIsNew){
+    if (mIsNew)
         mPlotFrame->mainWindow()->novel()->addPlotline(mPlotline);
-        mPlotFrame->model()->addPlotline(mPlotline);
-    }
+
+    emit mPlotFrame->novelModified();
 }

@@ -45,6 +45,8 @@ private:
     QModelIndex mIndex;
     QMap<QCheckBox *, Character *> mCharacterList;
 
+    QColor mColor;
+
     bool mIsNew;
 };
 

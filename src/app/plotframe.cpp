@@ -32,11 +32,14 @@ PlotFrame::~PlotFrame()
 
 void PlotFrame::onNovelLoad()
 {
+    QList<Plotline *> plotlines = mainWindow()->novel()->plotlines();
     mModel = new PlotlineItemModel(mainWindow()->novel());
+    ui->plotlineTable->setModel(mModel);
 }
 
 void PlotFrame::onNovelNew()
 {
+    mModel->removeRows(0, mModel->rowCount());
     mModel = new PlotlineItemModel(mainWindow()->novel());
 }
 
@@ -50,20 +53,13 @@ void PlotFrame::onPlotlineDoubleClicked(QModelIndex index)
 void PlotFrame::onPlotlineListModified()
 {
     mModel->removeRows(0, mModel->rowCount());
-    fillPlotlineList();
+//    fillPlotlineList();
 }
 
 void PlotFrame::on_addPlotline_clicked()
 {
     PlotlineDialog *dialog = new PlotlineDialog(this);
     dialog->exec();
-    emit
-}
-
-void PlotFrame::fillPlotlineList()
-{
-    for (Plotline *p : mainWindow()->novel()->plotlines())
-        mModel->addPlotline(p);
 }
 
 void PlotFrame::on_editPlotline_clicked()
@@ -101,4 +97,8 @@ PlotlineItemModel *PlotFrame::model() const
 void PlotFrame::setModel(PlotlineItemModel *model)
 {
     mModel = model;
+}
+
+void PlotFrame::on_plotlineTable_activated(const QModelIndex &index)
+{
 }

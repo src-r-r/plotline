@@ -23,7 +23,7 @@
    <item>
     <widget class="QSplitter" name="splitter_3">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -37,12 +37,12 @@
      <widget class="QWidget" name="layoutWidget_2">
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <property name="sizeConstraint">
-        <enum>QLayout::SetMinAndMaxSize</enum>
+        <enum>QLayout::SetMaximumSize</enum>
        </property>
        <item>
         <layout class="QFormLayout" name="formLayout_6">
          <property name="sizeConstraint">
-          <enum>QLayout::SetMinAndMaxSize</enum>
+          <enum>QLayout::SetMaximumSize</enum>
          </property>
          <property name="labelAlignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -55,9 +55,9 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="lineEdit_7">
+          <widget class="QLineEdit" name="searchScenes">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -65,19 +65,31 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QComboBox" name="comboBox_4">
+          <widget class="QComboBox" name="filterScenes">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>85</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QListView" name="listView_2">
+        <widget class="QListView" name="sceneList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -88,8 +100,11 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <property name="spacing">
+          <number>6</number>
+         </property>
          <property name="sizeConstraint">
-          <enum>QLayout::SetMinimumSize</enum>
+          <enum>QLayout::SetMaximumSize</enum>
          </property>
          <item>
           <widget class="QPushButton" name="addScene">
@@ -136,7 +151,7 @@
      </widget>
      <widget class="QScrollArea" name="scrollArea_3">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+       <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -149,7 +164,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>372</width>
+         <width>388</width>
          <height>405</height>
         </rect>
        </property>
@@ -164,7 +179,7 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
-           <widget class="QTextEdit" name="textEdit_3"/>
+           <widget class="QTextEdit" name="sceneHeadline"/>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="label_12">
@@ -174,30 +189,55 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
-           <widget class="QTextEdit" name="textEdit_4"/>
+           <widget class="QTextEdit" name="sceneAction"/>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_13">
             <property name="text">
              <string>Characters Involved:</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QWidget" name="widget_2" native="true">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+          <item row="7" column="0" colspan="2">
+           <widget class="QScrollArea" name="charactersList">
+            <property name="widgetResizable">
+             <bool>true</bool>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>20</width>
-              <height>90</height>
-             </size>
-            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>366</width>
+               <height>79</height>
+              </rect>
+             </property>
+            </widget>
            </widget>
+          </item>
+          <item row="6" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="detectCharacters">
+              <property name="text">
+               <string>Detect</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>

@@ -25,3 +25,10 @@ QJsonValue jsonValFromImage(const QImage &i)
 {
     return jsonValFromPixmap(QPixmap::fromImage(i));
 }
+
+QString friendlyList(const QStringList &stringList)
+{
+    QString result = QString();
+    qWarning() << "friendlyList() Not implemented";
+    return result;
+}

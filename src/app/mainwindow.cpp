@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
     connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew()));
+    connect(this, SIGNAL(novelLoaded()),
+            this, SLOT(onNovelLoaded()));
 }
 
 MainWindow::~MainWindow()
@@ -53,11 +55,25 @@ void MainWindow::onNovelModified()
 {
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle(QString("Plotline - " + path + "*"));
+    mIsSaved = false;
 }
 
 void MainWindow::onSaveNovel()
 {
+    QSettings settings;
+    QString projDir = settings.value(
+                PreferencesDialog::DEFAULT_PROJECT_DIRECTORY,
+                    QDir::homePath()).toString();
+    if (mOpenedFile.isNull()){
+        QString fileTypes = tr("Plotline Files (*.json *.pln);;All Files (*.*)");
+        QString fileName = QFileDialog::getSaveFileName(this,
+            tr("Save Novel"), projDir, fileTypes);
+        if (fileName.isEmpty())
+            return;
+        mOpenedFile = fileName;
+    }
     mNovel->writeTo(mOpenedFile);
+    mIsSaved = true;
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle("Plotline - " + path);
 }
@@ -76,17 +92,18 @@ void MainWindow::on_actionNovelNew_triggered()
 {
     if (!mIsSaved)
     {
-        QMessageBox *confirmSave = new QMessageBox(tr("New Novel"),
+        int result = QMessageBox::question(this, tr("New Novel"),
             tr("Do you want to save the current novel?"),
-            QMessageBox::Question, QMessageBox::Yes, QMessageBox::No,
-                                              QMessageBox::NoButton,
-                                              this);
-        confirmSave->setModal(true);
-        int result = confirmSave->exec();
-        if (result == QMessageBox::Yes && mOpenedFile.isEmpty())
+            QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+            QMessageBox::Save);
+        if (result == QMessageBox::Save)
             emit saveNovel();
+        if (result == QMessageBox::Cancel)
+            return;
     }
     mNovel = new Novel(QString());
+    mIsSaved = true;
+    mOpenedFile = QString();
     emit novelLoaded();
 }
 
@@ -163,14 +180,11 @@ void MainWindow::on_MainWindow_destroyed()
 {
     if (!mIsSaved)
     {
-        QMessageBox *confirmSave = new QMessageBox(tr("Quit"),
+        int result = QMessageBox::question(this, tr("Quit"),
             tr("Do you want to save the current novel?"),
-            QMessageBox::Question, QMessageBox::Yes, QMessageBox::No,
-                                              QMessageBox::NoButton,
-                                              this);
-        confirmSave->setModal(true);
-        int result = confirmSave->exec();
-        if (result == QMessageBox::Yes && mOpenedFile.isEmpty())
+            QMessageBox::Save | QMessageBox::Discard,
+            QMessageBox::Save);
+        if (result == QMessageBox::Yes)
             emit saveNovel();
     }
 }
@@ -183,4 +197,18 @@ Novel *MainWindow::novel() const
 void MainWindow::setNovel(Novel *novel)
 {
     mNovel = novel;
+}
+
+void MainWindow::openNovel(const QString &path)
+{
+    mOpenedFile = path;
+    mNovel = Novel::readFrom(path);
+    mIsSaved = true;
+    emit novelLoaded();
+}
+
+void MainWindow::onNovelLoaded()
+{
+    QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
+    setWindowTitle("Plotline - " + path);
 }

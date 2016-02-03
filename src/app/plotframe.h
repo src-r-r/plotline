@@ -39,12 +39,13 @@ private slots:
     void on_searchPlotlines_textChanged(const QString &arg1);
     void on_filterPlotlines_activated(int index);
 
+    void on_plotlineTable_activated(const QModelIndex &index);
+
 private:
     Ui::PlotFrame *ui;
 
     PlotlineItemModel *mModel;
-
-    void fillPlotlineList();
+    Plotline *mSelectedPlotline;
 };
 
 #endif // PLOTFRAME_H

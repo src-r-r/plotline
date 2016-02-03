@@ -27,19 +27,15 @@ public:
                         int role = Qt::DisplayRole) const;
 
     // Write methods
-    bool setData(const QModelIndex & index, const QVariant & value,
-                 int role = Qt::EditRole);
+//    bool setData(const QModelIndex & index, const QVariant & value,
+//                 int role = Qt::EditRole);
 
-    // List structure methods
-    bool insertRows(int row, int count,
-                    const QModelIndex &parent = QModelIndex());
-    bool removeRows(int row, int count,
-                    const QModelIndex &parent = QModelIndex());
+
     Qt::ItemFlags flags(const QModelIndex & index) const;
 
     Plotline *getPlotlineAt(const QModelIndex & index);
     Plotline *getPlotlineAt(const int index);
-    void addPlotline(Plotline *p);
+//    void addPlotline(int row, Plotline *p);
 
     // Custom roles
     static const int PlotlineId = Qt::UserRole;
