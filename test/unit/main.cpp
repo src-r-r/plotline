@@ -1,6 +1,8 @@
 #include <QTest>
 #include <QtCore>
 #include <QtDebug>
+#include <QGuiApplication>
+#include <QMainWindow>
 
 #include "tst_revision.h"
 #include "tst_character.cpp"
@@ -8,6 +10,7 @@
 #include "tst_novel.cpp"
 #include "tst_scene.cpp"
 #include "tst_plotline.h"
+#include "testcharacterparser.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,9 +23,12 @@ int main(int argc, char *argv[])
         new TestChapter(),
         new TestNovel(),
         new TestPlotline(),
+        new TestCharacterParser(),
 
         NULL
     };
+
+    QGuiApplication a(argc, argv);
 
     int nFailed = 0;
 
@@ -36,4 +42,6 @@ int main(int argc, char *argv[])
                  << border;
     else
         qDebug() << border << " All tests passed " << border;
+
+    return a.exec();
 }

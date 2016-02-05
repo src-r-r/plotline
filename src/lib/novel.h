@@ -53,9 +53,12 @@ public:
 
     QString getSetting() const;
 
-    QList<Scene *> getScenes() const;
+    QList<Scene *> scenes() const;
     void setScenes(const QList<Scene *> &value);
-    Scene *getScene(int id) const;
+    void addScene(Scene *scene);
+    void removeScene(Scene *scene);
+    void removeScene(int id);
+    Scene *scene(int id) const;
 
     QList<Chapter *> getChapters() const;
     void setChapters(const QList<Chapter *> &value);
@@ -67,6 +70,8 @@ public:
     Plotline *plotline(int id) const;
     void setPlotlines(const QList<Plotline *> &plotlines);
     void addPlotline(Plotline *plotline, int before=-1);
+    void removePlotline(Plotline *plotline);
+    void removePlotline(const int id);
 
     QList<Character *> characters() const;
     void setCharacters(const QList<Character *> &characters);

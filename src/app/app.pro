@@ -22,7 +22,9 @@ HEADERS +=  mainwindow.h \
     sceneframe.h \
     chaptersframe.h \
     novelframe.h \
-    plotlineappframe.h
+    plotlineappframe.h \
+    modelcheckbox.h \
+    characterhighlighter.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -37,7 +39,9 @@ SOURCES += main.cpp \
     sceneframe.cpp \
     chaptersframe.cpp \
     novelframe.cpp \
-    plotlineappframe.cpp
+    plotlineappframe.cpp \
+    modelcheckbox.cpp \
+    characterhighlighter.cpp
 
 LIBS += \
     ../lib/libplotline.so

@@ -112,15 +112,15 @@ void TestNovel::testDeserialize()
 
     QTRY_COMPARE(novel->getWorkingTitle(), QString("My Novel"));
     Q_ASSERT(novel->getChapters().size() == 3);
-    Q_ASSERT(novel->getScenes().size() == 3);
+    Q_ASSERT(novel->scenes().size() == 3);
     QVERIFY(novel->character("AbLi") != 0);
     QVERIFY(novel->character("AbLi")->id() > 0);
-    QVERIFY(novel->getScenes()[0]->getCharacters().size() == 3);
-    QVERIFY(novel->getScenes()[0]->getPointsOfView().size() == 1);
-    QVERIFY(novel->getScenes()[1]->getCharacters().size() == 2);
-    QVERIFY(novel->getScenes()[1]->getPointsOfView().size() == 1);
-    QVERIFY(novel->getScenes()[2]->getCharacters().size() == 2);
-    QVERIFY(novel->getScenes()[2]->getPointsOfView().size() == 2);
+    QVERIFY(novel->scenes()[0]->getCharacters().size() == 3);
+    QVERIFY(novel->scenes()[0]->getPointsOfView().size() == 1);
+    QVERIFY(novel->scenes()[1]->getCharacters().size() == 2);
+    QVERIFY(novel->scenes()[1]->getPointsOfView().size() == 1);
+    QVERIFY(novel->scenes()[2]->getCharacters().size() == 2);
+    QVERIFY(novel->scenes()[2]->getPointsOfView().size() == 2);
     QVERIFY(novel->getChapters()[0]->getScenes().size() == 1);
     QVERIFY(novel->getChapters()[1]->getScenes().size() == 1);
     QVERIFY(novel->getChapters()[2]->getScenes().size() == 2);

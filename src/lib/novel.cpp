@@ -82,12 +82,12 @@ void Novel::setSetting(const QString &value)
     mSetting = value;
 }
 
-QList<Scene *> Novel::getScenes() const
+QList<Scene *> Novel::scenes() const
 {
     return mScenes;
 }
 
-Scene *Novel::getScene(int id) const
+Scene *Novel::scene(int id) const
 {
     for (Scene *s : mScenes)
         if (s->id() == id)
@@ -98,6 +98,21 @@ Scene *Novel::getScene(int id) const
 void Novel::setScenes(const QList<Scene *> &value)
 {
     mScenes = value;
+}
+
+void Novel::addScene(Scene *scene)
+{
+    mScenes.append(scene);
+}
+
+void Novel::removeScene(Scene *scene)
+{
+    mScenes.removeAll(scene);
+}
+
+void Novel::removeScene(int id)
+{
+    removeScene(scene(id));
 }
 
 QList<Chapter *> Novel::getChapters() const
@@ -144,6 +159,18 @@ void Novel::addPlotline(Plotline *plotline, int before)
         mPlotlines.insert(before, plotline);
     else
         mPlotlines.append(plotline);
+    plotline->setNovel(this);
+}
+
+void Novel::removePlotline(Plotline *plotline)
+{
+    if (0 != plotline)
+        mPlotlines.removeAll(plotline);
+}
+
+void Novel::removePlotline(const int id)
+{
+    removePlotline(plotline(id));
 }
 
 QList<Character *> Novel::characters() const

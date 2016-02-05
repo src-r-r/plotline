@@ -170,6 +170,7 @@ void CharacterFrame::on_characterName_textChanged(const QString &arg1)
     mSelectedCharacter->setName(arg1);
     mSelectedCharacter->setLabel(Character::generateLabel(arg1));
     mItemModel->setData(ui->characterList->currentIndex(), mSelectedCharacter->name());
+    ui->characterLabel->setText(mSelectedCharacter->label());
     emit characterModified();
 }
 
@@ -177,7 +178,7 @@ void CharacterFrame::on_characterName_cursorPositionChanged(int arg1, int arg2)
 {
     Q_UNUSED(arg1);
     Q_UNUSED(arg2);
-    emit ui->characterName->textChanged(ui->characterName->text());
+    on_characterName_textChanged(ui->characterName->text());
 }
 
 void CharacterFrame::on_characterColor_clicked()

@@ -1,4 +1,5 @@
 TEMPLATE = aux
 
 DISTFILES += \
-    index.markdown
+    index.markdown \
+    user/index.markdown

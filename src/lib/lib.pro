@@ -12,7 +12,8 @@ HEADERS += chapter.h \
     scene.h \
     serializable.h \
     revision.h \
-    utils.h
+    utils.h \
+    characterparser.h
 
 SOURCES += chapter.cpp \
     character.cpp \
@@ -22,6 +23,7 @@ SOURCES += chapter.cpp \
     scene.cpp \
     serializable.cpp \
     revision.cpp \
-    utils.cpp
+    utils.cpp \
+    characterparser.cpp
 
 CONFIG += c++11

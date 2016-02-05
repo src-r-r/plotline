@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 
     static int POS_NOVEL = 0;
 
-    Novel *novel = 0;
     QApplication a(argc, argv);
 
     // Set the parser.

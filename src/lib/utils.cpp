@@ -32,3 +32,18 @@ QString friendlyList(const QStringList &stringList)
     qWarning() << "friendlyList() Not implemented";
     return result;
 }
+
+void clearLayout(QLayout* layout, bool deleteWidgets)
+{
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
+        if (deleteWidgets)
+        {
+            if (QWidget* widget = item->widget())
+                delete widget;
+        }
+        if (QLayout* childLayout = item->layout())
+            clearLayout(childLayout, deleteWidgets);
+        delete item;
+    }
+}

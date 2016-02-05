@@ -45,7 +45,6 @@ void PlotFrame::onNovelNew()
 
 void PlotFrame::onPlotlineDoubleClicked(QModelIndex index)
 {
-    int plotlineId = mModel->data(index, PlotlineItemModel::PlotlineId).toInt();
     PlotlineDialog *dialog = new PlotlineDialog(this, index);
     dialog->exec();
 }
@@ -71,12 +70,14 @@ void PlotFrame::on_editPlotline_clicked()
 
 void PlotFrame::on_archivePlotline_clicked()
 {
-
 }
 
 void PlotFrame::on_deletePlotline_clicked()
 {
-
+    QModelIndex current = ui->plotlineTable->currentIndex();
+    int id = mModel->data(current, PlotlineItemModel::PlotlineId).toInt();
+    mModel->removeRows(current.row(), 1);
+    mainWindow()->novel()->removePlotline(id);
 }
 
 void PlotFrame::on_searchPlotlines_textChanged(const QString &arg1)

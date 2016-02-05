@@ -10,8 +10,9 @@ PlotlineItemModel::PlotlineItemModel(Novel *novel, QObject *parent)
     insertRows(0, plotlines.count());
     QModelIndex d;
     for (int i = 0; i < plotlines.count(); ++i){
+        int id = plotlines[i]->id();
         for (int j = 0; j < columnCount(); ++j)
-            setData(index(i, j), QVariant(plotlines[i]->id()), PlotlineId);
+            setData(index(i, j), QVariant(id), PlotlineId);
         d = index(i, BRIEF);
         setData(d, plotlines[i]->brief());
         d = index(i, SYNOPSIS);
@@ -33,6 +34,37 @@ int PlotlineItemModel::columnCount(const QModelIndex &parent) const
     //  2 - Synopsis
     //  3 - Characters Involved
     return 3;
+}
+
+bool PlotlineItemModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (row > rowCount() || row < 0){
+        qWarning() << "Invalid row" << row;
+        return false;
+    }
+
+    beginInsertRows(parent, row, row+(count-1));
+
+    endInsertRows();
+
+    return true;
+}
+
+bool PlotlineItemModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    int end = row + (count-1);
+
+    if (row > rowCount()-1 || row < 0){
+        qWarning() << "Could not delete from row" << row;
+        return false;
+    }
+
+    if (end > rowCount()-1)
+        end = rowCount()-1;
+    beginRemoveRows(parent, row, end);
+
+    endRemoveRows();
+    return true;
 }
 
 QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const

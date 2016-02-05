@@ -76,10 +76,11 @@ void PlotlineDialog::on_buttonBox_accepted()
 
     qDebug() << "Modified plotline: " << mPlotline->serialize();
 
-    PlotlineItemModel *m = 0;
-    m = mPlotFrame->model();
-    if (mIsNew)
+    if (mIsNew){
         mPlotFrame->mainWindow()->novel()->addPlotline(mPlotline);
+        mPlotFrame->model()->insertRows(mPlotFrame->model()->rowCount(),
+                                        1);
+    }
 
     emit mPlotFrame->novelModified();
 }
