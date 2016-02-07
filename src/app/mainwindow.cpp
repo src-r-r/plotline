@@ -143,7 +143,8 @@ void MainWindow::on_actionNovelSave_triggered()
 
 void MainWindow::on_actionNovelRevisions_triggered()
 {
-
+    RevisionDialog *dialog = new RevisionDialog(this);
+    dialog->show();
 }
 
 void MainWindow::on_actionNovelExport_triggered()

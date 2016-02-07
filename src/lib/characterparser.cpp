@@ -1,8 +1,9 @@
 #include "characterparser.h"
 
 ParsedCharacterSet::ParsedCharacterSet(QObject *parent)
+    : QHash<int, Character *>()
 {
-
+    Q_UNUSED(parent);
 }
 
 ParsedCharacterSet::~ParsedCharacterSet()
@@ -12,20 +13,26 @@ ParsedCharacterSet::~ParsedCharacterSet()
 
 ParsedCharacterSet ParsedCharacterSet::parse(Novel *novel, const QString &string)
 {
-    QList<Character *> characters = novel->characters();
-    int lastIndex = 0,
-            index = 0;
+    int index = 0;
     QString label;
+    Character *character = 0;
 
     ParsedCharacterSet set = ParsedCharacterSet();
 
-    for (Character *c : characters){
-        label = QString("@") + c->label();
-        while (-1 < (index = string.indexOf(label, lastIndex))){
-            set.insert(index, c);
-            lastIndex = index + label.length();
-        }
+    QRegularExpression labelX = Character::LABEL_X;
+
+    QRegularExpressionMatchIterator matches = labelX.globalMatch(string);
+
+    QRegularExpressionMatch match;
+    while (matches.hasNext()){
+        match = matches.next();
+        label = match.captured(1);
+        index = match.capturedStart(1);
+        character = novel->character(label);
+        if (character)
+            set.insert(index-1, character);
     }
+
 
     return set;
 }

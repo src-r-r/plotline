@@ -27,6 +27,8 @@ void SceneFrame::onNovelLoad()
     delete mModel;
     mModel = new SceneItemModel(mainWindow()->novel());
     ui->sceneList->setModel(mModel);
+    mActionHighlighter->setNovel(mainWindow()->novel());
+    mHeadlineHighlighter->setNovel(mainWindow()->novel());
 }
 
 void SceneFrame::onNovelNew()
@@ -134,12 +136,10 @@ void SceneFrame::on_sceneHeadline_textChanged()
 
     HeadlineUpdater *update = new HeadlineUpdater(ui->sceneHeadline,
                                                   ui->sceneList);
-    CharacterParser *parser = new CharacterParser(mainWindow()->novel(),
-                                                  ui->sceneHeadline,
-                                                  mCharacters);
+    detectLabelStart(ui->sceneHeadline);
+    findCharacters(ui->sceneHeadline);
 
     QThreadPool::globalInstance()->start(update);
-    QThreadPool::globalInstance()->start(parser);
     emit novelModified();
 }
 
@@ -149,12 +149,78 @@ void SceneFrame::on_sceneAction_textChanged()
     mSelectedScene->setAction(ui->sceneAction->toPlainText());
     HeadlineUpdater *update = new HeadlineUpdater(ui->sceneHeadline,
                                                   ui->sceneList);
+    detectLabelStart(ui->sceneHeadline);
+    findCharacters(ui->sceneAction);
     QThreadPool::globalInstance()->start(update);
-    CharacterParser *parser = new CharacterParser(mainWindow()->novel(),
-                                                  ui->sceneAction,
-                                                  mCharacters);
-    QThreadPool::globalInstance()->start(parser);
     emit novelModified();
+}
+
+void SceneFrame::findCharacters(const QTextEdit *editor)
+{
+
+    QString text = editor->toPlainText();
+    ParsedCharacterSet set = ParsedCharacterSet::parse(mainWindow()->novel(),
+                                                       text);
+    qDebug() << set.count() << "characters found in" << editor->objectName();
+    for (ModelCheckbox *cb : mCharacters){
+        for (int key : set.keys())
+            if (cb->value().toInt() == set.value(key)->id())
+                cb->setChecked(true);
+    }
+}
+
+/**
+ * @brief SceneFrame::detectLabelStart
+ * Detects when a user begins typing in a character tag (starting with "@").
+ * Get the current position of the text cursor and create a context menu with
+ * the list of characters.
+ * @param editor
+ */
+void SceneFrame::detectLabelStart(QTextEdit *editor)
+{
+    QString text = editor->toPlainText();
+    QTextCursor cursor = editor->textCursor();
+    QRect cursorRect = editor->cursorRect(cursor);
+    int cursorPos = cursor.position();
+    int start = findCharReverse("@", text, cursorPos-1, " \t");
+    QMenu *menu;
+    QList<QAction *> actions;
+
+    if (start < 0)
+        return;
+
+    // Look back in the position to find a "@". If we reach a whitespace
+    // character before an "@" just return.
+
+    // Copy the substring
+    QString label = QString();
+    for (int j = start; j < cursorPos; ++j)
+        label.append(text[j]);
+
+    qDebug() << "Search for" << label;
+
+    QPoint point = cursorRect.bottomRight();
+
+    QStringList completions = QStringList();
+
+    mCompleter = new QCompleter(completions);
+
+    for (Character *c : mainWindow()->novel()->characters(label)){
+        QString text = QString("[") + c->label() + QString("] ") + c->name();
+        completions.append(text);
+    }
+
+    mCompleter->complete(cursorRect);
+}
+
+QCompleter *SceneFrame::completer() const
+{
+    return mCompleter;
+}
+
+void SceneFrame::setCompleter(QCompleter *completer)
+{
+    mCompleter = completer;
 }
 
 SceneFrame::HeadlineUpdater::HeadlineUpdater(QTextEdit *field, QListView *listView)
@@ -167,34 +233,4 @@ void SceneFrame::HeadlineUpdater::run()
 {
     SceneItemModel *model = (SceneItemModel *) mListView->model();
     model->setData(mListView->currentIndex(), mField->toPlainText());
-}
-
-SceneFrame::CharacterParser::CharacterParser(Novel *novel, QTextEdit *field,
-                                             QList<ModelCheckbox *> checkboxes)
-{
-    mNovel = novel;
-    mField = field;
-    mCheckboxes = checkboxes;
-}
-
-void SceneFrame::CharacterParser::run()
-{
-    QString text = mField->toPlainText();
-    ParsedCharacterSet set = ParsedCharacterSet::parse(mNovel, text);
-    qDebug() << set.count() << "characters found in" << mField->objectName();
-    for (ModelCheckbox *cb : mCheckboxes){
-        for (int key : set.keys())
-            if (cb->value().toInt() == set.value(key)->id())
-                cb->setChecked(true);
-    }
-}
-
-void SceneFrame::on_sceneHeadline_cursorPositionChanged()
-{
-    on_sceneHeadline_textChanged();
-}
-
-void SceneFrame::on_sceneAction_cursorPositionChanged()
-{
-    on_sceneAction_textChanged();
 }

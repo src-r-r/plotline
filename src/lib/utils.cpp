@@ -47,3 +47,45 @@ void clearLayout(QLayout* layout, bool deleteWidgets)
         delete item;
     }
 }
+
+/**
+ * @brief findCharReverse Given an initial position, look backward in a string
+ * for a given character.
+ * @param chars Characters for which to search (e.g. "#@%")
+ * @param s String in which to search (e.g. "We want to %eat something.")
+ * @param from <i>last</i> position for the substring.
+ * @param escape If we reach an escape character before the search character,
+ * this function will return -1;
+ * @return -1 if nothing is found before an escape character is reached.
+ */
+int findCharReverse(const QString &chars, const QString &s, const int from,
+                    const QString &escape)
+{
+    int start = from;
+    for (start = from; start >= 0; --start){
+        if (chars.contains(s[start]))
+            return start;
+        if (escape.contains(s[start]))
+            return -1;
+    }
+    return -1;
+}
+
+/**
+ * @brief substring Get a substring of another String.
+ * @param string String from which to get the substring.
+ * @param start Index from which to start (less than the string length).
+ * @param end End index of the substring (greater than the start).
+ * @return
+ */
+QString substring(const QString &string, int start, int end)
+{
+    end = end < 0 ? string.length() : end;
+    if (start > string.length()-1)
+        return string;
+
+    QString sub = QString();
+    for (int i = start; i < end; ++i)
+        sub += string[i];
+    return sub;
+}

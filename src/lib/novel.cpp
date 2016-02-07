@@ -8,7 +8,9 @@ const QString Novel::JSON_WORKING_TITLE = QString("workingTitle"),
     Novel::JSON_SCENES = QString("scenes"),
     Novel::JSON_CHARACTERS = QString("characters"),
     Novel::JSON_CHAPTERS = QString("chapters"),
-    Novel::JSON_PLOTLINES = QString("plotlines");
+    Novel::JSON_PLOTLINES = QString("plotlines"),
+    Novel::JSON_REVISION_COUNT = QString("revisionCount"),
+    Novel::JSON_CURRENT_REVISION = QString("currentRevision");
 
 Novel::Novel(const QString &workingTitle,
              const QString &genre,
@@ -19,6 +21,8 @@ Novel::Novel(const QString &workingTitle,
              const QList<Scene *> scenes,
              const QList<Chapter *> chapters,
              const QList<Plotline *> plotlines,
+             int revisionCount,
+             int currentRevision,
              int id,
              QObject *parent)
     : QObject(parent), Serializable(id)
@@ -32,6 +36,15 @@ Novel::Novel(const QString &workingTitle,
     this->mScenes = scenes;
     this->mChapters = chapters;
     this->mPlotlines = plotlines;
+    this->mRevisionCount = revisionCount;
+    this->mCurrentRevision = currentRevision < 0 ? this->mRevisionCount-1
+                                                 : currentRevision;
+
+    // Ensure all chapters have the adequate number of revisions.
+    for (Chapter *c : mChapters)
+        if (c->revisions().count() < mRevisionCount)
+            for (int i = c->revisions().count(); i < mRevisionCount; ++i)
+                c->addRevision();
 }
 
 Novel::~Novel()
@@ -115,14 +128,37 @@ void Novel::removeScene(int id)
     removeScene(scene(id));
 }
 
-QList<Chapter *> Novel::getChapters() const
+QList<Chapter *> Novel::chapters() const
 {
     return mChapters;
+}
+
+Chapter *Novel::chapterByNumber(int number)
+{
+    return mChapters[number];
+}
+
+Chapter *Novel::chapter(int id) const
+{
+    for (Chapter *c : mChapters)
+        if (c->id() == id)
+            return c;
+    return 0;
 }
 
 void Novel::setChapters(const QList<Chapter *> &value)
 {
     mChapters = value;
+}
+
+void Novel::addChapter(Chapter *chapter)
+{
+    mChapters.append(chapter);
+}
+
+Revision *Novel::chapterRevision(int chapter, int revision)
+{
+    return this->chapterByNumber(chapter)->revisions()[revision];
 }
 
 Novel::PointOfView Novel::getPointOfView() const
@@ -173,9 +209,38 @@ void Novel::removePlotline(const int id)
     removePlotline(plotline(id));
 }
 
-QList<Character *> Novel::characters() const
+QList<Character *> Novel::characters()
 {
     return this->mCharacters;
+}
+
+
+QList<Character *> Novel::characters(const QRegularExpression &exp) const
+{
+    QList<Character *> result;
+    for (Character *c : mCharacters)
+        if (c->label().contains(exp))
+            result << c;
+    return result;
+}
+
+QList<Character *> Novel::characters(const QString &label) const
+{
+    return characters(QRegularExpression(label));
+}
+
+QList<Character *> Novel::charactersByName(const QRegularExpression &exp) const
+{
+    QList<Character *> result;
+    for (Character *c : mCharacters)
+        if (c->name().contains(exp))
+            result << c;
+    return result;
+}
+
+QList<Character *> Novel::charactersByName(const QString &name) const
+{
+    return charactersByName(QRegularExpression(name));
 }
 
 /**
@@ -251,6 +316,8 @@ QJsonObject Novel::serialize() const
     novel[JSON_SCENES] = jScenes;
     novel[JSON_CHAPTERS] = jChapters;
     novel[JSON_PLOTLINES] = jPlotlines;
+    novel[JSON_REVISION_COUNT] = QJsonValue(mRevisionCount);
+    novel[JSON_CURRENT_REVISION] = QJsonValue(mRevisionCount);
     return novel;
 }
 
@@ -268,6 +335,8 @@ Novel *Novel::deserialize(const QJsonObject &object)
     QList<Chapter *> chapters = QList<Chapter *>();
     QList<Character *> characters = QList<Character *>();
     QList<Plotline *> plotlines = QList<Plotline *>();
+
+    int revisionCount=1, currentRevision=0;
 
     int id = Serializable::deserialize(object);
 
@@ -298,9 +367,19 @@ Novel *Novel::deserialize(const QJsonObject &object)
     else
         notFound << JSON_POV;
 
+    if (object.contains(JSON_REVISION_COUNT))
+        revisionCount = object[JSON_REVISION_COUNT].toInt();
+    else
+        notFound << JSON_REVISION_COUNT;
+
+    if (object.contains(JSON_CURRENT_REVISION))
+        currentRevision = object[JSON_CURRENT_REVISION].toInt();
+    else
+        notFound << JSON_CURRENT_REVISION;
 
     Novel *novel = new Novel(workingTitle, genre, setting, tense,
-                             pointOfView);
+                             pointOfView, characters, scenes, chapters,
+                             plotlines, revisionCount, currentRevision);
 
 
     if (object.contains(JSON_CHARACTERS))
@@ -371,4 +450,36 @@ Novel *Novel::readFrom(const QString &filePath)
                 << error->errorString();
 
     return 0;
+}
+
+int Novel::currentRevision() const
+{
+    return mCurrentRevision;
+}
+
+int Novel::revisionCount() const
+{
+    return mRevisionCount;
+}
+
+void Novel::setCurrentRevision(int currentRevision, bool syncChapters)
+{
+    mCurrentRevision = currentRevision;
+    if (syncChapters)
+        for (Chapter *ch : mChapters)
+            ch->setCurrentRevision(currentRevision);
+}
+
+void Novel::addRevision()
+{
+    for (Chapter *c : mChapters)
+        c->addRevision();
+    ++mRevisionCount;
+}
+
+void Novel::removeRevision(int num)
+{
+    for (Chapter *c : mChapters)
+        c->removeRevision(num);
+    --mRevisionCount;
 }

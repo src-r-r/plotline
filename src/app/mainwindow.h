@@ -17,6 +17,7 @@
 #include "plotlineitemdelegate.h"
 #include "plotlinedialog.h"
 #include "preferencesdialog.h"
+#include "revisiondialog.h"
 
 #include "novelframe.h"
 #include "characterframe.h"

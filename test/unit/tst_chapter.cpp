@@ -45,7 +45,7 @@ void TestChapter::testSetScenes()
     ch1Scenes.append(s3);
     chapter1->setScenes(ch1Scenes);
 
-    Q_ASSERT(chapter1->getScenes().size() == 3);
+    Q_ASSERT(chapter1->scenes().size() == 3);
 }
 
 void TestChapter::testAddRevision()
@@ -53,8 +53,8 @@ void TestChapter::testAddRevision()
     Chapter *c = new Chapter("Chapter");
     Revision *r1 = c->addRevision();
 
-    Q_ASSERT(c->getRevisions().length() == 1);
-    Q_ASSERT(c->getRevisions()[0]->content().isNull());
+    Q_ASSERT(c->revisions().length() == 1);
+    Q_ASSERT(c->revisions()[0]->content().isNull());
 
     QString s1 = "Hte quick brown fox jumps over teh lazy dog.",
             s2 = "The quick brown fox jumps over the lazy dog.";
@@ -62,12 +62,12 @@ void TestChapter::testAddRevision()
     r1->setContent(s1);
     Revision *r2 = c->addRevision();
 
-    Q_ASSERT(c->getRevisions().length() == 2);
-    QTRY_COMPARE(c->getRevisions()[0]->content(), s1);
-    QTRY_COMPARE(c->getRevisions()[1]->content(), s1);
+    Q_ASSERT(c->revisions().length() == 2);
+    QTRY_COMPARE(c->revisions()[0]->content(), s1);
+    QTRY_COMPARE(c->revisions()[1]->content(), s1);
 
     r2->setContent(s2);
-    QTRY_COMPARE(c->getRevisions()[1]->content(), s2);
+    QTRY_COMPARE(c->revisions()[1]->content(), s2);
 }
 
 void TestChapter::cleanupTestCase()
@@ -145,8 +145,8 @@ void TestChapter::testDeserialize()
     Chapter *chapter = Chapter::deserialize(novel, doc.object());
 
     QTRY_COMPARE(chapter->title(), QString("My First Chapter"));
-    Q_ASSERT(chapter->getScenes().size() == 3);
-    QTRY_COMPARE(chapter->getScenes()[0], s1);
-    QTRY_COMPARE(chapter->getScenes()[1], s2);
-    QTRY_COMPARE(chapter->getScenes()[2], s3);
+    Q_ASSERT(chapter->scenes().size() == 3);
+    QTRY_COMPARE(chapter->scenes()[0], s1);
+    QTRY_COMPARE(chapter->scenes()[1], s2);
+    QTRY_COMPARE(chapter->scenes()[2], s3);
 }

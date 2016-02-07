@@ -7,11 +7,13 @@
 #include "plotline.h"
 #include "chapter.h"
 #include "serializable.h"
+#include "revision.h"
 
 class Chapter;
 class Plotline;
 class Character;
 class Scene;
+class Revision;
 
 class Novel : public QObject, public Serializable
 {
@@ -37,6 +39,8 @@ public:
                    const QList<Scene *> scenes = QList<Scene *>(),
                    const QList<Chapter *> chapters = QList<Chapter *>(),
                    const QList<Plotline *> plotlines = QList<Plotline *>(),
+                   int revisionCount = 1,
+                   int currentRevision = -1,
                    int id = -1,
                    QObject *parent = 0);
     ~Novel();
@@ -60,8 +64,12 @@ public:
     void removeScene(int id);
     Scene *scene(int id) const;
 
-    QList<Chapter *> getChapters() const;
+    QList<Chapter *> chapters() const;
+    Chapter *chapterByNumber(int number);
+    Chapter *chapter(int id) const;
     void setChapters(const QList<Chapter *> &value);
+    void addChapter(Chapter *chapter);
+    Revision *chapterRevision(int chapter, int revision);
 
     Novel::PointOfView getPointOfView() const;
     void setPointOfView(const Novel::PointOfView &pointOfView);
@@ -73,7 +81,11 @@ public:
     void removePlotline(Plotline *plotline);
     void removePlotline(const int id);
 
-    QList<Character *> characters() const;
+    QList<Character *> characters();
+    QList<Character *> characters(const QRegularExpression &exp) const;
+    QList<Character *> characters(const QString &label) const;
+    QList<Character *> charactersByName(const QRegularExpression &exp) const;
+    QList<Character *> charactersByName(const QString &name) const;
     void setCharacters(const QList<Character *> &characters);
     Character *character(int id) const;
     Character *character(const QString label) const;
@@ -84,17 +96,25 @@ public:
     QString writeTo(const QString &filePath);
     static Novel *readFrom(const QString &filePath);
 
+    int currentRevision() const;
+    int revisionCount() const;
+    void setCurrentRevision(int currentRevision, bool syncChapters=false);
+    void addRevision();
+    void removeRevision(int num);
+
 private:
 
     static const QString JSON_WORKING_TITLE,
-        JSON_GENRE,
-        JSON_SETTING,
+    JSON_GENRE,
+    JSON_SETTING,
         JSON_TENSE,
         JSON_POV,
         JSON_SCENES,
         JSON_CHARACTERS,
         JSON_CHAPTERS,
-        JSON_PLOTLINES;
+        JSON_PLOTLINES,
+        JSON_REVISION_COUNT,
+        JSON_CURRENT_REVISION;
 
     QString mWorkingTitle,
         mGenre,
@@ -105,6 +125,9 @@ private:
     QList<Scene *> mScenes;
     QList<Chapter *> mChapters;
     QList<Plotline *> mPlotlines;
+
+    int mRevisionCount;
+    int mCurrentRevision;
 
 signals:
 

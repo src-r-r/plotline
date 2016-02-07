@@ -24,7 +24,9 @@ HEADERS +=  mainwindow.h \
     novelframe.h \
     plotlineappframe.h \
     modelcheckbox.h \
-    characterhighlighter.h
+    characterhighlighter.h \
+    chaptermodel.h \
+    revisiondialog.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -41,7 +43,9 @@ SOURCES += main.cpp \
     novelframe.cpp \
     plotlineappframe.cpp \
     modelcheckbox.cpp \
-    characterhighlighter.cpp
+    characterhighlighter.cpp \
+    chaptermodel.cpp \
+    revisiondialog.cpp
 
 LIBS += \
     ../lib/libplotline.so
@@ -55,7 +59,8 @@ FORMS += mainwindow.ui \
     plotframe.ui \
     sceneframe.ui \
     chaptersframe.ui \
-    novelframe.ui
+    novelframe.ui \
+    revisiondialog.ui
 
 RESOURCES += ../res/plotline.qrc
 

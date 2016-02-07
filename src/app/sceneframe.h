@@ -4,10 +4,13 @@
 #include "plotlineappframe.h"
 #include <QMap>
 #include <QWidget>
+#include <QMenu>
+#include <QCompleter>
 #include "sceneitemmodel.h"
 #include "modelcheckbox.h"
 #include "characterparser.h"
 #include "characterhighlighter.h"
+#include "utils.h"
 
 namespace Ui {
 class SceneFrame;
@@ -20,6 +23,9 @@ class SceneFrame : public PlotlineAppFrame
 public:
     explicit SceneFrame(MainWindow *mainWindow, QWidget *parent = 0);
     ~SceneFrame();
+
+    QCompleter *completer() const;
+    void setCompleter(QCompleter *completer);
 
 signals:
 
@@ -36,21 +42,20 @@ private slots:
     void onCharacterToggled(bool checked, QVariant value);
     void on_sceneList_clicked(const QModelIndex &index);
     void on_plotline_activated(int index);
-
     void on_sceneHeadline_textChanged();
-
     void on_sceneAction_textChanged();
 
-    void on_sceneHeadline_cursorPositionChanged();
-
-    void on_sceneAction_cursorPositionChanged();
-
 private:
+
+    void findCharacters(const QTextEdit *editor);
+    void detectLabelStart(QTextEdit *editor);
+
     Ui::SceneFrame *ui;
 
     Scene *mSelectedScene = 0;
     QList<ModelCheckbox *> mCharacters;
     SceneItemModel *mModel;
+    QCompleter *mCompleter;
 
     class HeadlineUpdater : public QRunnable
     {
@@ -60,18 +65,6 @@ private:
     private:
         QTextEdit *mField;
         QListView *mListView;
-    };
-
-    class CharacterParser : public QRunnable
-    {
-    public:
-        CharacterParser(Novel *novel, QTextEdit *field,
-                        QList<ModelCheckbox *> checkboxes);
-        void run();
-    private:
-        QTextEdit *mField;
-        Novel *mNovel;
-        QList<ModelCheckbox *> mCheckboxes;
     };
 
     CharacterHighlighter *mActionHighlighter,

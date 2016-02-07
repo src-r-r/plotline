@@ -4,6 +4,7 @@
 #include <QGuiApplication>
 #include <QMainWindow>
 
+#include "tst_utils.h"
 #include "tst_revision.h"
 #include "tst_character.cpp"
 #include "tst_chapter.cpp"
@@ -17,12 +18,13 @@ int main(int argc, char *argv[])
 
     QObject *tests[] = {
 
-        new TestCharacter(),
-        new TestRevision(),
-        new TestScene(),
-        new TestChapter(),
-        new TestNovel(),
-        new TestPlotline(),
+        new TestUtils(),
+//        new TestCharacter(),
+//        new TestRevision(),
+//        new TestScene(),
+//        new TestChapter(),
+//        new TestNovel(),
+//        new TestPlotline(),
         new TestCharacterParser(),
 
         NULL
@@ -35,13 +37,12 @@ int main(int argc, char *argv[])
     for (int i = 0; tests[i]; ++i)
         nFailed += QTest::qExec(tests[i], argc, argv);
 
-    QString border = QString("+++++++++++++++++ ");
+    const char *border = "+++++++++++++++++";
 
     if (nFailed > 0)
-        qWarning() << border << QString(nFailed)  << " tests failed. "
+        qWarning() << border << nFailed << " tests failed. "
                  << border;
     else
-        qDebug() << border << " All tests passed " << border;
+        qDebug() << border << "All tests passed" << border;
 
-    return a.exec();
 }

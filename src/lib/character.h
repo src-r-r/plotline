@@ -35,6 +35,8 @@ private:
 
     Novel *mNovel;
 
+    bool matches(const QString &string, const QRegularExpression &pattern);
+
 public:
     explicit Character(const QString &name,
                        const QString &nickname = QString(),
@@ -50,10 +52,12 @@ public:
     static QString generateLabel(const QString &name);
 
     QString name() const;
+    bool nameMatches(const QRegularExpression &pattern);
 
     QString nickname() const;
 
     QString label() const;
+    bool labelMatches(const QRegularExpression &pattern);
 
     QImage getHeadshot() const;
     void setHeadshot(const QImage &value);
@@ -70,6 +74,8 @@ public:
 
     bool getIsArchived() const;
     void setIsArchived(bool isArchived);
+
+    static const QRegularExpression LABEL_X;
 
 signals:
 

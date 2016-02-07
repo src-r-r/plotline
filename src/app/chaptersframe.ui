@@ -36,7 +36,7 @@
           <enum>QLayout::SetMaximumSize</enum>
          </property>
          <item>
-          <widget class="QComboBox" name="chapterFilter_2">
+          <widget class="QComboBox" name="chapterFilter">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -56,7 +56,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QListView" name="chapterList_2">
+          <widget class="QTableView" name="chapterTable">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -71,7 +71,7 @@
             <enum>QLayout::SetMaximumSize</enum>
            </property>
            <item>
-            <widget class="QPushButton" name="addChapter_2">
+            <widget class="QPushButton" name="addChapter">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -84,7 +84,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="archiveChapter_2">
+            <widget class="QPushButton" name="archiveChapter">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -97,7 +97,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="deleteChapter_2">
+            <widget class="QPushButton" name="deleteChapter">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -110,7 +110,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="assignScenes_2">
+            <widget class="QPushButton" name="assignScenes">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -127,9 +127,12 @@
         </layout>
        </widget>
        <widget class="QWidget" name="layoutWidget_5">
-        <layout class="QGridLayout" name="gridLayout_3">
+        <layout class="QGridLayout" name="chapterLayout">
          <item row="0" column="0">
-          <widget class="QLineEdit" name="chapterNumber_2">
+          <widget class="QLineEdit" name="chapterNumber">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -149,35 +152,42 @@
             </size>
            </property>
            <property name="maxLength">
-            <number>5</number>
+            <number>3</number>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
            </property>
            <property name="readOnly">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="chapterTitle_2"/>
+          <widget class="QLineEdit" name="chapterTitle"/>
          </item>
          <item row="0" column="2">
-          <widget class="QSpinBox" name="chapterRevision_2"/>
+          <widget class="QSpinBox" name="chapterRevision">
+           <property name="value">
+            <number>1</number>
+           </property>
+          </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QCheckBox" name="chapterComplete_2">
+          <widget class="QCheckBox" name="chapterComplete">
            <property name="text">
             <string>Completed</string>
            </property>
           </widget>
          </item>
          <item row="1" column="0" colspan="4">
-          <widget class="QPlainTextEdit" name="chapterContent_2"/>
+          <widget class="QPlainTextEdit" name="chapterContent"/>
          </item>
         </layout>
        </widget>
       </widget>
      </item>
      <item alignment="Qt::AlignRight">
-      <widget class="QPushButton" name="distractionFree_2">
+      <widget class="QPushButton" name="chapterDistractionFree">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -188,7 +198,7 @@
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>Distratction-Free</string>
        </property>
       </widget>
      </item>

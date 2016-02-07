@@ -12,7 +12,7 @@ class Novel;
 class Scene;
 class Revision;
 
-class Chapter : public QObject, Serializable
+class Chapter : public QObject, public Serializable
 {
 private:
     QString mTitle;
@@ -20,8 +20,10 @@ private:
     QList<Revision *> mRevisions;
     Novel *mNovel;
 
+    int mCurrentRevision = 0;
+
     static const QString JSON_TITLE, JSON_REVISIONS,
-        JSON_SCENES;
+        JSON_SCENES, JSON_CURRENT_REVISION;
 
     Q_OBJECT
 public:
@@ -29,6 +31,7 @@ public:
                     const QList<Revision *> &revisions = QList<Revision *>(),
                      const QList<Scene *> &scenes = QList<Scene *>(),
                      Novel *novel = 0,
+                     int currentRevision = -1,
                      int id = -1,
                      QObject *parent = 0);
     ~Chapter();
@@ -36,7 +39,7 @@ public:
     QString title() const;
     void setTitle(const QString &title);
 
-    QList<Scene *> getScenes() const;
+    QList<Scene *> scenes() const;
     void setScenes(const QList<Scene *> &scenes);
 
     Novel *novel() const;
@@ -46,9 +49,14 @@ public:
     static Chapter *deserialize(Novel *novel, const QJsonObject &object);
     static QList<Chapter *> deserialize(Novel *novel, const QJsonArray &object);
 
-    QList<Revision *> getRevisions() const;
+    QList<Revision *> revisions() const;
     void setRevisions(const QList<Revision *> &revisions);
     Revision *addRevision();
+    void removeRevision(int i);
+    int currentRevision() const;
+    void setCurrentRevision(int currentRevision);
+
+    QString content(int revision) const;
 
 signals:
 

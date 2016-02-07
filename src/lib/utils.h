@@ -21,4 +21,8 @@ QString friendlyList(const QStringList &stringList);
 // Thanks to http://stackoverflow.com/a/7077340
 void clearLayout(QLayout* layout, bool deleteWidgets = true);
 
+int findCharReverse(const QString &chars, const QString &s, const int from,
+                    const QString &escape);
+QString substring(const QString &string, int start, int end=-1);
+
 #endif // UTILS_H

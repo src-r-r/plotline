@@ -11,7 +11,8 @@ HEADERS += tst_chapter.h \
     tst_plotline.h \
     tst_scene.h \
     tst_revision.h \
-    testcharacterparser.h
+    testcharacterparser.h \
+    tst_utils.h
 
 SOURCES += main.cpp \
     tst_chapter.cpp \
@@ -20,7 +21,8 @@ SOURCES += main.cpp \
     tst_plotline.cpp \
     tst_scene.cpp \
     tst_revision.cpp \
-    testcharacterparser.cpp
+    testcharacterparser.cpp \
+    tst_utils.cpp
 
 DISTFILES += \
     fixtures/character-deserialize.json \

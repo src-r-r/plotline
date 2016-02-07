@@ -27,11 +27,22 @@ void TestCharacterParser::testParser()
             i2 = string.indexOf("@SuRo"),
             i3 = string.indexOf("@HeS");
 
+    for (int i : set.keys())
+        qDebug() << i << ":" << set.value(i)->label();
+
     Q_ASSERT(set.contains(i1));
     Q_ASSERT(set.contains(i2));
     Q_ASSERT(!set.contains(i3));
 
     Q_ASSERT(set.value(i1) == c1);
     Q_ASSERT(set.value(i2) == c2);
+
+    // An initial bug where the function will only find a handful of the
+    // ocurrances of characters. Find out what went wrong.
+
+    string = QString("@BoMc and @SuRo and @HeSc and @BoMc and @SuRo");
+
+    set = ParsedCharacterSet::parse(novel, string);
+    Q_ASSERT(set.count() == 5);
 }
 

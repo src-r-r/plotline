@@ -2,7 +2,8 @@
 
 const QString Chapter::JSON_TITLE = QString("title"),
     Chapter::JSON_REVISIONS = QString("revisions"),
-    Chapter::JSON_SCENES = QString("scenes");
+    Chapter::JSON_SCENES = QString("scenes"),
+    Chapter::JSON_CURRENT_REVISION = QString("current_revision");
 
 Novel *Chapter::novel() const
 {
@@ -14,7 +15,7 @@ void Chapter::setNovel(Novel *novel)
     mNovel = novel;
 }
 
-QList<Revision *> Chapter::getRevisions() const
+QList<Revision *> Chapter::revisions() const
 {
     return mRevisions;
 }
@@ -40,16 +41,46 @@ Revision *Chapter::addRevision()
     return r;
 }
 
+void Chapter::removeRevision(int i)
+{
+    mRevisions.removeAt(i);
+}
+
+QString Chapter::content(int revision) const
+{
+    return mRevisions[revision]->content();
+}
+
+int Chapter::currentRevision() const
+{
+    return mCurrentRevision;
+}
+
+void Chapter::setCurrentRevision(int currentRevision)
+{
+    if (currentRevision > mRevisions.count())
+        mCurrentRevision = mRevisions.count();
+    else
+        mCurrentRevision = currentRevision;
+}
+
 Chapter::Chapter(const QString &title, const QList<Revision *> &revisions,
                  const QList<Scene *> &scenes,
                  Novel *novel,
+                 int currentRevision,
                  int id,
                  QObject *parent) : QObject(parent), Serializable(id)
 {
     mTitle = title;
     mRevisions = revisions;
+    if (mRevisions.empty())
+        addRevision();
     mNovel = novel;
     mScenes = scenes;
+    if (currentRevision < 0)
+        mCurrentRevision = mRevisions.count()-1;
+    else
+        mCurrentRevision = currentRevision;
 }
 
 Chapter::~Chapter()
@@ -67,7 +98,7 @@ void Chapter::setTitle(const QString &title)
     mTitle = title;
 }
 
-QList<Scene *> Chapter::getScenes() const
+QList<Scene *> Chapter::scenes() const
 {
     return mScenes;
 }
@@ -92,6 +123,7 @@ QJsonObject Chapter::serialize() const {
     chapter[JSON_TITLE] = mTitle;
     chapter[JSON_SCENES] = jScenes;
     chapter[JSON_REVISIONS] = jRevisions;
+    chapter[JSON_CURRENT_REVISION] = QJsonValue(mCurrentRevision);
 
     return chapter;
 }
@@ -103,6 +135,7 @@ Chapter *Chapter::deserialize(Novel *novel, const QJsonObject &object)
     QString title = QString();
     QList<Revision *> revisions = QList<Revision *>();
     QList<Scene *> scenes = QList<Scene *>();
+    int currentRevision = 0;
 
     if (object.contains(JSON_TITLE))
         title = object[JSON_TITLE].toString();
@@ -112,7 +145,11 @@ Chapter *Chapter::deserialize(Novel *novel, const QJsonObject &object)
     if (object.contains(JSON_SCENES))
         scenes = Scene::deserialize(novel, object[JSON_SCENES].toArray());
 
-    Chapter *chapter = new Chapter(title, revisions, scenes, novel, id);
+    if (object.contains(JSON_CURRENT_REVISION))
+        currentRevision = object[JSON_CURRENT_REVISION].toInt();
+
+    Chapter *chapter = new Chapter(title, revisions, scenes, novel,
+                                   currentRevision, id);
     for (Revision *r : revisions)
         r->setChapter(chapter);
 

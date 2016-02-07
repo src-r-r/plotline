@@ -7,6 +7,23 @@ const QString Character::J_NAME = QString("name"),
     Character::J_COLOR = QString("color"),
     Character::J_IS_ARCHIVED = "isArchived";
 
+const QRegularExpression Character::LABEL_X = QRegularExpression(
+            "@(?<label>[0-9A-Za-z\\-_]{1,30})");
+
+bool Character::matches(const QString &string,
+                           const QRegularExpression &pattern)
+{
+    qDebug() << "Matching" << pattern.pattern() << "with" << string;
+    if (!pattern.isValid()){
+        qWarning() << "Invalid pattern:" << pattern.pattern();
+        qWarning() << pattern.errorString();
+        return false;
+    }
+    return pattern.match(string, 0,
+                         QRegularExpression::NormalMatch)
+            .hasPartialMatch();
+}
+
 Character::Character(const QString &name, const QString &nickname,
                      const QString &label, const QImage &headshot,
                      const QColor &color,
@@ -131,6 +148,11 @@ QString Character::name() const
     return mName;
 }
 
+bool Character::nameMatches(const QRegularExpression &pattern)
+{
+    return matches(mName, pattern);
+}
+
 void Character::setName(const QString &value)
 {
     mName = value;
@@ -149,6 +171,11 @@ void Character::setNickname(const QString &value)
 QString Character::label() const
 {
     return mLabel;
+}
+
+bool Character::labelMatches(const QRegularExpression &pattern)
+{
+    return matches(mLabel, pattern);
 }
 
 void Character::setLabel(const QString &value)
