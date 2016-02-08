@@ -58,10 +58,15 @@ int Chapter::currentRevision() const
 
 void Chapter::setCurrentRevision(int currentRevision)
 {
-    if (currentRevision > mRevisions.count())
+    qDebug() << "Setting chapter" << novel()->chapters().indexOf(this)
+             << "revision:" << currentRevision;
+    if (currentRevision > mRevisions.count()){
+        qWarning() << "Current revision" << currentRevision
+                   << ">" << mRevisions.count();
         mCurrentRevision = mRevisions.count();
-    else
+    } else {
         mCurrentRevision = currentRevision;
+    }
 }
 
 Chapter::Chapter(const QString &title, const QList<Revision *> &revisions,
@@ -120,6 +125,7 @@ QJsonObject Chapter::serialize() const {
     for (Revision *r : mRevisions)
         jRevisions.append(QJsonValue(r->serialize()));
 
+    chapter[JSON_ID] = QJsonValue(id());
     chapter[JSON_TITLE] = mTitle;
     chapter[JSON_SCENES] = jScenes;
     chapter[JSON_REVISIONS] = jRevisions;
@@ -164,4 +170,13 @@ QList<Chapter *> Chapter::deserialize(Novel *novel, const QJsonArray &object)
         chapters << Chapter::deserialize(novel, value.toObject());
 
     return chapters;
+}
+
+/**
+ * @brief Chapter::number Get the chapter number (1-based).
+ * @return The chapter number 1....n
+ */
+int Chapter::number()
+{
+    return mNovel->chapters().indexOf(this)+1;
 }

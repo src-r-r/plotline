@@ -151,14 +151,30 @@ void Novel::setChapters(const QList<Chapter *> &value)
     mChapters = value;
 }
 
-void Novel::addChapter(Chapter *chapter)
+void Novel::addChapter(Chapter *chapter, int loc)
 {
-    mChapters.append(chapter);
+    // Add revisions to the chapter.
+    for (int i = 0; i < mRevisionCount; ++i)
+        chapter->addRevision();
+    if (loc < 0)
+        mChapters.append(chapter);
+    else
+        mChapters.insert(loc, chapter);
 }
 
 Revision *Novel::chapterRevision(int chapter, int revision)
 {
     return this->chapterByNumber(chapter)->revisions()[revision];
+}
+
+void Novel::removeChapter(Chapter *chapter)
+{
+    mChapters.removeAll(chapter);
+}
+
+void Novel::removeChapter(int chapterId)
+{
+    return removeChapter(chapter(chapterId));
 }
 
 Novel::PointOfView Novel::getPointOfView() const
@@ -465,9 +481,13 @@ int Novel::revisionCount() const
 void Novel::setCurrentRevision(int currentRevision, bool syncChapters)
 {
     mCurrentRevision = currentRevision;
-    if (syncChapters)
+    qDebug() << "Novel revision is" << mCurrentRevision;
+    if (syncChapters){
+        qDebug() << "Syncronizing chapter revisions to"
+                 << currentRevision;
         for (Chapter *ch : mChapters)
             ch->setCurrentRevision(currentRevision);
+    }
 }
 
 void Novel::addRevision()

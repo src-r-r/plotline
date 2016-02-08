@@ -15,6 +15,8 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
             this, SLOT(onChapterSelected()));
     connect(this, SIGNAL(revisionChanged()),
             this, SLOT(onRevisionChanged()));
+    connect(this, SIGNAL(chapterModified()),
+            this, SLOT(onChapterModified()));
 }
 
 ChaptersFrame::~ChaptersFrame()
@@ -33,30 +35,45 @@ void ChaptersFrame::onNovelNew()
 
 }
 
+void ChaptersFrame::onChapterModified()
+{
+    Chapter *chapter = mainWindow()
+            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
+    QModelIndex index = ui->chapterTable->currentIndex();
+    mModel->setData(index, chapter->title());
+    emit novelModified();
+}
+
 void ChaptersFrame::onChapterSelected()
 {
     ui->chapterLayout->setEnabled(true);
 
     QModelIndex index = ui->chapterTable->currentIndex();
-    QString num = QVariant(index.row()+1).toString();
 
-    ui->chapterNumber->setText(num);
-    ui->chapterTitle->setText(mSelectedChapter->title());
+    int number = mModel->data(index, ChapterModel::NumberRole).toInt();
+    QString title = mModel->data(index, ChapterModel::TitleRole).toString();
+    int revision = mModel->data(index, ChapterModel::RevisionRole).toInt();
+    bool complete = mModel->data(index, ChapterModel::CompleteRole).toBool();
+    QString content = mModel->data(index, ChapterModel::ContentRole).toString();
 
-    int globalRevision = mainWindow()->novel()->currentRevision();
-    ui->chapterRevision->setMaximum(globalRevision+1);
-    ui->chapterRevision->setMinimum(1);
+    ui->chapterNumber->setText(QVariant(number).toString());
+    ui->chapterTitle->setText(title);
+    ui->chapterContent->setPlainText(content);
+    ui->chapterRevision->setValue(revision);
+    ui->chapterComplete->setChecked(complete);
 
     emit revisionChanged();
 }
 
 void ChaptersFrame::onRevisionChanged()
 {
-    qDebug() << "Revisions for chapter:" << mSelectedChapter->revisions().count();
-    int revision = mSelectedChapter->currentRevision();
+    Chapter *chapter = mainWindow()
+            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
+    qDebug() << "Revisions for chapter:" << chapter->revisions().count();
+    int revision = chapter->currentRevision();
     int globalRevision = mainWindow()->novel()->currentRevision();
-    bool isComplete = mSelectedChapter->revisions()[revision]->isComplete();
-    QString content = mSelectedChapter->content(revision);
+    bool isComplete = chapter->revisions()[revision]->isComplete();
+    QString content = chapter->content(revision);
 
     ui->chapterRevision->setValue(revision+1);
 
@@ -77,24 +94,11 @@ void ChaptersFrame::on_chapterFilter_activated(int index)
 
 void ChaptersFrame::on_addChapter_clicked()
 {
-    Chapter *chapter = new Chapter();
-
-    int r = mModel->rowCount();
-    if (!mModel->insertRows(r, 1)){
-        qWarning() << "Chapter: Could not insert rows after row" << r;
-        return;
-    }
-    mModel->setData(mModel->index(r, ChapterModel::NUMBER), QString(r+1));
-//    mModel->setData(index(r, ChapterModel::TITLE), r)
-
-    mainWindow()->novel()->addChapter(chapter);
-
-    ui->chapterTable->setCurrentIndex(mModel->index(r, 0));
-    mSelectedChapter = chapter;
-
-    onChapterSelected();
-
+    mModel->insertRows(mModel->rowCount(), 1);
     emit novelModified();
+
+    ui->chapterTable->setCurrentIndex(mModel->index(mModel->rowCount(), 0));
+    emit chapterSelected();
 }
 
 void ChaptersFrame::on_archiveChapter_clicked()
@@ -104,7 +108,9 @@ void ChaptersFrame::on_archiveChapter_clicked()
 
 void ChaptersFrame::on_deleteChapter_clicked()
 {
-
+    QModelIndex index = ui->chapterTable->currentIndex();
+    int row = index.row();
+    mModel->removeRows(row, 1);
 }
 
 void ChaptersFrame::on_assignScenes_clicked()
@@ -114,13 +120,13 @@ void ChaptersFrame::on_assignScenes_clicked()
 
 void ChaptersFrame::on_chapterTitle_textEdited(const QString &arg1)
 {
-    mSelectedChapter->setTitle(arg1);
+    mModel->setData(ui->chapterTable->currentIndex(), arg1,
+                    ChapterModel::TitleRole);
+    emit chapterModified();
 }
 
 void ChaptersFrame::on_chapterTable_activated(const QModelIndex &index)
 {
-    int chapterId = mModel->data(index, ChapterModel::ChapterId).toInt();
-    mSelectedChapter = mainWindow()->novel()->chapter(chapterId);
     emit onChapterSelected();
 }
 
@@ -131,12 +137,17 @@ void ChaptersFrame::on_chapterTable_clicked(const QModelIndex &index)
 
 void ChaptersFrame::on_chapterComplete_toggled(bool checked)
 {
-    int rev = mSelectedChapter->currentRevision();
-    mSelectedChapter->revisions()[rev]->setIsComplete(checked);
+    Chapter *chapter = mainWindow()
+            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
+    int rev = chapter->currentRevision();
+    chapter->revisions()[rev]->setIsComplete(checked);
 }
 
 void ChaptersFrame::on_chapterRevision_valueChanged(int arg1)
 {
-    mSelectedChapter->setCurrentRevision(arg1-1);
+    if (arg1 < 1) return;
+    Chapter *chapter = mainWindow()
+            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
+    chapter->setCurrentRevision(arg1-1);
     emit revisionChanged();
 }

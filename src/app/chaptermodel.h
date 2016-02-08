@@ -24,6 +24,8 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex &index, const QVariant &value,
+                 int role = Qt::DisplayRole);
 
     bool insertRows(int row, int count,
                     const QModelIndex & parent = QModelIndex());
@@ -36,7 +38,12 @@ public:
     void setNovel(Novel *novel);
 
     // Custom roles
-    static const int ChapterId = Qt::UserRole;
+    static const int IdRole = Qt::UserRole,
+        NumberRole = Qt::UserRole + 1,
+        TitleRole = Qt::DisplayRole,
+        ContentRole = Qt::UserRole + 2,
+        RevisionRole = Qt::UserRole + 4,
+        CompleteRole = Qt::UserRole + 8;
     // Column numbers
     static const int NUMBER = 0,
         TITLE = 1;

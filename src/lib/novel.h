@@ -68,8 +68,10 @@ public:
     Chapter *chapterByNumber(int number);
     Chapter *chapter(int id) const;
     void setChapters(const QList<Chapter *> &value);
-    void addChapter(Chapter *chapter);
+    void addChapter(Chapter *chapter, int loc = -1);
     Revision *chapterRevision(int chapter, int revision);
+    void removeChapter(Chapter *chapter);
+    void removeChapter(int chapterId);
 
     Novel::PointOfView getPointOfView() const;
     void setPointOfView(const Novel::PointOfView &pointOfView);

@@ -49,6 +49,7 @@ public:
     static Chapter *deserialize(Novel *novel, const QJsonObject &object);
     static QList<Chapter *> deserialize(Novel *novel, const QJsonArray &object);
 
+    int number();
     QList<Revision *> revisions() const;
     void setRevisions(const QList<Revision *> &revisions);
     Revision *addRevision();

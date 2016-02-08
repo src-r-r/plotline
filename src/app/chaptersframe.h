@@ -27,11 +27,13 @@ private:
 signals:
     void chapterSelected();
     void revisionChanged();
+    void chapterModified();
 
 public slots:
     void onNovelLoad();
     void onNovelNew();
 
+    void onChapterModified();
     void onChapterSelected();
     void onRevisionChanged();
 

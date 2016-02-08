@@ -38,7 +38,8 @@ void RevisionDialog::on_addRevision_clicked()
 
 void RevisionDialog::on_revisionNumber_valueChanged(int arg1)
 {
-    mRevision = arg1-1;
+    qDebug() << "revision value changed:" << arg1;
+    mRevision = arg1 - 1;
 }
 
 void RevisionDialog::on_buttonBox_accepted()
@@ -46,6 +47,10 @@ void RevisionDialog::on_buttonBox_accepted()
     for (int i = 0; i < mNewRevisions; ++i)
         mainWindow()->novel()->addRevision();
     if (mNewRevisions > 0)
-        mRevision = mainWindow()->novel()->revisionCount();
+        mRevision = mainWindow()->novel()->revisionCount()-1;
+    qDebug() << "Revisions changed:" << "\n"
+             << "New revisions:" << mNewRevisions << "\n"
+             << "Selected revision:" << mRevision;
     mainWindow()->novel()->setCurrentRevision(mRevision, true);
+    emit mainWindow()->novelChanged();
 }

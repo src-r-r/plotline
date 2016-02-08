@@ -53,3 +53,7 @@ specify the headline (a quick description of what's going on) and the action
 Here you can actually write your novel.
 
 ## The Menu
+
+### Novel > Revisions
+
+Add revisions to your novel. Each revision is exactly 

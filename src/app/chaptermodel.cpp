@@ -3,24 +3,12 @@
 ChapterModel::ChapterModel(Novel *novel, QObject *parent) : QAbstractTableModel(parent)
 {
     mNovel = novel;
-    mRowCount = 0;
 
     QList<Chapter *> chapters = mNovel->chapters();
-    insertRows(0, chapters.count());
-    QModelIndex d;
     mColCount = 1;
     for (int i = 0; i < chapters.count(); ++i){
-        int id = chapters[i]->id();
-        for (int j = 0; j < columnCount(); ++j)
-            setData(index(i, j), QVariant(id), ChapterId);
-        d = index(i, NUMBER);
-        setData(d, QString(i+1));
-
-        if (!chapters[i]->title().isEmpty()){
+        if (!chapters[i]->title().isEmpty())
             mColCount = 2;
-            d = index(i, TITLE);
-            setData(d, chapters[i]->title());
-        }
     }
 }
 
@@ -44,6 +32,9 @@ bool ChapterModel::insertRows(int row, int count, const QModelIndex &parent)
 
     beginInsertRows(parent, row, row+(count-1));
 
+    for (int i = row; i < row + (count-1); ++i)
+        mNovel->addChapter(new Chapter(), i);
+
     endInsertRows();
 
     return true;
@@ -61,6 +52,9 @@ bool ChapterModel::removeRows(int row, int count, const QModelIndex &parent)
     if (end > rowCount()-1)
         end = rowCount()-1;
     beginRemoveRows(parent, row, end);
+
+    for (int i = row; i < row + (count-1); ++i)
+        mNovel->removeChapter(mNovel->chapters()[i]);
 
     endRemoveRows();
     return true;
@@ -89,31 +83,83 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (role == ChapterId)
+    if (role == IdRole){
+        qDebug() << "Returning chapter ID" << chapter->id();
         return QVariant(chapter->id());
+    }
 
     if (role == Qt::EditRole || role == Qt::DisplayRole){
         switch(col){
         case NUMBER:
-            return QVariant(row+1);
+            return QVariant(chapter->number());
         case TITLE:
             return chapter->title();
         }
     }
+
+    if (role == TitleRole)
+        return chapter->title();
+    if (role == ContentRole)
+        return chapter->content(chapter->currentRevision());
+    if (role == RevisionRole)
+        return QVariant(chapter->currentRevision());
+    if (role == NumberRole)
+        return QVariant(chapter->number());
+    if (role == CompleteRole)
+        return QVariant(chapter->revisions()[chapter->currentRevision()]
+                ->isComplete());
     return QVariant();
+}
+
+bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
+                           int role)
+{
+    int row = index.row();
+
+    if (!index.isValid()){
+        qWarning() << "Setting chapter data: invalid index.";
+        return false;
+    }
+
+    if (row >= mNovel->chapters().count() || row < 0){
+        qWarning() << "Setting chapter data: invalid index" << index;
+        return false;
+    }
+
+    Chapter *chapter = mNovel->chapters()[row];
+
+    if (role == TitleRole){
+        chapter->setTitle(value.toString());
+    } else if (role == ContentRole) {
+        chapter->revisions()[chapter->currentRevision()]
+                ->setContent(value.toString());
+    } else if (role == RevisionRole) {
+        chapter->setCurrentRevision(value.toInt());
+    } else if (role == NumberRole) {
+        qWarning() << "Number role is read only. Leaving alone.";
+    } else if (role == CompleteRole) {
+        chapter->revisions()[chapter->currentRevision()]
+                ->setIsComplete(value.toBool());
+    } else {
+        return false;
+    }
+    return true;
 }
 
 QVariant ChapterModel::headerData(int section, Qt::Orientation orientation,
                                       int role) const
 {
-    if (orientation == Qt::Horizontal) {
-        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-            if (section == NUMBER)
-                return QString("");
-            if (section == TITLE)
-                return tr("Chapter");
-        }
-    }
+    // kind of obvious what this table is and what the columns mean.
+    // Leave blank and just return a QVariant.
+
+//    if (orientation == Qt::Horizontal) {
+//        if (role == Qt::DisplayRole || role == Qt::EditRole) {
+//            if (section == NUMBER)
+//                return QString("");
+//            if (section == TITLE)
+//                return tr("Chapter");
+//        }
+//    }
     return QVariant();
 }
 
