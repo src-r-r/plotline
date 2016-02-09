@@ -40,10 +40,10 @@ public:
     // Custom roles
     static const int IdRole = Qt::UserRole,
         NumberRole = Qt::UserRole + 1,
-        TitleRole = Qt::DisplayRole,
-        ContentRole = Qt::UserRole + 2,
-        RevisionRole = Qt::UserRole + 4,
-        CompleteRole = Qt::UserRole + 8;
+        TitleRole = Qt::UserRole + 2,
+        ContentRole = Qt::UserRole + 4,
+        RevisionRole = Qt::UserRole + 8,
+        CompleteRole = Qt::UserRole + 16;
     // Column numbers
     static const int NUMBER = 0,
         TITLE = 1;

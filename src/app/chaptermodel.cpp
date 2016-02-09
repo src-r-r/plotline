@@ -6,10 +6,9 @@ ChapterModel::ChapterModel(Novel *novel, QObject *parent) : QAbstractTableModel(
 
     QList<Chapter *> chapters = mNovel->chapters();
     mColCount = 1;
-    for (int i = 0; i < chapters.count(); ++i){
+    for (int i = 0; i < chapters.count(); ++i)
         if (!chapters[i]->title().isEmpty())
             mColCount = 2;
-    }
 }
 
 int ChapterModel::rowCount(const QModelIndex &parent) const

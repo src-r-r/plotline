@@ -17,6 +17,8 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
             this, SLOT(onRevisionChanged()));
     connect(this, SIGNAL(chapterModified()),
             this, SLOT(onChapterModified()));
+
+    ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
 }
 
 ChaptersFrame::~ChaptersFrame()
@@ -60,6 +62,8 @@ void ChaptersFrame::onChapterSelected()
     ui->chapterTitle->setText(title);
     ui->chapterContent->setPlainText(content);
     ui->chapterRevision->setValue(revision);
+    ui->chapterRevision->setMaximum(mainWindow()->novel()->revisionCount()+1);
+    ui->chapterRevision->setMinimum(1);
     ui->chapterComplete->setChecked(complete);
 
     emit revisionChanged();
@@ -146,8 +150,7 @@ void ChaptersFrame::on_chapterComplete_toggled(bool checked)
 void ChaptersFrame::on_chapterRevision_valueChanged(int arg1)
 {
     if (arg1 < 1) return;
-    Chapter *chapter = mainWindow()
-            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
-    chapter->setCurrentRevision(arg1-1);
+    mModel->setData(ui->chapterTable->currentIndex(), QVariant(arg1-1),
+                    ChapterModel::RevisionRole);
     emit revisionChanged();
 }
