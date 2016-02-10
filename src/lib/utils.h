@@ -20,6 +20,8 @@ QString friendlyList(const QStringList &stringList);
 
 // Thanks to http://stackoverflow.com/a/7077340
 void clearLayout(QLayout* layout, bool deleteWidgets = true);
+void setEnabledRecursive(QLayout *layout, bool enabled);
+void setDisabledRecursive(QLayout *layout, bool enabled);
 
 int findCharReverse(const QString &chars, const QString &s, const int from,
                     const QString &escape);

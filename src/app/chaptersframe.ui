@@ -81,6 +81,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../res/plotline.qrc">
+               <normaloff>:/images/images/list-add.png</normaloff>:/images/images/list-add.png</iconset>
+             </property>
             </widget>
            </item>
            <item>
@@ -94,6 +98,10 @@
              <property name="text">
               <string/>
              </property>
+             <property name="icon">
+              <iconset resource="../res/plotline.qrc">
+               <normaloff>:/images/images/utilities-file-archiver.png</normaloff>:/images/images/utilities-file-archiver.png</iconset>
+             </property>
             </widget>
            </item>
            <item>
@@ -106,6 +114,10 @@
              </property>
              <property name="text">
               <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../res/plotline.qrc">
+               <normaloff>:/images/images/list-remove.png</normaloff>:/images/images/list-remove.png</iconset>
              </property>
             </widget>
            </item>
@@ -206,6 +218,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/plotline.qrc"/>
+ </resources>
  <connections/>
 </ui>

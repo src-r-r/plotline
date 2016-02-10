@@ -89,3 +89,25 @@ QString substring(const QString &string, int start, int end)
         sub += string[i];
     return sub;
 }
+
+void setEnabledRecursive(QLayout *layout, bool enabled)
+{
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget())
+            widget->setEnabled(enabled);
+        if (QLayout* childLayout = item->layout())
+            setEnabledRecursive(childLayout, enabled);
+    }
+}
+
+void setDisabledRecursive(QLayout *layout, bool disabled)
+{
+    while (QLayoutItem* item = layout->takeAt(0))
+    {
+        if (QWidget* widget = item->widget())
+            widget->setDisabled(disabled);
+        if (QLayout* childLayout = item->layout())
+            setDisabledRecursive(childLayout, disabled);
+    }
+}

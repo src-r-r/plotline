@@ -208,6 +208,12 @@ void MainWindow::openNovel(const QString &path)
     emit novelLoaded();
 }
 
+void MainWindow::openTab(const int index)
+{
+    qDebug() << "Opening tab" << index;
+    emit ui->tabWidget->tabBarClicked(index);
+}
+
 void MainWindow::onNovelLoaded()
 {
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;

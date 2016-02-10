@@ -28,6 +28,7 @@ signals:
     void chapterSelected();
     void revisionChanged();
     void chapterModified();
+    void eliminateDistractions();
 
 public slots:
     void onNovelLoad();
@@ -36,6 +37,7 @@ public slots:
     void onChapterModified();
     void onChapterSelected();
     void onRevisionChanged();
+    void onEliminateDistractions();
 
 private slots:
     void on_chapterFilter_activated(int index);
@@ -48,6 +50,9 @@ private slots:
     void on_chapterTable_clicked(const QModelIndex &index);
     void on_chapterComplete_toggled(bool checked);
     void on_chapterRevision_valueChanged(int arg1);
+    void on_chapterContent_textChanged();
+
+    void clearLayout(bool enabled, bool clear);
 };
 
 #endif // CHAPTERSFRAME_H

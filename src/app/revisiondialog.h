@@ -31,7 +31,7 @@ private:
 
     MainWindow *mMainWindow;
 
-    int mNewRevisions = 0;
+    QStringList mNewRevisions;
     int mRevision = 0;
 };
 

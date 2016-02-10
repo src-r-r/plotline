@@ -8,9 +8,13 @@ RevisionDialog::RevisionDialog(MainWindow *mainWindow, QWidget *parent) :
     ui->setupUi(this);
     mMainWindow = mainWindow;
 
-    ui->revisionNumber->setRange(1, mainWindow->novel()->revisionCount());
-    ui->revisionNumber->setValue(mainWindow->novel()->currentRevision()+1);
-    mRevision = mainWindow->novel()->currentRevision();
+    Novel *novel = mainWindow->novel();
+    int count = novel->revisionCount(),
+            rev = novel->currentRevision();
+
+    ui->revisionNumber->setRange(1, count);
+    ui->revisionNumber->setValue(rev);
+    mRevision = rev;
 }
 
 RevisionDialog::~RevisionDialog()
@@ -30,27 +34,37 @@ void RevisionDialog::setMainWindow(MainWindow *mainWindow)
 
 void RevisionDialog::on_addRevision_clicked()
 {
-    ++mNewRevisions;
-    ui->revisionNumber->setMaximum(mainWindow()->novel()
-                                   ->revisionCount() + mNewRevisions);
-    ui->revisionNumber->setValue(ui->revisionNumber->maximum());
+    Novel *novel = mainWindow()->novel();
+    mNewRevisions.append(QString());
+    int n = novel->revisionCount() + mNewRevisions.count();
+    ui->revisionNumber->setMaximum(n);
+    ui->revisionNumber->setValue(n);
 }
 
 void RevisionDialog::on_revisionNumber_valueChanged(int arg1)
 {
     qDebug() << "revision value changed:" << arg1;
+    Novel *novel = mainWindow()->novel();
     mRevision = arg1 - 1;
+
+    QString text = QString();
+
+    int l = novel->revisionCount();
+
+    if (mRevision < novel->revisionCount())
+        text = novel->revisionComment(mRevision);
+    else
+        text = mNewRevisions[mRevision - l];
+    ui->revisionComments->setPlainText(text);
 }
 
 void RevisionDialog::on_buttonBox_accepted()
 {
-    for (int i = 0; i < mNewRevisions; ++i)
-        mainWindow()->novel()->addRevision();
-    if (mNewRevisions > 0)
-        mRevision = mainWindow()->novel()->revisionCount()-1;
+    for (QString rev : mNewRevisions)
+        mainWindow()->novel()->addRevision(rev);
     qDebug() << "Revisions changed:" << "\n"
              << "New revisions:" << mNewRevisions << "\n"
              << "Selected revision:" << mRevision;
-    mainWindow()->novel()->setCurrentRevision(mRevision, true);
+    mainWindow()->novel()->setCurrentRevision(mRevision);
     emit mainWindow()->novelChanged();
 }

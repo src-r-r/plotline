@@ -19,5 +19,6 @@
         <file>images/list-add.png</file>
         <file>images/list-remove.png</file>
         <file>images/utilities-file-archiver.png</file>
+        <file>images/revision.svg</file>
     </qresource>
 </RCC>

@@ -9,6 +9,10 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
 
     mModel = new ChapterModel(mainWindow->novel());
     ui->chapterTable->setModel(mModel);
+    ui->chapterTable->resizeColumnsToContents();
+    ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
+
+    clearLayout(false, true);
 
     // Connect the signals
     connect(this, SIGNAL(chapterSelected()),
@@ -18,7 +22,6 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
     connect(this, SIGNAL(chapterModified()),
             this, SLOT(onChapterModified()));
 
-    ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
 }
 
 ChaptersFrame::~ChaptersFrame()
@@ -30,11 +33,13 @@ void ChaptersFrame::onNovelLoad()
 {
     mModel = new ChapterModel(mainWindow()->novel());
     ui->chapterTable->setModel(mModel);
+    ui->chapterTable->resizeColumnsToContents();
+    ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
 }
 
 void ChaptersFrame::onNovelNew()
 {
-
+    clearLayout(false, true);
 }
 
 void ChaptersFrame::onChapterModified()
@@ -48,7 +53,12 @@ void ChaptersFrame::onChapterModified()
 
 void ChaptersFrame::onChapterSelected()
 {
-    ui->chapterLayout->setEnabled(true);
+
+    clearLayout(true, true);
+
+    ui->deleteChapter->setEnabled(true);
+    ui->archiveChapter->setEnabled(true);
+    ui->assignScenes->setEnabled(true);
 
     QModelIndex index = ui->chapterTable->currentIndex();
 
@@ -61,8 +71,8 @@ void ChaptersFrame::onChapterSelected()
     ui->chapterNumber->setText(QVariant(number).toString());
     ui->chapterTitle->setText(title);
     ui->chapterContent->setPlainText(content);
-    ui->chapterRevision->setValue(revision);
-    ui->chapterRevision->setMaximum(mainWindow()->novel()->revisionCount()+1);
+    ui->chapterRevision->setValue(revision+1);
+    ui->chapterRevision->setMaximum(mainWindow()->novel()->revisionCount());
     ui->chapterRevision->setMinimum(1);
     ui->chapterComplete->setChecked(complete);
 
@@ -71,8 +81,12 @@ void ChaptersFrame::onChapterSelected()
 
 void ChaptersFrame::onRevisionChanged()
 {
-    Chapter *chapter = mainWindow()
-            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
+    if (!ui->chapterTable->currentIndex().isValid()){
+        qWarning() << "Invalid index" << ui->chapterTable->currentIndex();
+        return;
+    }
+    int i = ui->chapterTable->currentIndex().row();
+    Chapter *chapter = mainWindow()->novel()->chapters()[i];
     qDebug() << "Revisions for chapter:" << chapter->revisions().count();
     int revision = chapter->currentRevision();
     int globalRevision = mainWindow()->novel()->currentRevision();
@@ -98,7 +112,10 @@ void ChaptersFrame::on_chapterFilter_activated(int index)
 
 void ChaptersFrame::on_addChapter_clicked()
 {
-    mModel->insertRows(mModel->rowCount(), 1);
+    if (!mModel->insertRows(mModel->rowCount(), 1)){
+        qWarning() << "Error inserting rows at" << mModel->rowCount();
+        return;
+    }
     emit novelModified();
 
     ui->chapterTable->setCurrentIndex(mModel->index(mModel->rowCount(), 0));
@@ -136,7 +153,10 @@ void ChaptersFrame::on_chapterTable_activated(const QModelIndex &index)
 
 void ChaptersFrame::on_chapterTable_clicked(const QModelIndex &index)
 {
-    on_chapterTable_activated(index);
+    if (!index.isValid())
+        clearLayout(false, true);
+    else
+        on_chapterTable_activated(index);
 }
 
 void ChaptersFrame::on_chapterComplete_toggled(bool checked)
@@ -153,4 +173,33 @@ void ChaptersFrame::on_chapterRevision_valueChanged(int arg1)
     mModel->setData(ui->chapterTable->currentIndex(), QVariant(arg1-1),
                     ChapterModel::RevisionRole);
     emit revisionChanged();
+}
+
+void ChaptersFrame::on_chapterContent_textChanged()
+{
+    QModelIndex index = ui->chapterTable->currentIndex();
+    int role = ChapterModel::ContentRole;
+    mModel->setData(index, ui->chapterContent->toPlainText(), role);
+    emit chapterModified();
+}
+
+void ChaptersFrame::clearLayout(bool enable, bool clear)
+{
+    if (clear){
+        ui->chapterNumber->clear();
+        ui->chapterTitle->clear();
+        ui->chapterComplete->setChecked(false);
+        ui->chapterRevision->clear();
+        ui->chapterContent->clear();
+    }
+    QList<QWidget *> toDisable({
+        ui->chapterNumber, ui->chapterTitle, ui->chapterComplete,
+                                   ui->chapterRevision, ui->chapterContent
+    });
+    for (QWidget *w : toDisable){
+        if (enable)
+            w->setEnabled(true);
+        else
+            w->setDisabled(true);
+    }
 }

@@ -61,6 +61,8 @@ public:
     void setNovel(Novel *novel);
     void openNovel(const QString &path);
 
+    void openTab(const int index);
+
 signals:
     void saveNovel();
     void novelChanged();

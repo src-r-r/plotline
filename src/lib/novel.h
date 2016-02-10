@@ -39,7 +39,7 @@ public:
                    const QList<Scene *> scenes = QList<Scene *>(),
                    const QList<Chapter *> chapters = QList<Chapter *>(),
                    const QList<Plotline *> plotlines = QList<Plotline *>(),
-                   int revisionCount = 1,
+                   const QStringList &revisions = QStringList(),
                    int currentRevision = -1,
                    int id = -1,
                    QObject *parent = 0);
@@ -98,11 +98,17 @@ public:
     QString writeTo(const QString &filePath);
     static Novel *readFrom(const QString &filePath);
 
-    int currentRevision() const;
+    QStringList revisions() const;
+    void addRevision(const QString &comment = QString());
+    void removeRevision(const int index=-1);
+    void setRevisionComment(const int index, const QString &comment);
+    void setRevisionComment(const QString &comment);
+    QString revisionComment(const int index=-1) const;
     int revisionCount() const;
-    void setCurrentRevision(int currentRevision, bool syncChapters=false);
-    void addRevision();
-    void removeRevision(int num);
+    void goToLatestRevision();
+
+    int currentRevision() const;
+    void setCurrentRevision(int currentRevison);
 
 private:
 
@@ -115,7 +121,7 @@ private:
         JSON_CHARACTERS,
         JSON_CHAPTERS,
         JSON_PLOTLINES,
-        JSON_REVISION_COUNT,
+        JSON_REVISIONS,
         JSON_CURRENT_REVISION;
 
     QString mWorkingTitle,
@@ -128,7 +134,7 @@ private:
     QList<Chapter *> mChapters;
     QList<Plotline *> mPlotlines;
 
-    int mRevisionCount;
+    QStringList mRevisions;
     int mCurrentRevision;
 
 signals:
