@@ -39,10 +39,20 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(this, SIGNAL(novelNew()), frames[i], SLOT(onNovelNew()));
     }
 
+    mDistractions << ui->tabWidget->tabBar()
+                  << menuWidget();
+    for (QToolBar *toolbar : findChildren<QToolBar *>(""))
+        mDistractions << toolbar;
+
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
     connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew()));
     connect(this, SIGNAL(novelLoaded()),
             this, SLOT(onNovelLoaded()));
+
+    connect(mChapterFrame, SIGNAL(hideDistractions()),
+            this, SLOT(onHideDistractions()));
+    connect(mChapterFrame, SIGNAL(showDistractions()),
+            this, SLOT(onShowDistractions()));
 }
 
 MainWindow::~MainWindow()
@@ -149,7 +159,6 @@ void MainWindow::on_actionNovelRevisions_triggered()
 
 void MainWindow::on_actionNovelExport_triggered()
 {
-
 }
 
 void MainWindow::on_actionNovelBind_triggered()
@@ -190,6 +199,11 @@ void MainWindow::on_MainWindow_destroyed()
     }
 }
 
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    emit mChapterFrame->showDistractions();
+}
+
 Novel *MainWindow::novel() const
 {
     return mNovel;
@@ -218,4 +232,17 @@ void MainWindow::onNovelLoaded()
 {
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle("Plotline - " + path);
+}
+
+void MainWindow::onHideDistractions()
+{
+    for (QWidget *widget : mDistractions)
+        widget->hide();
+    this->setMouseTracking(true);
+}
+
+void MainWindow::onShowDistractions()
+{
+    for (QWidget *widget : mDistractions)
+        widget->show();
 }

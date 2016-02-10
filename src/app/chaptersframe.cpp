@@ -12,6 +12,23 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
     ui->chapterTable->resizeColumnsToContents();
     ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
 
+    mDistractions << ui->chapterTable
+                       << ui->chapterFilter
+                       << ui->addChapter
+                       << ui->archiveChapter
+                       << ui->deleteChapter
+                       << ui->assignScenes
+                       << ui->chapterNumber
+                       << ui->chapterTitle
+                       << ui->chapterComplete
+                       << ui->chapterRevision;
+
+    // Set up the distraction timer.
+    // TODO: put the timeout in QSettings.
+    mDistractionTimer = new QTimer(this);
+    connect(mDistractionTimer, SIGNAL(timeout()),
+            this, SLOT(onDistractionTimeout()));
+
     clearLayout(false, true);
 
     // Connect the signals
@@ -21,6 +38,10 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
             this, SLOT(onRevisionChanged()));
     connect(this, SIGNAL(chapterModified()),
             this, SLOT(onChapterModified()));
+    connect(this, SIGNAL(hideDistractions()),
+            this, SLOT(onHideDistractions()));
+    connect(this, SIGNAL(showDistractions()),
+            this, SLOT(onShowDistractions()));
 
 }
 
@@ -103,6 +124,29 @@ void ChaptersFrame::onRevisionChanged()
 
     ui->chapterComplete->setChecked(isComplete);
     ui->chapterContent->setPlainText(content);
+}
+
+void ChaptersFrame::onHideDistractions()
+{
+    mHasDistractions = false;
+    for (QWidget *w : mDistractions)
+        w->hide();
+    ui->chapterDistractionFree->setText(tr("Show Distractions"));
+    this->setMouseTracking(true);
+}
+
+void ChaptersFrame::onShowDistractions()
+{
+    mHasDistractions = true;
+    for (QWidget *w : mDistractions)
+        w->show();
+}
+
+void ChaptersFrame::mouseMoveEvent(QMouseEvent *event)
+{
+    if (mHasDistractions) return;
+    mDistractionTimer->start(5000);
+    emit showDistractions();
 }
 
 void ChaptersFrame::on_chapterFilter_activated(int index)
@@ -192,9 +236,9 @@ void ChaptersFrame::clearLayout(bool enable, bool clear)
         ui->chapterRevision->clear();
         ui->chapterContent->clear();
     }
-    QList<QWidget *> toDisable({
+    QWidgetList toDisable({
         ui->chapterNumber, ui->chapterTitle, ui->chapterComplete,
-                                   ui->chapterRevision, ui->chapterContent
+        ui->chapterRevision, ui->chapterContent, ui->chapterDistractionFree
     });
     for (QWidget *w : toDisable){
         if (enable)
@@ -203,3 +247,20 @@ void ChaptersFrame::clearLayout(bool enable, bool clear)
             w->setDisabled(true);
     }
 }
+
+void ChaptersFrame::onDistractionTimeout()
+{
+    emit hideDistractions();
+}
+
+void ChaptersFrame::on_chapterDistractionFree_clicked()
+{
+    if (mHasDistractions){
+        emit hideDistractions();
+        ui->chapterDistractionFree->setText(tr("Hide Distractions"));
+    } else {
+        emit showDistractions();
+        ui->chapterDistractionFree->setText(tr("Show Distractions"));
+    }
+}
+

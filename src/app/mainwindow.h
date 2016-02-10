@@ -10,6 +10,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QItemSelectionModel>
+#include <QWidgetList>
+#include <QToolBar>
 
 #include "novel.h"
 #include "characteritemmodel.h"
@@ -75,6 +77,8 @@ private slots:
     void onSaveNovel();
     void onNovelNew();
     void onNovelLoaded();
+    void onHideDistractions();
+    void onShowDistractions();
 
     void on_actionPreferences_triggered();
     void on_actionNovelNew_triggered();
@@ -86,6 +90,10 @@ private slots:
     void on_actionNovelSaveAs_triggered();
     void on_actionNovelClose_triggered();
     void on_MainWindow_destroyed();
+
+protected:
+
+    void mouseMoveEvent(QMouseEvent *event);
 
 private:
 
@@ -106,6 +114,7 @@ private:
     Novel *mNovel;
     bool mIsSaved;
     QString mOpenedFile;
+    QWidgetList mDistractions;
 
 };
 

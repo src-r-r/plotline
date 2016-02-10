@@ -31,7 +31,7 @@
         <bool>false</bool>
        </property>
        <widget class="QWidget" name="layoutWidget_4">
-        <layout class="QVBoxLayout" name="verticalLayout_11">
+        <layout class="QVBoxLayout" name="chapterListLayout">
          <property name="sizeConstraint">
           <enum>QLayout::SetMaximumSize</enum>
          </property>

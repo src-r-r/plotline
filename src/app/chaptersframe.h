@@ -1,6 +1,7 @@
 #ifndef CHAPTERSFRAME_H
 #define CHAPTERSFRAME_H
 
+#include <QWidgetList>
 #include "plotlineappframe.h"
 #include "chaptermodel.h"
 
@@ -23,12 +24,18 @@ private:
 
     Chapter *mSelectedChapter;
     ChapterModel *mModel;
+    bool mHasDistractions = true;
+
+    QWidgetList mDistractions;
+    QTimer *mDistractionTimer;
 
 signals:
     void chapterSelected();
     void revisionChanged();
     void chapterModified();
-    void eliminateDistractions();
+
+    void hideDistractions();
+    void showDistractions();
 
 public slots:
     void onNovelLoad();
@@ -37,7 +44,11 @@ public slots:
     void onChapterModified();
     void onChapterSelected();
     void onRevisionChanged();
-    void onEliminateDistractions();
+    void onHideDistractions();
+    void onShowDistractions();
+
+protected:
+    void mouseMoveEvent(QMouseEvent *event);
 
 private slots:
     void on_chapterFilter_activated(int index);
@@ -51,8 +62,10 @@ private slots:
     void on_chapterComplete_toggled(bool checked);
     void on_chapterRevision_valueChanged(int arg1);
     void on_chapterContent_textChanged();
+    void on_chapterDistractionFree_clicked();
 
     void clearLayout(bool enabled, bool clear);
+    void onDistractionTimeout(void);
 };
 
 #endif // CHAPTERSFRAME_H
