@@ -42,6 +42,8 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
             this, SLOT(onHideDistractions()));
     connect(this, SIGNAL(showDistractions()),
             this, SLOT(onShowDistractions()));
+    connect(this, SIGNAL(revisionSet()),
+            this, SLOT(onRevisionSet()));
 
 }
 
@@ -65,9 +67,13 @@ void ChaptersFrame::onNovelNew()
 
 void ChaptersFrame::onChapterModified()
 {
-    Chapter *chapter = mainWindow()
-            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
     QModelIndex index = ui->chapterTable->currentIndex();
+    if (!index.isValid()){
+        qWarning() << "character: invalid index";
+        return;
+    }
+    Novel *novel = mainWindow()->novel();
+    Chapter *chapter = novel->chapters()[index.row()];
     mModel->setData(index, chapter->title());
     emit novelModified();
 }
@@ -124,6 +130,18 @@ void ChaptersFrame::onRevisionChanged()
 
     ui->chapterComplete->setChecked(isComplete);
     ui->chapterContent->setPlainText(content);
+}
+
+void ChaptersFrame::onRevisionSet()
+{
+    QModelIndex index = ui->chapterTable->currentIndex();
+    if (!index.isValid())
+        return;
+
+    Chapter *chapter = mainWindow()->novel()->chapters()[index.row()];
+    int rev = chapter->currentRevision();
+    ui->chapterRevision->setValue(rev);
+    ui->chapterContent->setPlainText(chapter->content(rev));
 }
 
 void ChaptersFrame::onHideDistractions()

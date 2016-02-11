@@ -51,13 +51,14 @@ public:
 
     int number();
     QList<Revision *> revisions() const;
-    void setRevisions(const QList<Revision *> &revisions);
     Revision *addRevision();
     void removeRevision(int i);
     int currentRevision() const;
     void setCurrentRevision(int currentRevision);
 
     QString content(int revision) const;
+    QString currentContent() const;
+    QString latestContent() const;
 
 signals:
 

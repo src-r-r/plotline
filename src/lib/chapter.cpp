@@ -20,11 +20,6 @@ QList<Revision *> Chapter::revisions() const
     return mRevisions;
 }
 
-void Chapter::setRevisions(const QList<Revision *> &revisions)
-{
-    mRevisions = revisions;
-}
-
 /**
  * @brief Chapter::addRevision
  * Add a new revision to the chapter, copying over the last revision's content.
@@ -33,10 +28,9 @@ void Chapter::setRevisions(const QList<Revision *> &revisions)
 Revision *Chapter::addRevision()
 {
     Revision *r = 0;
-    if (mRevisions.isEmpty())
-        r = new Revision();
-    else
-        r = new Revision(mRevisions.last()->content());
+    QString content = mRevisions.empty() ? QString() :
+                                           mRevisions.last()->content();
+    r = new Revision(content);
     mRevisions.append(r);
     return r;
 }
@@ -49,6 +43,19 @@ void Chapter::removeRevision(int i)
 QString Chapter::content(int revision) const
 {
     return mRevisions[revision]->content();
+}
+
+QString Chapter::currentContent() const
+{
+    if (mRevisions.empty() || mCurrentRevision < 0
+            || mCurrentRevision > mRevisions.count()) return QString();
+    return content(mCurrentRevision);
+}
+
+QString Chapter::latestContent() const
+{
+    if (mRevisions.empty()) return QString();
+    return content(mRevisions.count()-1);
 }
 
 int Chapter::currentRevision() const

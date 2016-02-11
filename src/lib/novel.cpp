@@ -174,9 +174,12 @@ void Novel::removeChapter(Chapter *chapter)
     mChapters.removeAll(chapter);
 }
 
-void Novel::removeChapter(int chapterId)
+void Novel::removeChapterAt(int index, bool doDelete)
 {
-    return removeChapter(chapter(chapterId));
+    Chapter *chapter = mChapters[index];
+    mChapters.removeAt(index);
+    if (doDelete)
+        delete chapter;
 }
 
 Novel::PointOfView Novel::getPointOfView() const
@@ -485,6 +488,18 @@ QStringList Novel::revisions() const
 void Novel::addRevision(const QString &comment)
 {
     mRevisions.append(comment);
+    // Also copy the chapter contents.
+    for (Chapter *c : mChapters)
+        c->addRevision();
+}
+
+void Novel::addRevisions(const QStringList &comments)
+{
+    for (QString comment : comments){
+        mRevisions.append(comment);
+        for (Chapter *c : mChapters)
+            c->addRevision();
+    }
 }
 
 void Novel::removeRevision(const int index)
@@ -492,6 +507,14 @@ void Novel::removeRevision(const int index)
     if (index < 0)
         mRevisions.removeAt(mCurrentRevision);
     mRevisions.removeAt(index);
+}
+
+void Novel::setRevisions(const QStringList &revisions)
+{
+    mRevisions = revisions;
+    for (Chapter *c : mChapters)
+        while (c->revisions().count() > mRevisions.count())
+            c->addRevision();
 }
 
 void Novel::setRevisionComment(const int index, const QString &comment)

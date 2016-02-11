@@ -32,6 +32,7 @@ private:
 signals:
     void chapterSelected();
     void revisionChanged();
+    void revisionSet();
     void chapterModified();
 
     void hideDistractions();
@@ -44,6 +45,7 @@ public slots:
     void onChapterModified();
     void onChapterSelected();
     void onRevisionChanged();
+    void onRevisionSet();
     void onHideDistractions();
     void onShowDistractions();
 

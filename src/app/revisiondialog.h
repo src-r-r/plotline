@@ -26,13 +26,15 @@ private slots:
 
     void on_buttonBox_accepted();
 
+    void on_revisionComments_textChanged();
+
 private:
     Ui::RevisionDialog *ui;
 
     MainWindow *mMainWindow;
 
-    QStringList mNewRevisions;
-    int mRevision = 0;
+    QStringList mTmpRevisions;
+    int mTempRevision = 0;
 };
 
 #endif // REVISIONDIALOG_H

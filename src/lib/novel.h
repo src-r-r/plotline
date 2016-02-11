@@ -71,7 +71,7 @@ public:
     void addChapter(Chapter *chapter, int loc = -1);
     Revision *chapterRevision(int chapter, int revision);
     void removeChapter(Chapter *chapter);
-    void removeChapter(int chapterId);
+    void removeChapterAt(int index, bool doDelete=false);
 
     Novel::PointOfView getPointOfView() const;
     void setPointOfView(const Novel::PointOfView &pointOfView);
@@ -100,7 +100,9 @@ public:
 
     QStringList revisions() const;
     void addRevision(const QString &comment = QString());
+    void addRevisions(const QStringList &comments);
     void removeRevision(const int index=-1);
+    void setRevisions(const QStringList &revisions);
     void setRevisionComment(const int index, const QString &comment);
     void setRevisionComment(const QString &comment);
     QString revisionComment(const int index=-1) const;

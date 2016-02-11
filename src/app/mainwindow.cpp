@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     for (QToolBar *toolbar : findChildren<QToolBar *>(""))
         mDistractions << toolbar;
 
+    connect(this, SIGNAL(novelChanged()), this, SLOT(onNovelModified()));
     connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
     connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew()));
     connect(this, SIGNAL(novelLoaded()),
@@ -154,7 +155,8 @@ void MainWindow::on_actionNovelSave_triggered()
 void MainWindow::on_actionNovelRevisions_triggered()
 {
     RevisionDialog *dialog = new RevisionDialog(this);
-    dialog->show();
+    dialog->exec();
+    emit mChapterFrame->revisionSet();
 }
 
 void MainWindow::on_actionNovelExport_triggered()

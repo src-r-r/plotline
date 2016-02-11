@@ -29,11 +29,11 @@ bool ChapterModel::insertRows(int row, int count, const QModelIndex &parent)
         return false;
     }
 
-    int end = row + count;
+    int end = row + count-1;
 
     beginInsertRows(parent, row, end);
 
-    for (int i = row; i < end; ++i)
+    for (int i = row; i <= end; ++i)
         mNovel->addChapter(new Chapter(), i);
 
     endInsertRows();
@@ -54,8 +54,9 @@ bool ChapterModel::removeRows(int row, int count, const QModelIndex &parent)
         end = rowCount()-1;
     beginRemoveRows(parent, row, end);
 
-    for (int i = row; i < row + (count-1); ++i)
-        mNovel->removeChapter(mNovel->chapters()[i]);
+    for (int i = row; i <= end; ++i){
+        mNovel->removeChapterAt(i, true);
+    }
 
     endRemoveRows();
     return true;

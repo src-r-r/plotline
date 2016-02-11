@@ -11,10 +11,13 @@ RevisionDialog::RevisionDialog(MainWindow *mainWindow, QWidget *parent) :
     Novel *novel = mainWindow->novel();
     int count = novel->revisionCount(),
             rev = novel->currentRevision();
+    mTmpRevisions = novel->revisions();
 
     ui->revisionNumber->setRange(1, count);
-    ui->revisionNumber->setValue(rev);
-    mRevision = rev;
+    ui->revisionNumber->setValue(rev+1);
+    ui->revisionComments->setPlainText(novel->revisionComment(rev));
+
+    mTempRevision = rev;
 }
 
 RevisionDialog::~RevisionDialog()
@@ -35,36 +38,33 @@ void RevisionDialog::setMainWindow(MainWindow *mainWindow)
 void RevisionDialog::on_addRevision_clicked()
 {
     Novel *novel = mainWindow()->novel();
-    mNewRevisions.append(QString());
-    int n = novel->revisionCount() + mNewRevisions.count();
-    ui->revisionNumber->setMaximum(n);
-    ui->revisionNumber->setValue(n);
+    mTmpRevisions.append(QString());
+    ui->revisionNumber->setMaximum(mTmpRevisions.count());
+    ui->revisionNumber->setValue(mTmpRevisions.count());
 }
 
 void RevisionDialog::on_revisionNumber_valueChanged(int arg1)
 {
     qDebug() << "revision value changed:" << arg1;
-    Novel *novel = mainWindow()->novel();
-    mRevision = arg1 - 1;
-
-    QString text = QString();
-
-    int l = novel->revisionCount();
-
-    if (mRevision < novel->revisionCount())
-        text = novel->revisionComment(mRevision);
-    else
-        text = mNewRevisions[mRevision - l];
-    ui->revisionComments->setPlainText(text);
+    mTempRevision = arg1 - 1;
+    ui->revisionComments->setPlainText(mTmpRevisions[mTempRevision]);
 }
 
 void RevisionDialog::on_buttonBox_accepted()
 {
-    for (QString rev : mNewRevisions)
-        mainWindow()->novel()->addRevision(rev);
     qDebug() << "Revisions changed:" << "\n"
-             << "New revisions:" << mNewRevisions << "\n"
-             << "Selected revision:" << mRevision;
-    mainWindow()->novel()->setCurrentRevision(mRevision);
-    emit mainWindow()->novelChanged();
+             << "New revisions:" << mTmpRevisions << "\n"
+             << "Selected revision:" << mTempRevision;
+    if (mTempRevision != mainWindow()->novel()->currentRevision() ||
+            mTmpRevisions != mainWindow()->novel()->revisions())
+        emit mainWindow()->novelChanged();
+    mainWindow()->novel()->setRevisions(mTmpRevisions);
+    mainWindow()->novel()->setCurrentRevision(mTempRevision);
+}
+
+void RevisionDialog::on_revisionComments_textChanged()
+{
+    qDebug() << "revisions[" << mTempRevision << "] ="
+             << ui->revisionComments->toPlainText();
+    mTmpRevisions[mTempRevision] = ui->revisionComments->toPlainText();
 }
