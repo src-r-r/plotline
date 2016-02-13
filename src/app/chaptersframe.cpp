@@ -81,7 +81,7 @@ void ChaptersFrame::onChapterModified()
 void ChaptersFrame::onChapterSelected()
 {
 
-    clearLayout(true, true);
+    clearLayout(true, false);
 
     ui->deleteChapter->setEnabled(true);
     ui->archiveChapter->setEnabled(true);
@@ -94,6 +94,10 @@ void ChaptersFrame::onChapterSelected()
     int revision = mModel->data(index, ChapterModel::RevisionRole).toInt();
     bool complete = mModel->data(index, ChapterModel::CompleteRole).toBool();
     QString content = mModel->data(index, ChapterModel::ContentRole).toString();
+    bool canMark = mModel->data(index, ChapterModel::RevisionMarkableRole)
+            .toBool();
+
+    ui->chapterContent->document()->setModified(false);
 
     ui->chapterNumber->setText(QVariant(number).toString());
     ui->chapterTitle->setText(title);
@@ -102,46 +106,43 @@ void ChaptersFrame::onChapterSelected()
     ui->chapterRevision->setMaximum(mainWindow()->novel()->revisionCount());
     ui->chapterRevision->setMinimum(1);
     ui->chapterComplete->setChecked(complete);
+    ui->chapterComplete->setEnabled(canMark);
 
-    emit revisionChanged();
+    if (revision < mainWindow()->novel()->currentRevision()){
+        ui->chapterRevision->setStyleSheet("background-color: #ff7777;");
+        ui->chapterRevision->setStyleSheet("color: #000000;");
+    } else {
+        ui->chapterRevision->setStyleSheet("background-color: #ffffff;");
+        ui->chapterRevision->setStyleSheet("color: #000000;");
+    }
+
+    QSettings settings;
+    QString font = settings.value(PreferencesDialog::FONT).toString();
+    if (!font.isEmpty())
+        ui->chapterContent->setStyleSheet("font-family: " + font);
+
+    ui->chapterContent->document()->setModified(true);
+//    emit revisionChanged();
 }
 
 void ChaptersFrame::onRevisionChanged()
 {
-    if (!ui->chapterTable->currentIndex().isValid()){
+    QModelIndex index = ui->chapterTable->currentIndex();
+    if (!index.isValid()){
         qWarning() << "Invalid index" << ui->chapterTable->currentIndex();
         return;
     }
-    int i = ui->chapterTable->currentIndex().row();
-    Chapter *chapter = mainWindow()->novel()->chapters()[i];
-    qDebug() << "Revisions for chapter:" << chapter->revisions().count();
-    int revision = chapter->currentRevision();
-    int globalRevision = mainWindow()->novel()->currentRevision();
-    bool isComplete = chapter->revisions()[revision]->isComplete();
-    QString content = chapter->content(revision);
 
-    ui->chapterRevision->setValue(revision+1);
+    int revision = ui->chapterRevision->value()-1;
+    mModel->setData(index, QVariant(revision), ChapterModel::RevisionRole);
 
-    if (revision < globalRevision){
-        ui->chapterRevision->setStyleSheet("background-color: #ff0000;");
-    } else {
-        ui->chapterRevision->setStyleSheet("background-color: #ffffff;");
-    }
-
-    ui->chapterComplete->setChecked(isComplete);
-    ui->chapterContent->setPlainText(content);
+    emit chapterSelected();
+    emit chapterModified();
 }
 
 void ChaptersFrame::onRevisionSet()
 {
-    QModelIndex index = ui->chapterTable->currentIndex();
-    if (!index.isValid())
-        return;
-
-    Chapter *chapter = mainWindow()->novel()->chapters()[index.row()];
-    int rev = chapter->currentRevision();
-    ui->chapterRevision->setValue(rev);
-    ui->chapterContent->setPlainText(chapter->content(rev));
+    onRevisionChanged();
 }
 
 void ChaptersFrame::onHideDistractions()
@@ -210,7 +211,7 @@ void ChaptersFrame::on_chapterTitle_textEdited(const QString &arg1)
 
 void ChaptersFrame::on_chapterTable_activated(const QModelIndex &index)
 {
-    emit onChapterSelected();
+    emit chapterSelected();
 }
 
 void ChaptersFrame::on_chapterTable_clicked(const QModelIndex &index)
@@ -223,8 +224,13 @@ void ChaptersFrame::on_chapterTable_clicked(const QModelIndex &index)
 
 void ChaptersFrame::on_chapterComplete_toggled(bool checked)
 {
-    Chapter *chapter = mainWindow()
-            ->novel()->chapters()[ui->chapterTable->currentIndex().row()];
+    QModelIndex index = ui->chapterTable->currentIndex();
+    if (!index.isValid()){
+        qWarning() << "chapterComplete toggled: invalid index.";
+        return;
+    }
+    int r = index.row();
+    Chapter *chapter = mainWindow()->novel()->chapters()[r];
     int rev = chapter->currentRevision();
     chapter->revisions()[rev]->setIsComplete(checked);
 }

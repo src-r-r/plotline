@@ -43,7 +43,8 @@ public:
         TitleRole = Qt::UserRole + 2,
         ContentRole = Qt::UserRole + 4,
         RevisionRole = Qt::UserRole + 8,
-        CompleteRole = Qt::UserRole + 16;
+        RevisionMarkableRole = Qt::UserRole + 16,
+        CompleteRole = Qt::UserRole + 32;
     // Column numbers
     static const int NUMBER = 0,
         TITLE = 1;

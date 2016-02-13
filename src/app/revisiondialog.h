@@ -23,9 +23,7 @@ public:
 private slots:
     void on_addRevision_clicked();
     void on_revisionNumber_valueChanged(int arg1);
-
     void on_buttonBox_accepted();
-
     void on_revisionComments_textChanged();
 
 private:

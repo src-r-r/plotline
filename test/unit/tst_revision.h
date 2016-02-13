@@ -19,6 +19,9 @@ private Q_SLOTS:
     void testSerialize();
     void testDeserialize();
 
+    void testChapterRevisions();
+    void testNovelDeserialize();
+
 };
 
 #endif // TESTREVISION_H

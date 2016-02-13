@@ -55,6 +55,9 @@ public:
     void removeRevision(int i);
     int currentRevision() const;
     void setCurrentRevision(int currentRevision);
+    void setContent(const QString &content, const int revision=-1);
+    void setIsComplete(const bool complete, const int revision=-1);
+    bool canMarkCompleted(const int revision=-1) const;
 
     QString content(int revision) const;
     QString currentContent() const;

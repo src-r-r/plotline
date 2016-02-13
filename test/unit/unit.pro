@@ -28,7 +28,8 @@ DISTFILES += \
     fixtures/character-deserialize.json \
     fixtures/chapter-deserialize.json \
     fixtures/novel-deserialize.json \
-    fixtures/revision-deserialize.json
+    fixtures/revision-deserialize.json \
+    fixtures/revision-bug-test.json
 
 INCLUDEPATH += \
     ../../src/lib \

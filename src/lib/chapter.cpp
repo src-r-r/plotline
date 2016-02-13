@@ -28,8 +28,9 @@ QList<Revision *> Chapter::revisions() const
 Revision *Chapter::addRevision()
 {
     Revision *r = 0;
-    QString content = mRevisions.empty() ? QString() :
-                                           mRevisions.last()->content();
+    QString content;
+    if (!mRevisions.empty())
+        content = mRevisions.last()->content();
     r = new Revision(content);
     mRevisions.append(r);
     return r;
@@ -74,6 +75,32 @@ void Chapter::setCurrentRevision(int currentRevision)
     } else {
         mCurrentRevision = currentRevision;
     }
+}
+
+void Chapter::setContent(const QString &content, const int revision)
+{
+    int n = revision < 0 ? currentRevision() : revision;
+    mRevisions[n]->setContent(content);
+}
+
+void Chapter::setIsComplete(const bool complete, const int revision)
+{
+    if(revision == -1)
+        mRevisions[currentRevision()]->setIsComplete(complete);
+    mRevisions[revision]->setIsComplete(complete);
+}
+
+/**
+ * @brief Chapter::canMarkCompleted
+ * Can a revision be marked as completed? true if either the previous revision
+ * was marked as completed or this is the first revision.
+ * @param revision Revision number, or -1 for the current revision.
+ * @return true if the revision can be marked, false otherwise.
+ */
+bool Chapter::canMarkCompleted(const int revision) const
+{
+    int r = revision < 0 ? currentRevision() : revision;
+    return (r == 0 || revisions()[r-1]->isComplete());
 }
 
 Chapter::Chapter(const QString &title, const QList<Revision *> &revisions,

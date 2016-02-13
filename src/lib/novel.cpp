@@ -44,7 +44,7 @@ Novel::Novel(const QString &workingTitle,
 
     // Ensure all chapters have the adequate number of revisions.
     for (Chapter *c : mChapters)
-        for (int i = c->revisions().count(); i < revisions.count(); ++i)
+        while (c->revisions().count() < mRevisions.count())
             c->addRevision();
 }
 
@@ -150,12 +150,15 @@ Chapter *Novel::chapter(int id) const
 void Novel::setChapters(const QList<Chapter *> &value)
 {
     mChapters = value;
+    for (Chapter *c : mChapters)
+        while (c->revisions().count() < mRevisions.count())
+            c->addRevision();
 }
 
 void Novel::addChapter(Chapter *chapter, int loc)
 {
     // Add revisions to the chapter.
-    for (int i = 0; i < revisionCount(); ++i)
+    while(chapter->revisions().count() < mRevisions.count())
         chapter->addRevision();
     if (loc < 0)
         mChapters.append(chapter);
@@ -341,7 +344,7 @@ QJsonObject Novel::serialize() const
     novel[JSON_SCENES] = jScenes;
     novel[JSON_CHAPTERS] = jChapters;
     novel[JSON_PLOTLINES] = jPlotlines;
-    novel[JSON_REVISIONS] = jRevisions;
+    novel[JSON_REVISIONS] = QJsonValue(jRevisions);
     novel[JSON_CURRENT_REVISION] = QJsonValue(mCurrentRevision);
     return novel;
 }
@@ -513,7 +516,7 @@ void Novel::setRevisions(const QStringList &revisions)
 {
     mRevisions = revisions;
     for (Chapter *c : mChapters)
-        while (c->revisions().count() > mRevisions.count())
+        while (c->revisions().count() < mRevisions.count())
             c->addRevision();
 }
 

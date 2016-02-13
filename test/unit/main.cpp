@@ -20,12 +20,12 @@ int main(int argc, char *argv[])
 
         new TestUtils(),
 //        new TestCharacter(),
-//        new TestRevision(),
+        new TestRevision(),
 //        new TestScene(),
 //        new TestChapter(),
 //        new TestNovel(),
 //        new TestPlotline(),
-        new TestCharacterParser(),
+//        new TestCharacterParser(),
 
         NULL
     };

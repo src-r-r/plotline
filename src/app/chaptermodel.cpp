@@ -99,17 +99,26 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
         }
     }
 
+    if (role >= Qt::UserRole)
+        qDebug() << "getdata Chapter" << chapter->number();
+
     if (role == TitleRole)
         return chapter->title();
-    if (role == ContentRole)
-        return chapter->content(chapter->currentRevision());
-    if (role == RevisionRole)
+    if (role == ContentRole){
+        qDebug() << " - content for revision" << chapter->currentRevision()
+                 << ":" << chapter->currentContent().length() << "bytes";
+        return chapter->currentContent();
+    }
+    if (role == RevisionRole){
+        qDebug() << " - revision:" << chapter->currentRevision();
         return QVariant(chapter->currentRevision());
-    if (role == NumberRole)
+    } if (role == NumberRole)
         return QVariant(chapter->number());
     if (role == CompleteRole)
         return QVariant(chapter->revisions()[chapter->currentRevision()]
                 ->isComplete());
+    if (role == RevisionMarkableRole)
+        return QVariant(chapter->canMarkCompleted());
     return QVariant();
 }
 
@@ -130,18 +139,30 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
 
     Chapter *chapter = mNovel->chapters()[row];
 
+    if (role >= Qt::UserRole){
+        qDebug() << "setdata Chapter" << chapter->number();
+        for (int i = 0; i < chapter->revisions().count(); ++i)
+            qDebug() << " > Revision" << i << ":"
+                     << chapter->revisions()[i]->content().size()
+                     << "bytes";
+    }
+
     if (role == TitleRole){
         chapter->setTitle(value.toString());
     } else if (role == ContentRole) {
-        chapter->revisions()[chapter->currentRevision()]
-                ->setContent(value.toString());
+        chapter->setContent(value.toString());
+        qDebug() << "ch" << chapter->number()
+                 << "rev" << chapter->currentRevision()
+                 << ":" << value.toString();
     } else if (role == RevisionRole) {
+        qDebug() << " - Setting current revision:" << value.toInt();
         chapter->setCurrentRevision(value.toInt());
+    } else if (role == RevisionMarkableRole) {
+        qWarning() << "RevisionMarkableRole is read-only. Leaving alone";
     } else if (role == NumberRole) {
-        qWarning() << "Number role is read only. Leaving alone.";
+        qWarning() << "Number role is read-only. Leaving alone.";
     } else if (role == CompleteRole) {
-        chapter->revisions()[chapter->currentRevision()]
-                ->setIsComplete(value.toBool());
+        chapter->setIsComplete(value.toBool());
     } else {
         return false;
     }

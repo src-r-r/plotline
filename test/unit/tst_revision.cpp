@@ -51,3 +51,38 @@ void TestRevision::testDeserialize()
     Q_ASSERT(revision->isComplete() == true);
 }
 
+void TestRevision::testChapterRevisions()
+{
+    QString cont1 = "This is my first chapter and first revision!",
+            cont2 = "This is my first chapter, but not my first revision.";
+    Chapter *chapter = new Chapter();
+    chapter->setContent(cont1, 0);
+    chapter->addRevision();
+    QVERIFY(!chapter->content(0).isEmpty());
+    QCOMPARE(chapter->content(0), chapter->content(1));
+
+    chapter->setContent(cont2, 1);
+    QCOMPARE(chapter->content(1), cont2);
+}
+
+void TestRevision::testNovelDeserialize()
+{
+    Novel *novel = Novel::readFrom("../../../Plotline/test/unit/fixtures/revision-bug-test.json");
+    if (!novel) QFAIL("Novel is null!");
+    Q_ASSERT(novel->revisions().count() == 3);
+    for (Chapter *c : novel->chapters()){
+        qDebug() << "Assert Chapter" << c->number() << "has 3 revisions.";
+        Q_ASSERT(c->revisions().count() == 3);
+    }
+
+    // Verify that ch2r2 is an exact copy of ch2r1
+    Chapter *ch = novel->chapters()[1];
+    QVERIFY(!ch->content(2).isEmpty());
+    QCOMPARE(ch->content(2), ch->content(1));
+    QCOMPARE(ch->content(2), ch->latestContent());
+
+    Chapter *ch3 = new Chapter("Chapter Three");
+    novel->addChapter(ch3);
+    Q_ASSERT(ch3->revisions().count() == 3);
+}
+

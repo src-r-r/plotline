@@ -1,0 +1,49 @@
+{
+    "id" : 1,
+    "workingTitle" : "Novel Title",
+    "genre" : "Novel Genre",
+    "revisions" : [
+        "First Revision",
+        "Second Revision",
+        "Third Revision"
+    ],
+    "chapters" : [
+        {
+            "id" : 2,
+            "title" : "Chapter 1",
+            "revisions" : [
+                {
+                    "id" : 3,
+                    "isComplete" : true,
+                    "content" : "Chapter One, Revision 0"
+                },
+                {
+                    "id" : 4,
+                    "isComplete" : false,
+                    "content" : "Chapter One, Revision 1"
+                },
+                {
+                    "id" : 5,
+                    "isComplete" : false,
+                    "content" : "Chapter One, Revision 2"
+                }
+            ]
+        },
+        {
+            "id" : 6,
+            "title" : "Chapter 2",
+            "revisions" : [
+                {
+                    "id" : 7,
+                    "isComplete" : true,
+                    "content" : "Chapter Two, Revision 0"
+                },
+                {
+                    "id" : 8,
+                    "isComplete" : false,
+                    "content" : "Chapter Two, Revision 1"
+                }
+            ]
+        }
+    ]
+}

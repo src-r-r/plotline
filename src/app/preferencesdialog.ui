@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
-    <height>351</height>
+    <width>623</width>
+    <height>384</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,6 +70,11 @@
          <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Chapter</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item row="0" column="1">
@@ -82,61 +87,52 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>393</width>
-          <height>296</height>
+          <width>475</width>
+          <height>329</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
           <widget class="QStackedWidget" name="stackedWidget">
            <property name="currentIndex">
-            <number>2</number>
+            <number>3</number>
            </property>
-           <widget class="QWidget" name="page_Application_2">
+           <widget class="QWidget" name="page_Application">
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QGroupBox" name="groupBox">
                <property name="title">
-                <string>Loading</string>
+                <string>Loading &amp;&amp; Saving</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_8">
                 <item>
                  <layout class="QFormLayout" name="formLayout_3">
-                  <item row="0" column="0" colspan="2">
+                  <item row="2" column="0" colspan="2">
                    <widget class="QCheckBox" name="openLastProject">
                     <property name="text">
                      <string>Open last project when application loads.</string>
                     </property>
                    </widget>
                   </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="groupBox_2">
-               <property name="title">
-                <string>Saving</string>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_9">
-                <item>
-                 <layout class="QFormLayout" name="formLayout_4">
-                  <item row="1" column="1">
-                   <layout class="QHBoxLayout" name="horizontalLayout_4">
-                    <item>
-                     <widget class="QLineEdit" name="defaultProjectDirectory">
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="chooseDefaultProjectDirectory">
-                      <property name="text">
-                       <string>Choose...</string>
-                      </property>
-                     </widget>
+                  <item row="1" column="0" colspan="2">
+                   <layout class="QFormLayout" name="formLayout_4">
+                    <item row="1" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout_4">
+                      <item>
+                       <widget class="QLineEdit" name="defaultProjectDirectory">
+                        <property name="readOnly">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="chooseDefaultProjectDirectory">
+                        <property name="text">
+                         <string>Choose...</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </item>
                    </layout>
                   </item>
@@ -194,6 +190,197 @@
                 </layout>
                </item>
               </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="page_Chapter">
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <widget class="QGroupBox" name="groupBox_2">
+                 <property name="title">
+                  <string>Distraction-Free Mode</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_5">
+                  <item>
+                   <layout class="QFormLayout" name="formLayout">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label">
+                      <property name="text">
+                       <string>Mode:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QComboBox" name="distractionFreeMode">
+                      <item>
+                       <property name="text">
+                        <string>Disabled</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Windowed</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Full-Screen</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_2">
+                      <property name="text">
+                       <string>Widgets
+Timeout:</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <layout class="QHBoxLayout" name="horizontalLayout">
+                      <item>
+                       <widget class="QSlider" name="widgetTimeout">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximum">
+                         <number>5</number>
+                        </property>
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="invertedAppearance">
+                         <bool>false</bool>
+                        </property>
+                        <property name="tickPosition">
+                         <enum>QSlider::TicksBelow</enum>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="widgetTimeoutValue">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>200</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>Immediately</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="wordWrap">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="groupBox_3">
+               <property name="title">
+                <string>Editor</string>
+               </property>
+               <layout class="QFormLayout" name="formLayout_5">
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_3">
+                  <property name="text">
+                   <string>Mark-up Syntax:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="editorSyntax">
+                  <item>
+                   <property name="text">
+                    <string>None</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>MarkDown</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>ReStructuredText</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>Font:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QFontComboBox" name="editorFont">
+                  <property name="fontFilters">
+                   <set>QFontComboBox::MonospacedFonts</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>Color Scheme:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="QComboBox" name="editorColorScheme"/>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_8">
+                  <property name="text">
+                   <string>Inline Spell Check:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="editorSpellCheck">
+                  <item>
+                   <property name="text">
+                    <string>Disabled</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Only When Distraction Mode Enabled</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Always</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </item>
             </layout>
            </widget>
