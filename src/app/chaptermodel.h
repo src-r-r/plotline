@@ -44,7 +44,8 @@ public:
         ContentRole = Qt::UserRole + 4,
         RevisionRole = Qt::UserRole + 8,
         RevisionMarkableRole = Qt::UserRole + 16,
-        CompleteRole = Qt::UserRole + 32;
+        CompleteRole = Qt::UserRole + 32,
+        SceneRole = Qt::UserRole + 64;
     // Column numbers
     static const int NUMBER = 0,
         TITLE = 1;

@@ -12,6 +12,24 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
     ui->chapterTable->resizeColumnsToContents();
     ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
 
+    // Set all action buttons (except add) as disabled for default
+    ui->archiveChapter->setDisabled(true);
+    ui->deleteChapter->setDisabled(true);
+    ui->assignScenes->setDisabled(true);
+
+    MarkupHighlighter::MarkupLanguage language;
+    QSettings settings;
+    int i = settings.value("editorMarkup", QVariant(0)).toInt();
+    if (i == 0){
+        language = MarkupHighlighter::NoLanguage;
+    } else if (i == 1){
+        language = MarkupHighlighter::MarkDown;
+    } else if (i == 2) {
+        language = MarkupHighlighter::ReStructuredText;
+    }
+
+    mHighlighter = new MarkupHighlighter(language, ui->chapterContent->document());
+
     mDistractions << ui->chapterTable
                        << ui->chapterFilter
                        << ui->addChapter
@@ -108,6 +126,8 @@ void ChaptersFrame::onChapterSelected()
     ui->chapterComplete->setChecked(complete);
     ui->chapterComplete->setEnabled(canMark);
 
+    ui->chapterContent->setDisabled(complete);
+
     if (revision < mainWindow()->novel()->currentRevision()){
         ui->chapterRevision->setStyleSheet("background-color: #ff7777;");
         ui->chapterRevision->setStyleSheet("color: #000000;");
@@ -117,11 +137,17 @@ void ChaptersFrame::onChapterSelected()
     }
 
     QSettings settings;
-    QString font = settings.value(PreferencesDialog::FONT).toString();
-    if (!font.isEmpty())
-        ui->chapterContent->setStyleSheet("font-family: " + font);
+
+    QString fontName = settings.value(PreferencesDialog::FONT).toString();
+    QVariant size = settings.value(PreferencesDialog::FONT_SIZE,
+                              QVariant(PreferencesDialog::DEFAULT_FONT_SIZE));
+    QFont font = QFont(fontName);
+    font.setPointSize(size.toInt());
+    ui->chapterContent->setFont(font);
 
     ui->chapterContent->document()->setModified(true);
+
+    mHighlighter->rehighlight();
 //    emit revisionChanged();
 }
 
@@ -199,7 +225,9 @@ void ChaptersFrame::on_deleteChapter_clicked()
 
 void ChaptersFrame::on_assignScenes_clicked()
 {
-
+    SceneListDialog *dialog = new SceneListDialog(mainWindow()->novel(),
+                                                  ui->chapterTable);
+    dialog->exec();
 }
 
 void ChaptersFrame::on_chapterTitle_textEdited(const QString &arg1)

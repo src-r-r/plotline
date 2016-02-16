@@ -47,8 +47,18 @@ private slots:
 
 private:
 
+    QList<Character *> _getSelectedCharacters(bool pov=false);
+    void _setSelectedCharacters(QList<Character *> characters, bool pov=false);
+
+    QList<Character *> getSelectedCharacters();
+    void setSelectedCharacters(QList<Character *> characters);
+
+    QList<Character *> getSelectedPointsOfView();
+    void setSelectedPointsOfView(QList<Character *> characters);
+
     void findCharacters(const QTextEdit *editor);
     void detectLabelStart(QTextEdit *editor);
+    void fillPlotlineCombo(Plotline *selected = 0);
 
     Ui::SceneFrame *ui;
 

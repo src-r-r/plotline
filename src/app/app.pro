@@ -3,7 +3,7 @@ TEMPLATE = app
 
 QT       += core gui webkitwidgets printsupport
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+# greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 INCLUDEPATH += \
     ../lib
@@ -26,7 +26,11 @@ HEADERS +=  mainwindow.h \
     modelcheckbox.h \
     characterhighlighter.h \
     chaptermodel.h \
-    revisiondialog.h
+    revisiondialog.h \
+    markuphighlighter.h \
+    styleproxy.h \
+    styleproxyparser.h \
+    scenelistdialog.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -45,7 +49,11 @@ SOURCES += main.cpp \
     modelcheckbox.cpp \
     characterhighlighter.cpp \
     chaptermodel.cpp \
-    revisiondialog.cpp
+    revisiondialog.cpp \
+    markuphighlighter.cpp \
+    styleproxy.cpp \
+    styleproxyparser.cpp \
+    scenelistdialog.cpp
 
 LIBS += \
     ../lib/libplotline.so
@@ -60,8 +68,14 @@ FORMS += mainwindow.ui \
     sceneframe.ui \
     chaptersframe.ui \
     novelframe.ui \
-    revisiondialog.ui
+    revisiondialog.ui \
+    scenelistdialog.ui
 
 RESOURCES += ../res/plotline.qrc
+
+styles.path = $$DESTDIR/styles
+styles.files = $$PWD/styles/*.json
+
+INSTALLS += styles
 
 CONFIG += c++11

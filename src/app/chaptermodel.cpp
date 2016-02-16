@@ -119,6 +119,12 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
                 ->isComplete());
     if (role == RevisionMarkableRole)
         return QVariant(chapter->canMarkCompleted());
+    if (role == SceneRole){
+        QJsonArray sceneIds;
+        for (Scene *s : chapter->scenes())
+            sceneIds.append(QJsonValue(s->id()));
+        return sceneIds;
+    }
     return QVariant();
 }
 
@@ -163,6 +169,11 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
         qWarning() << "Number role is read-only. Leaving alone.";
     } else if (role == CompleteRole) {
         chapter->setIsComplete(value.toBool());
+    } else if (role == SceneRole) {
+        QList<Scene *> scenes;
+        for (QJsonValue v : value.toJsonArray())
+            scenes << mNovel->scene(v.toInt());
+        chapter->setScenes(scenes);
     } else {
         return false;
     }

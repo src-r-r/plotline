@@ -71,6 +71,7 @@
     <addaction name="actionNovelSave"/>
     <addaction name="actionNovelSaveAs"/>
     <addaction name="separator"/>
+    <addaction name="actionNovelRevisions"/>
     <addaction name="actionNovelExport"/>
     <addaction name="actionNovelBind"/>
     <addaction name="separator"/>

@@ -4,6 +4,8 @@
 #include <QWidgetList>
 #include "plotlineappframe.h"
 #include "chaptermodel.h"
+#include "markuphighlighter.h"
+#include "scenelistdialog.h"
 
 class PlotlineAppFrame;
 
@@ -28,6 +30,7 @@ private:
 
     QWidgetList mDistractions;
     QTimer *mDistractionTimer;
+    MarkupHighlighter *mHighlighter;
 
 signals:
     void chapterSelected();

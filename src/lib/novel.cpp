@@ -114,9 +114,12 @@ void Novel::setScenes(const QList<Scene *> &value)
     mScenes = value;
 }
 
-void Novel::addScene(Scene *scene)
+void Novel::addScene(Scene *scene, int i)
 {
-    mScenes.append(scene);
+    scene->setNovel(this);
+    if (i < 0 || i > mScenes.count())
+        mScenes.append(scene);
+    mScenes.insert(i, scene);
 }
 
 void Novel::removeScene(Scene *scene)

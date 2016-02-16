@@ -59,7 +59,7 @@ public:
 
     QList<Scene *> scenes() const;
     void setScenes(const QList<Scene *> &value);
-    void addScene(Scene *scene);
+    void addScene(Scene *scene, int i=-1);
     void removeScene(Scene *scene);
     void removeScene(int id);
     Scene *scene(int id) const;

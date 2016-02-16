@@ -14,6 +14,7 @@ public:
     // Overrides
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::DisplayRole);
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
 
@@ -22,12 +23,15 @@ public:
     bool removeRows(int row, int count,
                     const QModelIndex & parent = QModelIndex());
 
-    Novel *novel() const;
-    void setNovel(Novel *novel);
+    static const int HeadlineRole = Qt::UserRole + 0,
+        ActionRole = Qt::UserRole + 1,
+        PlotlineRole = Qt::UserRole + 2,
+        CharactersRole = Qt::UserRole + 4,
+        PointsOfViewRole = Qt::UserRole + 8;
 
 private:
-    Novel *mNovel = 0;
-    SceneItemModel *root;
+
+    Novel *mNovel;
 
 signals:
 

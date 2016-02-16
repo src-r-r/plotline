@@ -18,6 +18,8 @@ public:
     explicit PreferencesDialog(QWidget *parent = 0);
     ~PreferencesDialog();
 
+    static const int DEFAULT_FONT_SIZE = 12;
+
     static const QString DEFAULT_PROJECT_DIRECTORY,
         DEFAULT_HEADSHOT_DIRECTORY,
         OPEN_LAST_PROJECT,
@@ -26,6 +28,7 @@ public:
         SPELL_CHECK,
         MARKUP,
         FONT,
+        FONT_SIZE,
         COLOR_SCHEME;
 
     enum DistractionFreeMode {

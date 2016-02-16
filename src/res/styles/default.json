@@ -1,0 +1,53 @@
+{
+    "document" : {
+        "foreground" : "black",
+        "background" : "white"
+    },
+    "HtmlEscape" : {
+
+    },
+    "Header" : {
+        "bold" : true,
+        "relSize" : 3
+    },
+    "BlockQuote" : {
+        "italic" : true,
+        "color" : "gray"
+    },
+    "List" : {
+
+    },
+    "CodeBlock" : {
+
+    },
+    "HorizontalRule" : {
+
+    },
+    "InlineLink" : {
+
+    },
+    "LinkSource" : {
+
+    },
+    "LinkTarget" : {
+
+    },
+    "Emphasis" : {
+
+    },
+    "Strong" : {
+
+    },
+    "InlineCode" : {
+
+    },
+    "Image" : {
+
+    },
+    "AutomaticLink" : {
+
+    },
+    "BackslashEscape" : {
+
+    }
+}

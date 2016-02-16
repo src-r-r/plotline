@@ -4,20 +4,6 @@ SceneItemModel::SceneItemModel(Novel *novel, QObject *parent)
     : QAbstractListModel(parent)
 {
     mNovel = novel;
-
-    QList<Scene *> scenes = mNovel->scenes();
-    insertRows(0, scenes.count());
-    QModelIndex index;
-
-    for (int i = 0; i < scenes.count(); ++i){
-        index = createIndex(i, 0);
-        setData(index, scenes[i]->headline());
-        setData(index, scenes[i]->id(), Qt::UserRole);
-        if (scenes[i]->plotline()){
-            QBrush brush = QBrush(scenes[i]->plotline()->getColor());
-            setData(index, brush, Qt::BackgroundRole);
-        }
-    }
 }
 
 int SceneItemModel::rowCount(const QModelIndex &parent) const
@@ -44,13 +30,70 @@ QVariant SceneItemModel::data(const QModelIndex &index, int role) const
 
     Scene *scene = scenes[row];
 
+    QJsonArray characterIds;
+
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         return scene->headline();
     if (scene->plotline() && role == Qt::BackgroundRole)
         return scene->plotline()->getColor();
+    if (role == HeadlineRole)
+        return scene->headline();
+    if (role == ActionRole)
+        return scene->action();
+    if (role == PlotlineRole && (scene->plotline() != 0))
+        return QVariant(scene->plotline()->id());
+    if (role == CharactersRole){
+        for(Character *c : scene->getCharacters())
+            characterIds << QJsonValue(c->id());
+        return characterIds;
+    } if (role == PointsOfViewRole) {
+        for (Character *c : scene->getPointsOfView())
+            characterIds << QJsonValue(c->id());
+        return characterIds;
+    }
 
 //    qWarning() << "Scene::data - returning general QVariant";
     return QVariant();
+}
+
+bool SceneItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    int row = index.row();
+    if (row >= mNovel->scenes().count()){
+        qWarning() << "set scene data: row" << row << "> novel scene count ("
+                   << mNovel->scenes().count() << ")";
+        return false;
+    } else if (!index.isValid()){
+        qWarning() << "set scene data: Invalid index";
+        return false;
+    }
+
+    Scene *scene = mNovel->scenes()[row];
+
+    QList<Character *> characters;
+
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
+        scene->setHeadline(value.toString());
+    else if (scene->plotline() && role == Qt::BackgroundRole){
+        qWarning() << "set scene data: BackgroundRole is read-only";
+        return false;
+    }
+    else if (role == HeadlineRole)
+        scene->setHeadline(value.toString());
+    else if (role == ActionRole)
+        scene->setAction(value.toString());
+    else if (role == PlotlineRole)
+        scene->setPlotline(mNovel->plotline(value.toInt()));
+    else if (role == CharactersRole){
+        for (QJsonValue val : value.toJsonArray())
+            characters << mNovel->character(val.toInt());
+        scene->setCharacters(characters);
+    } else if (role == PointsOfViewRole) {
+        for (QJsonValue val : value.toJsonArray())
+            characters << mNovel->character(val.toInt());
+        scene->setPointsOfView(characters);
+    }
+    return true;
 }
 
 QVariant SceneItemModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -66,10 +109,15 @@ bool SceneItemModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     if (row > rowCount() || row < 0){
         qWarning() << "Invalid row" << row;
-        return false;
+        row = rowCount();
     }
 
-    beginInsertRows(parent, row, row+(count-1));
+    int start = row, end = row+(count-1);
+
+    beginInsertRows(parent, row, end);
+
+    for (int i = start; i <= end; ++i)
+        mNovel->addScene(new Scene("New Scene", ""), i);
 
     endInsertRows();
 
@@ -78,6 +126,7 @@ bool SceneItemModel::insertRows(int row, int count, const QModelIndex &parent)
 
 bool SceneItemModel::removeRows(int row, int count, const QModelIndex &parent)
 {
+    int start = row;
     int end = row + (count-1);
 
     if (row > rowCount()-1 || row < 0){
@@ -89,16 +138,9 @@ bool SceneItemModel::removeRows(int row, int count, const QModelIndex &parent)
         end = rowCount()-1;
     beginRemoveRows(parent, row, end);
 
+    for (int i = start; i <= end; ++i)
+        mNovel->removeScene(mNovel->scenes()[i]);
+
     endRemoveRows();
     return true;
-}
-
-Novel *SceneItemModel::novel() const
-{
-    return mNovel;
-}
-
-void SceneItemModel::setNovel(Novel *novel)
-{
-    mNovel = novel;
 }

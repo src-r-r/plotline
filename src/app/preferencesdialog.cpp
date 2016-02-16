@@ -9,6 +9,7 @@ const QString PreferencesDialog::DEFAULT_PROJECT_DIRECTORY = QString("defaultPro
     PreferencesDialog::SPELL_CHECK = "editorSpellCheck",
     PreferencesDialog::MARKUP = "editorMarkup",
     PreferencesDialog::FONT = "editorFont",
+    PreferencesDialog::FONT_SIZE = "fontSize",
     PreferencesDialog::COLOR_SCHEME = "editorColorScheme";
 
 const QStringList PreferencesDialog::WIDGET_TIMEOUTS({"Immediately",
@@ -48,6 +49,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
                 .toInt());
     ui->editorSyntax->setCurrentIndex(
                 settings.value(MARKUP, QVariant((int) Markdown)).toInt());
+    ui->editorFontSize->setValue(settings.value(FONT_SIZE,
+                                          QVariant(DEFAULT_FONT_SIZE))
+                           .toInt());
 
     QString font = settings.value(FONT).toString();
     if (!font.isEmpty())
@@ -82,6 +86,7 @@ void PreferencesDialog::on_preferencesButtonBox_accepted()
     settings.setValue(MARKUP, ui->editorSyntax->currentIndex());
     settings.setValue(COLOR_SCHEME, ui->editorColorScheme->currentIndex());
     settings.setValue(FONT, ui->editorFont->currentFont().toString());
+    settings.setValue(FONT_SIZE, ui->editorFontSize->value());
 }
 
 void PreferencesDialog::on_widgetTimeout_sliderMoved(int position)
