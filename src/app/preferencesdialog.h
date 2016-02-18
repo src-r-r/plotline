@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QAbstractButton>
+#include "markuphighlighter.h"
 
 namespace Ui {
 class PreferencesDialog;
@@ -24,8 +25,10 @@ public:
         DEFAULT_HEADSHOT_DIRECTORY,
         OPEN_LAST_PROJECT,
         DISTRACTION_FREE_MODE,
+        DFM_EDITOR_SIZE,
         WIDGETS_TIMEOUT,
         SPELL_CHECK,
+        WORD_WRAP_WIDTH,
         MARKUP,
         FONT,
         FONT_SIZE,
@@ -43,12 +46,6 @@ public:
         SpellCheckAlways,
     };
 
-    enum MarkupSyntax {
-        NoMarkup = 0,
-        Markdown,
-        RestructuredText
-    };
-
 private slots:
     void on_chooseDefaultProjectDirectory_clicked();
     void on_preferencesButtonBox_accepted();
@@ -60,6 +57,7 @@ private:
     Ui::PreferencesDialog *ui;
     static const QStringList WIDGET_TIMEOUTS;
     static const int TIMEOUT_VALUES[6];
+    static const float SIZE_PERCENTAGES[4];
 };
 
 #endif // PREFERENCESDIALOG_H

@@ -30,7 +30,9 @@ HEADERS +=  mainwindow.h \
     markuphighlighter.h \
     styleproxy.h \
     styleproxyparser.h \
-    scenelistdialog.h
+    scenelistdialog.h \
+    fullscreeneditor.h \
+    chapterfilter.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -53,7 +55,9 @@ SOURCES += main.cpp \
     markuphighlighter.cpp \
     styleproxy.cpp \
     styleproxyparser.cpp \
-    scenelistdialog.cpp
+    scenelistdialog.cpp \
+    fullscreeneditor.cpp \
+    chapterfilter.cpp
 
 LIBS += \
     ../lib/libplotline.so
@@ -69,7 +73,8 @@ FORMS += mainwindow.ui \
     chaptersframe.ui \
     novelframe.ui \
     revisiondialog.ui \
-    scenelistdialog.ui
+    scenelistdialog.ui \
+    fullscreeneditor.ui
 
 RESOURCES += ../res/plotline.qrc
 

@@ -116,6 +116,9 @@ private:
     QString mOpenedFile;
     QWidgetList mDistractions;
 
+    void disconnectAll();
+    void connectAll();
+
 };
 
 #endif // MAINWINDOW_H

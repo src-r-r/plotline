@@ -32,3 +32,17 @@ void TestUtils::test_findCharReverse()
 
 }
 
+void TestUtils::test_reflowParagraph()
+{
+    QString p = "aa aaaaaaa bbbbbbbbbbb c           d";
+    QString exp = "aa aaaaaaa\nbbbbbbbbbbb\nc          \nd";
+    QString res = reflowParagraph(p, 10);
+
+    QCOMPARE(res, exp);
+
+    p = "aa aaaa\naaaaaa\nbbbb";
+    exp = "aa aaaa\naaaaaa bbbb";
+    res = reflowParagraph(p, 10);
+    QCOMPARE(res, exp);
+}
+
