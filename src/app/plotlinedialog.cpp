@@ -1,33 +1,45 @@
 #include "plotlinedialog.h"
 #include "ui_plotlinedialog.h"
 
-PlotlineDialog::PlotlineDialog(PlotFrame *plotFrame, const QModelIndex &index,
+PlotlineDialog::PlotlineDialog(PlotlineItemModel *model,
+                               const QModelIndex &index,
+                               bool isNew,
                                QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PlotlineDialog)
 {
     ui->setupUi(this);
-    mPlotFrame = plotFrame;
+
+    mModel = model;
     mIndex = index;
     mCharacterList = QMap<QCheckBox *, Character *>();
-    if (index.isValid()){
+    mIsNew = isNew;
+    QList<Character *> selectedCharacters;
+    if (index.isValid() && !mIsNew){
         mIsNew = false;
-        mPlotline = mPlotFrame->mainWindow()->novel()->plotlines()[index.row()];
-        setWindowTitle(mPlotline->brief());
-        ui->plotlineBrief->setText(mPlotline->brief());
-        ui->plotlineSynopsis->setText(mPlotline->synopsis());
-        onColorSelected(mPlotline->getColor());
+        QString brief = mModel->data(index, PlotlineItemModel::BriefRole)
+                                   .toString(),
+                synopsis = mModel->data(index, PlotlineItemModel::SynopsisRole)
+                                      .toString(),
+                color = mModel->data(index, PlotlineItemModel::ColorRole)
+                    .toString();
+        QJsonArray jCharacters = mModel->data(index,
+                                             PlotlineItemModel::CharacterRole)
+                .toJsonArray();
+        ui->plotlineBrief->setText(brief);
+        ui->plotlineSynopsis->setText(synopsis);
+        onColorSelected(QColor(color));
+
+        for (QJsonValue v : jCharacters)
+            selectedCharacters << mModel->novel()->character(v.toInt());
     } else {
         mIsNew = true;
-
-        mPlotline = new Plotline("", "");
-        mPlotline->setNovel(plotFrame->mainWindow()->novel());
         setWindowTitle(tr("New Plotline"));
     }
 
-    for (Character *c : mPlotline->novel()->characters()) {
+    for (Character *c : mModel->novel()->characters()) {
         QCheckBox *checkbox = new QCheckBox(c->name());
-        bool checked = (mPlotline->characters().indexOf(c) >= 0);
+        bool checked = selectedCharacters.contains(c);
         checkbox->setChecked(checked);
         mCharacterList.insert(checkbox, c);
         ui->characterListLayout->addWidget(checkbox);
@@ -65,22 +77,28 @@ void PlotlineDialog::on_clearPlotlineColor_clicked()
 
 void PlotlineDialog::on_buttonBox_accepted()
 {
-    mPlotline->setBrief(ui->plotlineBrief->text());
-    mPlotline->setSynopsis(ui->plotlineSynopsis->toPlainText());
-    mPlotline->setColor(mColor);
-    QList<Character *> characters = QList<Character *>();
-    for (QCheckBox *cb : mCharacterList.keys())
-        if (cb->isChecked())
-            characters << mCharacterList.value(cb);
-    mPlotline->setCharacters(characters);
-
-    qDebug() << "Modified plotline: " << mPlotline->serialize();
-
     if (mIsNew){
-        mPlotFrame->mainWindow()->novel()->addPlotline(mPlotline);
-        mPlotFrame->model()->insertRows(mPlotFrame->model()->rowCount(),
-                                        1);
+        if (!mModel->insertRows(mIndex.row(), 1))
+            return;
+        qDebug() << "plotline: insert new row at" << mIndex.row();
+        if (!mIndex.isValid())
+            mIndex = mModel->index(mModel->rowCount()-1, 0);
     }
 
-    emit mPlotFrame->novelModified();
+    QJsonArray charIds;
+    for (QCheckBox *cb : mCharacterList.keys())
+        if (cb->isChecked())
+            charIds << QJsonValue(mCharacterList[cb]->id());
+
+    mModel->setData(mIndex, ui->plotlineBrief->text(), PlotlineItemModel
+                    ::BriefRole);
+    mModel->setData(mIndex, ui->plotlineSynopsis->toPlainText(),
+                    PlotlineItemModel::SynopsisRole);
+    mModel->setData(mIndex, charIds, PlotlineItemModel::CharacterRole);
+    mModel->setData(mIndex, mColor, PlotlineItemModel::ColorRole);
+
+    if (mIsNew)
+        emit plotlineAdded(mIndex);
+    else
+        emit plotlineModified(mIndex);
 }

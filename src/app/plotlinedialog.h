@@ -12,6 +12,7 @@
 
 #include "plotline.h"
 #include "plotframe.h"
+#include "plotlineitemmodel.h"
 
 class PlotFrame;
 
@@ -24,8 +25,9 @@ class PlotlineDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PlotlineDialog(PlotFrame *plotFrame,
-                            const QModelIndex &index = QModelIndex(),
+    explicit PlotlineDialog(PlotlineItemModel *model,
+                            const QModelIndex &index,
+                            bool isNew = false,
                             QWidget *parent = 0);
     ~PlotlineDialog();
 
@@ -37,10 +39,14 @@ private slots:
 
 signals:
 
+    void plotlineAdded(const QModelIndex &index);
+    void plotlineModified(const QModelIndex &index);
+    void canceled();
+
 private:
     Ui::PlotlineDialog *ui;
 
-    PlotFrame *mPlotFrame;
+    PlotlineItemModel *mModel;
     Plotline *mPlotline;
     QModelIndex mIndex;
     QMap<QCheckBox *, Character *> mCharacterList;

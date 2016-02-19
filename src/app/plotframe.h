@@ -41,11 +41,14 @@ private slots:
 
     void on_plotlineTable_activated(const QModelIndex &index);
 
+    void onPlotlineAdded(const QModelIndex &index);
+
 private:
     Ui::PlotFrame *ui;
 
     PlotlineItemModel *mModel;
     Plotline *mSelectedPlotline;
+    void showPlotlineDialog(bool isNew=false);
 };
 
 #endif // PLOTFRAME_H

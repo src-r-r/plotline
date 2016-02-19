@@ -190,8 +190,13 @@ void ChaptersFrame::onShowDistractions()
 void ChaptersFrame::mouseMoveEvent(QMouseEvent *event)
 {
     if (mHasDistractions) return;
+    if (mDistractionTimer->isActive()){
+        mDistractionTimer->stop();
+    } else {
+        qDebug() << "Timer started.";
+    }
     mDistractionTimer->start(5000);
-    emit showDistractions();
+    emit showDistractions(); // We will hide distractions when mouse stops.
 }
 
 void ChaptersFrame::on_chapterFilter_activated(int index)
@@ -302,6 +307,8 @@ void ChaptersFrame::clearLayout(bool enable, bool clear)
 
 void ChaptersFrame::onDistractionTimeout()
 {
+    mDistractionTimer->stop();
+    qDebug() << "Timer stopped.";
     emit hideDistractions();
 }
 

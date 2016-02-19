@@ -32,21 +32,20 @@ PlotFrame::~PlotFrame()
 
 void PlotFrame::onNovelLoad()
 {
-    QList<Plotline *> plotlines = mainWindow()->novel()->plotlines();
     mModel = new PlotlineItemModel(mainWindow()->novel());
     ui->plotlineTable->setModel(mModel);
 }
 
 void PlotFrame::onNovelNew()
 {
-    mModel->removeRows(0, mModel->rowCount());
     mModel = new PlotlineItemModel(mainWindow()->novel());
 }
 
+
+
 void PlotFrame::onPlotlineDoubleClicked(QModelIndex index)
 {
-    PlotlineDialog *dialog = new PlotlineDialog(this, index);
-    dialog->exec();
+    showPlotlineDialog();
 }
 
 void PlotFrame::onPlotlineListModified()
@@ -57,15 +56,12 @@ void PlotFrame::onPlotlineListModified()
 
 void PlotFrame::on_addPlotline_clicked()
 {
-    PlotlineDialog *dialog = new PlotlineDialog(this);
-    dialog->exec();
+    showPlotlineDialog(true);
 }
 
 void PlotFrame::on_editPlotline_clicked()
 {
-    QModelIndex index = ui->plotlineTable->selectionModel()->currentIndex();
-    PlotlineDialog *dialog = new PlotlineDialog(this, index);
-    dialog->exec();
+    showPlotlineDialog();
 }
 
 void PlotFrame::on_archivePlotline_clicked()
@@ -102,4 +98,18 @@ void PlotFrame::setModel(PlotlineItemModel *model)
 
 void PlotFrame::on_plotlineTable_activated(const QModelIndex &index)
 {
+}
+
+void PlotFrame::onPlotlineAdded(const QModelIndex &index)
+{
+    ui->plotlineTable->setCurrentIndex(index);
+}
+
+void PlotFrame::showPlotlineDialog(bool isNew)
+{
+    QModelIndex index = ui->plotlineTable->currentIndex();
+    PlotlineDialog *dialog = new PlotlineDialog(mModel, index, isNew);
+    connect(dialog, SIGNAL(plotlineAdded(QModelIndex)),
+            this, SLOT(onPlotlineAdded(QModelIndex)));
+    dialog->exec();
 }
