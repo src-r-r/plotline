@@ -70,10 +70,23 @@ void PlotFrame::on_archivePlotline_clicked()
 
 void PlotFrame::on_deletePlotline_clicked()
 {
-    QModelIndex current = ui->plotlineTable->currentIndex();
-    int id = mModel->data(current, PlotlineItemModel::PlotlineId).toInt();
-    mModel->removeRows(current.row(), 1);
-    mainWindow()->novel()->removePlotline(id);
+    QString expl = tr("If you delete, it's lost forever. However, archiving")
+            + tr(" will make it retreivable.");
+    QMessageBox *messageBox = new QMessageBox(tr("Delete this plotline?"),
+                                              expl, QMessageBox::Warning,
+                                              QMessageBox::Ok,
+                                              QMessageBox::Save,
+                                              QMessageBox::Cancel);
+    messageBox->setButtonText(QMessageBox::Ok, tr("Delete"));
+    messageBox->setButtonText(QMessageBox::Save, tr("Archive"));
+
+    int res = messageBox->exec();
+    if (res == QMessageBox::Ok){
+        QModelIndex current = ui->plotlineTable->currentIndex();
+        mModel->removeRows(current.row(), 1);
+    } else if (res == QMessageBox::Save){
+        // TODO: archiving.
+    }
 }
 
 void PlotFrame::on_searchPlotlines_textChanged(const QString &arg1)

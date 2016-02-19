@@ -120,7 +120,15 @@ void MainWindow::on_actionNovelOpen_triggered()
         return;
 
     mOpenedFile = fileName;
-    mNovel = Novel::readFrom(mOpenedFile);
+    QString error;
+    mNovel = Novel::readFrom(mOpenedFile, &error);
+    if (!mNovel){
+        QString message = tr("Could not open novel due to parse error.");
+        if (!error.isEmpty())
+            message += tr("\nThe error message is:\n") + error;
+        QMessageBox::critical(this, tr("Could not open novel."),
+                              message);
+    }
     qDebug() << "Opened novel" << mNovel->getWorkingTitle();
     emit novelLoaded();
 }
@@ -240,10 +248,18 @@ void MainWindow::setNovel(Novel *novel)
 void MainWindow::openNovel(const QString &path)
 {
     mOpenedFile = path;
-    mNovel = Novel::readFrom(path);
-    emit novelLoaded();
-    mIsSaved = true;
-    onSaveNovel();
+    QString error = QString();
+    mNovel = Novel::readFrom(path, &error);
+    if (mNovel){
+        emit novelLoaded();
+        mIsSaved = true;
+    } else {
+        QString message = tr("Could not open novel due to parse error.");
+        if (!error.isEmpty())
+            message += tr("\nThe error message is:\n") + error;
+        QMessageBox::critical(this, tr("Could not open novel."),
+                              message);
+    }
 }
 
 void MainWindow::openTab(const int index)

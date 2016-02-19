@@ -9,6 +9,7 @@
 #include <preferencesdialog.h>
 #include "markuphighlighter.h"
 #include <QScreen>
+#include <QTextEdit>
 
 namespace Ui {
 class FullScreenEditor;
@@ -20,19 +21,24 @@ class FullScreenEditor : public QMainWindow
 
 public:
     explicit FullScreenEditor(QWidget *parent = 0);
-    explicit FullScreenEditor(QTableView *chapterTable, QWidget *parent=0);
+    explicit FullScreenEditor(QTextEdit *mEditor, QWidget *parent=0);
     ~FullScreenEditor();
 
     bool isFullScreen();
 
 public slots:
 
-    void onContentsChanged();
+signals:
+    void contentChanged();
+
+private slots:
+    void on_chapterContent_textChanged();
+    void onEscapeTriggered(bool triggered);
 
 private:
     Ui::FullScreenEditor *ui;
 
-    QTableView *mChapterTable;
+    QTextEdit *mEditor;
     MarkupHighlighter *mHighlighter;
 };
 

@@ -463,7 +463,7 @@ QString Novel::writeTo(const QString &filePath)
     return filePath;
 }
 
-Novel *Novel::readFrom(const QString &filePath)
+Novel *Novel::readFrom(const QString &filePath, QString *errorStr)
 {
     QFile *jsonFile = new QFile(filePath);
     bool opened = jsonFile->open(QFile::ReadOnly);
@@ -479,6 +479,13 @@ Novel *Novel::readFrom(const QString &filePath)
     QJsonDocument doc = QJsonDocument::fromJson(jsonData, error);
     if (error->error == QJsonParseError::NoError)
         return Novel::deserialize(doc.object());
+    else if (errorStr != 0){
+        QPair<int, int> offset = multilineOffset(QString(jsonData),
+                                                 error->offset);
+        (*errorStr) = tr("\"") + QString(error->errorString()) + tr("\"");
+        (*errorStr) += tr(" at line ") + QVariant(offset.first).toString() +
+                tr(" column ") +  QVariant(offset.second).toString();
+    }
 
     qCritical() << "Failed to parse" << filePath << ":"
                 << error->errorString();

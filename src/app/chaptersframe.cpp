@@ -28,6 +28,7 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
         language = MarkupHighlighter::ReStructuredText;
     }
 
+    // Set up the highlighter and completer.
     mHighlighter = new MarkupHighlighter(language, ui->chapterContent->document());
 
     mDistractions << ui->chapterTable
@@ -250,9 +251,7 @@ void ChaptersFrame::onHideDistractions()
         ui->chapterDistractionFree->setText(tr("Show Distractions"));
         this->setMouseTracking(true);
     } else if (mode == PreferencesDialog::ShowFullScreen) {
-        FullScreenEditor *editor = new FullScreenEditor(ui->chapterTable);
-        connect(editor, SIGNAL(destroyed(QObject*)),
-                this, SLOT(onFullscreenEditorDestroyed(QObject *)));
+        FullScreenEditor *editor = new FullScreenEditor(ui->chapterContent);
         editor->showFullScreen();
     }
 }
@@ -418,5 +417,9 @@ void ChaptersFrame::on_chapterDistractionFree_clicked()
 
 void ChaptersFrame::onFullscreenEditorDestroyed(QObject *object)
 {
+    QString content = mModel->data(ui->chapterTable->currentIndex(),
+                                   ChapterModel::ContentRole).toString();
+    ui->chapterContent->setText(content);
+    mHighlighter->rehighlight();
     emit chapterSelected();
 }

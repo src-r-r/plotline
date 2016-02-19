@@ -96,7 +96,7 @@ public:
     QJsonObject serialize() const;
     static Novel *deserialize(const QJsonObject &object);
     QString writeTo(const QString &filePath);
-    static Novel *readFrom(const QString &filePath);
+    static Novel *readFrom(const QString &filePath, QString *error = 0);
 
     QStringList revisions() const;
     void addRevision(const QString &comment = QString());

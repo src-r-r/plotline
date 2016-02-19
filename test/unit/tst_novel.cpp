@@ -129,6 +129,7 @@ void TestNovel::testDeserialize()
 void TestNovel::testGetCharacters()
 {
     QString path = "../../../Plotline/test/unit/fixtures/novel-deserialize.json";
+    QString error;
     Novel *novel = Novel::readFrom(path);
 
     QVERIFY(novel->characters().count() == 3);

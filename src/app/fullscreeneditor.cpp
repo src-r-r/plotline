@@ -8,12 +8,13 @@ FullScreenEditor::FullScreenEditor(QWidget *parent) :
     ui->setupUi(this);
 }
 
-FullScreenEditor::FullScreenEditor(QTableView *chapterTable, QWidget *parent) :
+FullScreenEditor::FullScreenEditor(QTextEdit *editor, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FullScreenEditor)
 {
     ui->setupUi(this);
-    mChapterTable = chapterTable;
+
+    mEditor = editor;
 
     // Set the editor width.
     QSettings setting;
@@ -52,16 +53,14 @@ FullScreenEditor::FullScreenEditor(QTableView *chapterTable, QWidget *parent) :
     font.setPointSize(size.toInt());
     ui->chapterContent->setFont(font);
 
+    ui->chapterContent->setPlainText(mEditor->toPlainText());
 
-    // Set up the models.
-    ChapterModel *model = (ChapterModel *) chapterTable->model();
-    QModelIndex index = chapterTable->currentIndex();
-    QString content = model->data(index, ChapterModel::ContentRole).toString();
-
-    ui->chapterContent->setPlainText(content);
-
-    connect(ui->chapterContent->document(), SIGNAL(contentsChanged()),
-            this, SLOT(onContentsChanged()));
+    // Connect the "escape" key.
+    QAction *escape = new QAction(this);
+    escape->setShortcut(QKeySequence(Qt::Key_Escape));
+    connect(escape, SIGNAL(triggered(bool)),
+            this, SLOT(onEscapeTriggered(bool)));
+    this->addAction(escape);
 }
 
 FullScreenEditor::~FullScreenEditor()
@@ -74,10 +73,12 @@ bool FullScreenEditor::isFullScreen()
     return true;
 }
 
-void FullScreenEditor::onContentsChanged()
+void FullScreenEditor::on_chapterContent_textChanged()
 {
-    QString content = ui->chapterContent->toPlainText();
-    ChapterModel *model = (ChapterModel *) mChapterTable->model();
-    QModelIndex index = mChapterTable->currentIndex();
-    model->setData(index, content, ChapterModel::ContentRole);
+    mEditor->setText(ui->chapterContent->toPlainText());
+}
+
+void FullScreenEditor::onEscapeTriggered(bool triggered)
+{
+    emit close();
 }

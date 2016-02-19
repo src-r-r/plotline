@@ -26,10 +26,17 @@ void SceneFrame::onNovelLoad()
 {
     blockEditableSignals();
     delete mModel;
+
     mModel = new SceneItemModel(mainWindow()->novel());
     ui->sceneList->setModel(mModel);
     mActionHighlighter->setNovel(mainWindow()->novel());
     mHeadlineHighlighter->setNovel(mainWindow()->novel());
+
+    QStringList characterNames;
+    for (Character *c : mainWindow()->novel()->characters())
+        characterNames << c->name();
+    mCompleter = new QCompleter(characterNames);
+
     connectSlots();
     unblockEditableSignals();
 }
