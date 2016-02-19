@@ -15,6 +15,11 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
             new CharacterHighlighter(novel, ui->sceneAction->document());
     mHeadlineHighlighter =
             new CharacterHighlighter(novel, ui->sceneHeadline->document());
+
+    ui->sceneList->setDragEnabled(true);
+    ui->sceneList->setAcceptDrops(true);
+
+    this->setMouseTracking(true);
 }
 
 SceneFrame::~SceneFrame()
@@ -42,6 +47,47 @@ void SceneFrame::onNovelLoad()
 }
 
 void SceneFrame::onNovelNew()
+{
+
+}
+
+void SceneFrame::mousePressEvent(QMouseEvent *event)
+{
+    if (!event->button() == Qt::LeftButton
+        && ui->sceneList->geometry().contains(event->pos()))
+        return;
+
+    mDragPos = event->pos();
+}
+
+void SceneFrame::mouseMoveEvent(QMouseEvent *event)
+{
+    if (!(event->buttons() & Qt::LeftButton))
+        return;
+    if ((event->pos() - mDragPos).manhattanLength()
+         < QApplication::startDragDistance())
+        return;
+
+    QModelIndex index = ui->sceneList->indexAt(mDragPos);
+    if (!index.isValid()){
+        qWarning() << "scene drag: Could not fetch scene";
+        return;
+    }
+    Scene *scene = mainWindow()->novel()->scenes()[index.row()];
+
+    QDrag *drag = new QDrag(ui->sceneList);
+
+    // The mime data will be the scene serialized.
+    QMimeData *mimeData = new QMimeData;
+    QJsonDocument doc = QJsonDocument(scene->serialize());
+    mimeData->setData("text/scene", doc.toBinaryData());
+
+    drag->setMimeData(mimeData);
+
+    Qt::DropAction dropAction = drag->exec(Qt::MoveAction);
+}
+
+void SceneFrame::dragEnterEvent(QDragEnterEvent *event)
 {
 
 }

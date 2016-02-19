@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QMenu>
 #include <QCompleter>
+#include <QDrag>
 #include "sceneitemmodel.h"
 #include "modelcheckbox.h"
 #include "characterparser.h"
@@ -32,6 +33,11 @@ signals:
 public slots:
     void onNovelLoad();
     void onNovelNew();
+
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
 
 private slots:
     void on_detectCharacters_clicked();
@@ -74,6 +80,7 @@ private:
     QList<ModelCheckbox *> mCharacters;
     SceneItemModel *mModel;
     QCompleter *mCompleter;
+    QPoint mDragPos;
 
     class HeadlineUpdater : public QRunnable
     {
