@@ -18,6 +18,7 @@ public slots:
 private Q_SLOTS:
 
     void test_findCharReverse();
+    void test_reflowParagraph();
 
 };
 

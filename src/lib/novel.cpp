@@ -512,7 +512,8 @@ void Novel::removeRevision(const int index)
 {
     if (index < 0)
         mRevisions.removeAt(mCurrentRevision);
-    mRevisions.removeAt(index);
+    else
+        mRevisions.removeAt(index);
 }
 
 void Novel::setRevisions(const QStringList &revisions)

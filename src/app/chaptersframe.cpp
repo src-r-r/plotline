@@ -63,6 +63,8 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
     connect(this, SIGNAL(revisionSet()),
             this, SLOT(onRevisionSet()));
 
+    connectSlots();
+
 }
 
 ChaptersFrame::~ChaptersFrame()
@@ -70,12 +72,69 @@ ChaptersFrame::~ChaptersFrame()
     delete ui;
 }
 
+void ChaptersFrame::connectSlots()
+{
+    connect(ui->chapterContent->document(), SIGNAL(contentsChange(int,int,int)),
+            this, SLOT(onChapterContentModified(int, int, int)));
+}
+
+void ChaptersFrame::disconnectSlots()
+{
+    disconnect(ui->chapterContent->document(), SIGNAL(contentsChanged()));
+}
+
+void ChaptersFrame::blockEditableSignals()
+{
+    ui->chapterContent->blockSignals(true);
+}
+
+void ChaptersFrame::unblockEditableSignals()
+{
+    ui->chapterContent->blockSignals(false);
+}
+
 void ChaptersFrame::onNovelLoad()
 {
+
+    disconnectSlots();
+
+    // Set up the table: the view, proxy filter, and model.
     mModel = new ChapterModel(mainWindow()->novel());
-    ui->chapterTable->setModel(mModel);
+
+    mFilter = new ChapterFilter();
+    mFilter->setSourceModel(mModel);
+    ui->chapterTable->setModel(mFilter);
+
     ui->chapterTable->resizeColumnsToContents();
     ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
+    connectSlots();
+
+    // Clear the filter of any plotlines.
+    for (int i = 0; i < ui->chapterFilter->count(); ++i){
+        if (!ui->chapterFilter->itemData(i, PlotlineRole).isNull())
+            ui->chapterFilter->removeItem(i);
+    }
+
+    QList<Plotline *> plotlines = mainWindow()->novel()->plotlines();
+    Plotline *p = 0;
+    if (!plotlines.empty())
+        ui->chapterFilter->insertSeparator(ui->chapterFilter->count());
+    int viewCount = ui->chapterFilter->count()-1,
+            plCount = plotlines.count();
+    for (int i = 0; i < plCount; ++i){
+        p = plotlines[i];
+        ui->chapterFilter->addItem(p->brief());
+        ui->chapterFilter->setItemData(i+viewCount+1, QVariant(p->id()), PlotlineRole);
+    }
+
+    // Auto-select the last chapter.
+    // TODO: save a property in settings or in the novel to save the position
+    // of the last edit.
+    if (mModel->rowCount() > 0){
+        ui->chapterTable->setCurrentIndex(
+                    mModel->index(mModel->rowCount()-1, 0));
+        emit chapterSelected();
+    }
 }
 
 void ChaptersFrame::onNovelNew()
@@ -99,6 +158,7 @@ void ChaptersFrame::onChapterModified()
 void ChaptersFrame::onChapterSelected()
 {
 
+    blockEditableSignals();
     clearLayout(true, false);
 
     ui->deleteChapter->setEnabled(true);
@@ -106,6 +166,14 @@ void ChaptersFrame::onChapterSelected()
     ui->assignScenes->setEnabled(true);
 
     QModelIndex index = ui->chapterTable->currentIndex();
+
+    if (!index.isValid()){
+        clearLayout(true, true);
+        ui->deleteChapter->setEnabled(false);
+        ui->archiveChapter->setEnabled(false);
+        ui->assignScenes->setEnabled(false);
+        return;
+    }
 
     int number = mModel->data(index, ChapterModel::NumberRole).toInt();
     QString title = mModel->data(index, ChapterModel::TitleRole).toString();
@@ -137,7 +205,6 @@ void ChaptersFrame::onChapterSelected()
     }
 
     QSettings settings;
-
     QString fontName = settings.value(PreferencesDialog::FONT).toString();
     QVariant size = settings.value(PreferencesDialog::FONT_SIZE,
                               QVariant(PreferencesDialog::DEFAULT_FONT_SIZE));
@@ -145,10 +212,9 @@ void ChaptersFrame::onChapterSelected()
     font.setPointSize(size.toInt());
     ui->chapterContent->setFont(font);
 
-    ui->chapterContent->document()->setModified(true);
-
     mHighlighter->rehighlight();
 //    emit revisionChanged();
+    unblockEditableSignals();
 }
 
 void ChaptersFrame::onRevisionChanged()
@@ -173,11 +239,22 @@ void ChaptersFrame::onRevisionSet()
 
 void ChaptersFrame::onHideDistractions()
 {
-    mHasDistractions = false;
-    for (QWidget *w : mDistractions)
-        w->hide();
-    ui->chapterDistractionFree->setText(tr("Show Distractions"));
-    this->setMouseTracking(true);
+    QSettings settings;
+
+    int mode = settings.value(PreferencesDialog::DISTRACTION_FREE_MODE,
+                   QVariant((int) PreferencesDialog::ShowWindowed)).toInt();
+    if (mode == PreferencesDialog::ShowWindowed){
+        mHasDistractions = false;
+        for (QWidget *w : mDistractions)
+            w->hide();
+        ui->chapterDistractionFree->setText(tr("Show Distractions"));
+        this->setMouseTracking(true);
+    } else if (mode == PreferencesDialog::ShowFullScreen) {
+        FullScreenEditor *editor = new FullScreenEditor(ui->chapterTable);
+        connect(editor, SIGNAL(destroyed(QObject*)),
+                this, SLOT(onFullscreenEditorDestroyed(QObject *)));
+        editor->showFullScreen();
+    }
 }
 
 void ChaptersFrame::onShowDistractions()
@@ -201,7 +278,15 @@ void ChaptersFrame::mouseMoveEvent(QMouseEvent *event)
 
 void ChaptersFrame::on_chapterFilter_activated(int index)
 {
-
+    Q_UNUSED(index);
+    QVariant data = ui->chapterFilter->currentData(PlotlineRole);
+    if (data.isNull()){
+        mFilter->setPlotline(0);
+        return;
+    }
+    int id = data.toInt();
+    Plotline *plotline = mainWindow()->novel()->plotline(id);
+    mFilter->setPlotline(plotline);
 }
 
 void ChaptersFrame::on_addChapter_clicked()
@@ -276,11 +361,19 @@ void ChaptersFrame::on_chapterRevision_valueChanged(int arg1)
     emit revisionChanged();
 }
 
-void ChaptersFrame::on_chapterContent_textChanged()
+void ChaptersFrame::onChapterContentModified(int from, int charsAdded,
+                                             int charsRemoved)
 {
+    QSettings settings;
+    int wordWrapWidth = settings.value(PreferencesDialog::WORD_WRAP_WIDTH,
+                                       QVariant(0)).toInt();
+    QString content = ui->chapterContent->toPlainText();
+    if (wordWrapWidth > 0){
+        content = reflowParagraphs(content, wordWrapWidth);
+    }
     QModelIndex index = ui->chapterTable->currentIndex();
     int role = ChapterModel::ContentRole;
-    mModel->setData(index, ui->chapterContent->toPlainText(), role);
+    mModel->setData(index, content, role);
     emit chapterModified();
 }
 
@@ -323,3 +416,7 @@ void ChaptersFrame::on_chapterDistractionFree_clicked()
     }
 }
 
+void ChaptersFrame::onFullscreenEditorDestroyed(QObject *object)
+{
+    emit chapterSelected();
+}

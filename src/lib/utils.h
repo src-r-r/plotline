@@ -24,7 +24,10 @@ void setEnabledRecursive(QLayout *layout, bool enabled);
 void setDisabledRecursive(QLayout *layout, bool enabled);
 
 int findCharReverse(const QString &chars, const QString &s, const int from,
-                    const QString &escape);
+                    const QString &escape=QString());
 QString substring(const QString &string, int start, int end=-1);
+QPair<int, int> multilineOffset(QString string, int offset);
+QString reflowParagraph(const QString &paragraph, const int width);
+QString reflowParagraphs(const QString &paragraph, const int width);
 
 #endif // UTILS_H

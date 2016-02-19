@@ -42,10 +42,18 @@ private slots:
     void onCharacterToggled(bool checked, QVariant value);
     void on_sceneList_clicked(const QModelIndex &index);
     void on_plotline_activated(int index);
-    void on_sceneHeadline_textChanged();
-    void on_sceneAction_textChanged();
+//    void on_sceneHeadline_textChanged();
+//    void on_sceneAction_textChanged();
+    void onHeadlineModified();
+
+    void onActionModified();
 
 private:
+
+    void disconnectSlots();
+    void connectSlots();
+    void blockEditableSignals();
+    void unblockEditableSignals();
 
     QList<Character *> _getSelectedCharacters(bool pov=false);
     void _setSelectedCharacters(QList<Character *> characters, bool pov=false);

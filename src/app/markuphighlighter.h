@@ -9,6 +9,7 @@
 
 #include "styleproxy.h"
 #include "styleproxyparser.h"
+#include "preferencesdialog.h"
 
 class MarkupHighlighter : public QSyntaxHighlighter
 {
@@ -16,7 +17,7 @@ class MarkupHighlighter : public QSyntaxHighlighter
 public:
 
     enum MarkupLanguage {
-        NoLanguage,
+        NoLanguage = 0,
         MarkDown,
         ReStructuredText
     };
@@ -61,6 +62,8 @@ private:
     static QMap<MarkupToken, const StyleProxy *> formatting();
     QTextCharFormat parseFormat(const QTextCharFormat &baseFormat,
                                 const QJsonObject &obj);
+
+    static MarkupLanguage detectLanguage(const QSettings &settings);
 
 signals:
 

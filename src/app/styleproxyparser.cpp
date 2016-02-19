@@ -11,6 +11,7 @@ StyleProxy *StyleProxyParser::parse(const QString &key) const
         qWarning() << "Missing key" << key;
         return 0;
     }
+    qDebug() << "Entering SyleProxy::parse for key" << key;
     return StyleProxy::parse(mObject[key].toObject());
 }
 

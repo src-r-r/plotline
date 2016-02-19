@@ -33,27 +33,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for (int i = 0; i < frames.count(); ++i) {
         ui->tabWidget->insertTab(i, frames[i], frameTitles[i]);
-        connect(frames[i], SIGNAL(novelModified()), this,
-                SLOT(onNovelModified()));
-        connect(this, SIGNAL(novelLoaded()), frames[i], SLOT(onNovelLoad()));
-        connect(this, SIGNAL(novelNew()), frames[i], SLOT(onNovelNew()));
     }
+
+    connectAll();
 
     mDistractions << ui->tabWidget->tabBar()
                   << menuWidget();
     for (QToolBar *toolbar : findChildren<QToolBar *>(""))
         mDistractions << toolbar;
 
-    connect(this, SIGNAL(novelChanged()), this, SLOT(onNovelModified()));
-    connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
-    connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew()));
-    connect(this, SIGNAL(novelLoaded()),
-            this, SLOT(onNovelLoaded()));
-
     connect(mChapterFrame, SIGNAL(hideDistractions()),
             this, SLOT(onHideDistractions()));
     connect(mChapterFrame, SIGNAL(showDistractions()),
             this, SLOT(onShowDistractions()));
+
 }
 
 MainWindow::~MainWindow()
@@ -206,6 +199,34 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     emit mChapterFrame->showDistractions();
 }
 
+void MainWindow::disconnectAll()
+{
+    disconnect(this, SIGNAL(novelChanged()));
+    disconnect(this, SIGNAL(saveNovel()));
+    disconnect(this, SIGNAL(novelNew()));
+    disconnect(this, SIGNAL(novelLoaded()));
+    for (int i = 0; i < frames.count(); ++i) {
+        disconnect(frames[i], SIGNAL(novelModified()));
+        disconnect(this, SIGNAL(novelLoaded()));
+        disconnect(this, SIGNAL(novelNew()));
+    }
+}
+
+void MainWindow::connectAll()
+{
+    connect(this, SIGNAL(novelChanged()), this, SLOT(onNovelModified()));
+    connect(this, SIGNAL(saveNovel()), this, SLOT(onSaveNovel()));
+    connect(this, SIGNAL(novelNew()), this, SLOT(onNovelNew()));
+    connect(this, SIGNAL(novelLoaded()),
+            this, SLOT(onNovelLoaded()));
+    for (int i = 0; i < frames.count(); ++i) {
+        connect(frames[i], SIGNAL(novelModified()), this,
+                SLOT(onNovelModified()));
+        connect(this, SIGNAL(novelLoaded()), frames[i], SLOT(onNovelLoad()));
+        connect(this, SIGNAL(novelNew()), frames[i], SLOT(onNovelNew()));
+    }
+}
+
 Novel *MainWindow::novel() const
 {
     return mNovel;
@@ -220,14 +241,15 @@ void MainWindow::openNovel(const QString &path)
 {
     mOpenedFile = path;
     mNovel = Novel::readFrom(path);
-    mIsSaved = true;
     emit novelLoaded();
+    mIsSaved = true;
+    onSaveNovel();
 }
 
 void MainWindow::openTab(const int index)
 {
     qDebug() << "Opening tab" << index;
-    emit ui->tabWidget->tabBarClicked(index);
+    ui->tabWidget->setCurrentIndex(index);
 }
 
 void MainWindow::onNovelLoaded()
@@ -238,9 +260,15 @@ void MainWindow::onNovelLoaded()
 
 void MainWindow::onHideDistractions()
 {
-    for (QWidget *widget : mDistractions)
-        widget->hide();
-    this->setMouseTracking(true);
+    QSettings settings;
+
+    int mode = settings.value(PreferencesDialog::DISTRACTION_FREE_MODE,
+                   QVariant((int) PreferencesDialog::ShowWindowed)).toInt();
+    if (mode == PreferencesDialog::ShowWindowed){
+        for (QWidget *widget : mDistractions)
+            widget->hide();
+        this->setMouseTracking(true);
+    }
 }
 
 void MainWindow::onShowDistractions()

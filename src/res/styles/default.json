@@ -1,53 +1,59 @@
 {
-    "document" : {
-        "foreground" : "black",
-        "background" : "white"
+    "META" : {
+        "name" : "Default",
+        "comment" : "Default plotline theme."
     },
-    "HtmlEscape" : {
+    "style" : {
+        "document" : {
+            "foreground" : "black",
+            "background" : "white"
+        },
+        "HtmlEscape" : {
 
-    },
-    "Header" : {
-        "bold" : true,
-        "relSize" : 3
-    },
-    "BlockQuote" : {
-        "italic" : true,
-        "color" : "gray"
-    },
-    "List" : {
+        },
+        "Header" : {
+            "bold" : true,
+            "relSize" : 3
+        },
+        "BlockQuote" : {
+            "italic" : true,
+            "background" : "#aaaaaa"
+        },
+        "List" : {
 
-    },
-    "CodeBlock" : {
+        },
+        "CodeBlock" : {
 
-    },
-    "HorizontalRule" : {
+        },
+        "HorizontalRule" : {
 
-    },
-    "InlineLink" : {
+        },
+        "InlineLink" : {
 
-    },
-    "LinkSource" : {
+        },
+        "LinkSource" : {
 
-    },
-    "LinkTarget" : {
+        },
+        "LinkTarget" : {
 
-    },
-    "Emphasis" : {
+        },
+        "Emphasis" : {
+            "italic" : true
+        },
+        "Strong" : {
+            "bold" : true
+        },
+        "InlineCode" : {
 
-    },
-    "Strong" : {
+        },
+        "Image" : {
 
-    },
-    "InlineCode" : {
+        },
+        "AutomaticLink" : {
 
-    },
-    "Image" : {
+        },
+        "BackslashEscape" : {
 
-    },
-    "AutomaticLink" : {
-
-    },
-    "BackslashEscape" : {
-
+        }
     }
 }

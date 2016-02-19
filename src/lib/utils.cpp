@@ -111,3 +111,71 @@ void setDisabledRecursive(QLayout *layout, bool disabled)
             setDisabledRecursive(childLayout, disabled);
     }
 }
+
+/**
+ * @brief multilineOffset Given an offset in a multi-line string, determine
+ * the line and column number of that offset. Useful for error messages.
+ * @param string
+ * @param offset Location within the string.
+ * @return A pair of integers (line, col) where line is the line number and
+ * col is the column number within the line where the error occurrs.
+ */
+QPair<int, int> multilineOffset(QString string, int offset)
+{
+    int nLines = -1, nCols = -1;
+    for (int i = 0; i < offset && offset < string.length(); ++i){
+        ++nCols;
+        if (string[i] == '\n'){
+            nCols = -1;
+            ++nLines;
+        }
+    }
+    return QPair<int, int>(nLines, nCols);
+}
+
+/**
+ * @brief reflowParagraph Given a paragraph, reflow the paragraph so that
+ * the line length is no more that `width` characters.
+ * @param paragraph Paragraph to reflow.
+ * @param width Width of the paragraph.
+ * @return The paragraph reflowed.
+ */
+QString reflowParagraph(const QString &paragraph, const int width)
+{
+    QString p2 = paragraph;
+    p2.replace('\n', ' ');
+    QStringList words = p2.split(" ");
+
+    p2.clear();
+    QString line;
+    for (QString word : words){
+        if (line.length() + word.length() > width){
+            p2 += line + QString("\n");
+            line.clear();
+        }
+        if (!line.isEmpty()) line += " ";
+        line += word;
+    }
+    if (!line.isEmpty()) p2 += line;
+    return p2;
+}
+
+/**
+ * @brief reflowParagraphs Given several paragraphs, reflow each one so that
+ * for each paragraph, the line length is no more than `width` characters. This
+ * assumes Markup formatting, so that a real paragraph is seperated by 2 line
+ * break.s
+ * @param content content to reflow.
+ * @param width maximum width of the line.
+ * @return Content with each paragraph reflowed.
+ */
+QString reflowParagraphs(const QString &content, const int width){
+    QStringList paragraphs = content.split("\n\n");
+    QString content2;
+    for (int i = 0; i < paragraphs.count(); ++i){
+        content2 += reflowParagraph(paragraphs[i], width);
+        if (i < paragraphs.count()-1)
+            content2 += "\n\n";
+    }
+    return content2;
+}

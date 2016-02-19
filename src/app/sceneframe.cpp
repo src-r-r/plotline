@@ -24,11 +24,14 @@ SceneFrame::~SceneFrame()
 
 void SceneFrame::onNovelLoad()
 {
+    blockEditableSignals();
     delete mModel;
     mModel = new SceneItemModel(mainWindow()->novel());
     ui->sceneList->setModel(mModel);
     mActionHighlighter->setNovel(mainWindow()->novel());
     mHeadlineHighlighter->setNovel(mainWindow()->novel());
+    connectSlots();
+    unblockEditableSignals();
 }
 
 void SceneFrame::onNovelNew()
@@ -52,6 +55,7 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
 
     ModelCheckbox *checkbox;
     clearLayout(ui->characterList, true);
+    mCharacters.clear();
     for (Character *c : mainWindow()->novel()->characters()){
         checkbox = new ModelCheckbox(c->name(), QVariant(c->id()));
         mCharacters.append(checkbox);
@@ -62,9 +66,11 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
 
     fillPlotlineCombo();
 
+    blockEditableSignals();
     ui->sceneDetails->setEnabled(true);
     ui->sceneHeadline->setText(headline);
     ui->sceneAction->setText(action);
+    unblockEditableSignals();
 }
 
 void SceneFrame::on_addScene_clicked()
@@ -111,7 +117,8 @@ void SceneFrame::on_plotline_activated(int index)
     emit novelModified();
 }
 
-void SceneFrame::on_sceneHeadline_textChanged()
+
+void SceneFrame::onHeadlineModified()
 {
     QModelIndex index = ui->sceneList->currentIndex();
     QString headline = ui->sceneHeadline->toPlainText();
@@ -122,7 +129,7 @@ void SceneFrame::on_sceneHeadline_textChanged()
     emit novelModified();
 }
 
-void SceneFrame::on_sceneAction_textChanged()
+void SceneFrame::onActionModified()
 {
     QModelIndex index = ui->sceneList->currentIndex();
     QString action = ui->sceneAction->toPlainText();
@@ -130,6 +137,32 @@ void SceneFrame::on_sceneAction_textChanged()
     findCharacters(ui->sceneAction);
 
     emit novelModified();
+}
+
+void SceneFrame::disconnectSlots()
+{
+    disconnect(ui->sceneAction->document(), SIGNAL(contentsChanged()));
+    disconnect(ui->sceneHeadline->document(), SIGNAL(contentsChanged()));
+}
+
+void SceneFrame::connectSlots()
+{
+    connect(ui->sceneAction->document(), SIGNAL(contentsChanged()),
+            this, SLOT(onActionModified()));
+    connect(ui->sceneHeadline->document(), SIGNAL(contentsChanged()),
+            this, SLOT(onHeadlineModified()));
+}
+
+void SceneFrame::blockEditableSignals()
+{
+    ui->sceneAction->blockSignals(true);
+    ui->sceneHeadline->blockSignals(true);
+}
+
+void SceneFrame::unblockEditableSignals()
+{
+    ui->sceneAction->blockSignals(false);
+    ui->sceneHeadline->blockSignals(false);
 }
 
 QList<Character *> SceneFrame::_getSelectedCharacters(bool pov)
@@ -265,3 +298,4 @@ void SceneFrame::HeadlineUpdater::run()
     SceneItemModel *model = (SceneItemModel *) mListView->model();
     model->setData(mListView->currentIndex(), mField->toPlainText());
 }
+
