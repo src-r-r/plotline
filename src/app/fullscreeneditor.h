@@ -42,6 +42,8 @@ private:
 
     QTextEdit *mEditor;
     MarkupHighlighter *mHighlighter;
+
+    static const QString DEFAULT_STYLE_FILE;
 };
 
 #endif // FULLSCREENEDITOR_H

@@ -1,6 +1,9 @@
 #include "fullscreeneditor.h"
 #include "ui_fullscreeneditor.h"
 
+
+const QString FullScreenEditor::DEFAULT_STYLE_FILE = ":/styles/styles/default.json";
+
 FullScreenEditor::FullScreenEditor(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::FullScreenEditor)
@@ -74,6 +77,60 @@ FullScreenEditor::FullScreenEditor(QTextEdit *editor, QWidget *parent) :
         ui->chapterContent->setLineWrapMode(QTextEdit::FixedColumnWidth);
         ui->chapterContent->setLineWrapColumnOrWidth(width);
     }
+
+    // Open the style (for now DEFAULT).
+
+    Q_INIT_RESOURCE(plotline);
+    QMap<MarkupHighlighter::MarkupToken, const StyleProxy *> formatting;
+    QFile *f = new QFile(DEFAULT_STYLE_FILE);
+
+    if (!f->open(QFile::ReadOnly)){
+        qWarning() << "Could not open" << DEFAULT_STYLE_FILE;
+        return;
+    }
+
+    QByteArray raw = f->readAll();
+    QJsonParseError *error = new QJsonParseError;
+    QJsonDocument jDoc = QJsonDocument::fromJson(raw, error);
+    f->close();
+
+    QJsonObject obj = jDoc.object();
+    QColor foreground, background;
+    QString styleName;
+    if (obj.contains("META") && obj["META"].toObject().contains("name"))
+        styleName = obj["META"].toObject()["name"].toString();
+
+    qDebug() << "reading style" << styleName;
+    if (obj.contains("style")){
+        QJsonObject style = obj["style"].toObject();
+        if (style.contains("document")){
+            QJsonObject docStyle = style["document"].toObject();
+            if (docStyle.contains("foreground")){
+                foreground = QColor(docStyle["foreground"].toString());
+                qDebug() << "fullscreen - foreground=" << foreground;
+            }else {
+                qWarning() << "`foreground` property not found"
+                           << "for style " << styleName;
+            }if (docStyle.contains("background")){
+                background = QColor(docStyle["background"].toString());
+                qDebug() << "fullscreen - background=" << background;
+            } else {
+                qWarning() << "`background` property not found"
+                           << "for style " << styleName;
+            }
+        }
+    }
+
+    if (!foreground.isValid())
+        qWarning() << "Invalid foreground color:" << foreground;
+    if (!background.isValid())
+        qWarning() << "Invalid foreground color:" << background;
+
+    QString css =   QString("color: ") + foreground.name() + QString("; ")
+                + QString("background-color: ") + background.name()
+                + QString(";");
+    setStyleSheet(css);
+    ui->exitFullscreenEditor->setStyleSheet(css);
 }
 
 FullScreenEditor::~FullScreenEditor()

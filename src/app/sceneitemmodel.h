@@ -18,6 +18,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const;
 
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+
     bool insertRows(int row, int count,
                     const QModelIndex & parent = QModelIndex());
     bool removeRows(int row, int count,
@@ -25,6 +27,13 @@ public:
 
     bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
                   const QModelIndex &destinationParent, int destinationChild);
+
+    // Drag/drop support
+
+    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+                      int column, const QModelIndex &parent);
+    Qt::DropActions supportedDropActions() const;
+    QStringList mimeTypes() const;
 
     static const int HeadlineRole = Qt::UserRole + 0,
         ActionRole = Qt::UserRole + 1,

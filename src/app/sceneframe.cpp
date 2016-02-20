@@ -16,10 +16,11 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
     mHeadlineHighlighter =
             new CharacterHighlighter(novel, ui->sceneHeadline->document());
 
+    // Set up the list view for drag/drop re-ordering.
+    ui->sceneList->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->sceneList->setDragEnabled(true);
-    ui->sceneList->setAcceptDrops(true);
-    setAcceptDrops(true);
-    setMouseTracking(true);
+    ui->sceneList->viewport()->setAcceptDrops(true);
+    ui->sceneList->setDropIndicatorShown(true);
 }
 
 SceneFrame::~SceneFrame()
@@ -320,4 +321,15 @@ void SceneFrame::HeadlineUpdater::run()
 {
     SceneItemModel *model = (SceneItemModel *) mListView->model();
     model->setData(mListView->currentIndex(), mField->toPlainText());
+}
+
+void SceneFrame::on_sceneList_customContextMenuRequested(const QPoint &pos)
+{
+    QModelIndex index = ui->sceneList->indexAt(pos);
+    qDebug() << "Show context menu at" << index;
+    if (!index.isValid())
+        return;
+
+    QMenu *m = new QMenu("Scene");
+    m->addAction(tr("Delete"), this, SLOT(on_deleteScene_clicked()));
 }

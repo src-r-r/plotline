@@ -145,21 +145,21 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
 
     Chapter *chapter = mNovel->chapters()[row];
 
-    if (role >= Qt::UserRole){
-        qDebug() << "setdata Chapter" << chapter->number();
-        for (int i = 0; i < chapter->revisions().count(); ++i)
-            qDebug() << " > Revision" << i << ":"
-                     << chapter->revisions()[i]->content().size()
-                     << "bytes";
-    }
+//    if (role >= Qt::UserRole){
+//        qDebug() << "setdata Chapter" << chapter->number();
+//        for (int i = 0; i < chapter->revisions().count(); ++i)
+//            qDebug() << " > Revision" << i << ":"
+//                     << chapter->revisions()[i]->content().size()
+//                     << "bytes";
+//    }
 
     if (role == TitleRole){
         chapter->setTitle(value.toString());
     } else if (role == ContentRole) {
         chapter->setContent(value.toString());
-        qDebug() << "ch" << chapter->number()
-                 << "rev" << chapter->currentRevision()
-                 << ":" << value.toString();
+//        qDebug() << "ch" << chapter->number()
+//                 << "rev" << chapter->currentRevision()
+//                 << ":" << value.toString();
     } else if (role == RevisionRole) {
         qDebug() << " - Setting current revision:" << value.toInt();
         chapter->setCurrentRevision(value.toInt());

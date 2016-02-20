@@ -51,6 +51,8 @@ private slots:
 
     void onActionModified();
 
+    void on_sceneList_customContextMenuRequested(const QPoint &pos);
+
 private:
 
     void disconnectSlots();

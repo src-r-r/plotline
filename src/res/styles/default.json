@@ -5,8 +5,8 @@
     },
     "style" : {
         "document" : {
-            "foreground" : "black",
-            "background" : "white"
+            "foreground" : "#ffffff",
+            "background" : "#000000"
         },
         "HtmlEscape" : {
 
