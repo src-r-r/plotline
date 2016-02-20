@@ -61,6 +61,19 @@ FullScreenEditor::FullScreenEditor(QTextEdit *editor, QWidget *parent) :
     connect(escape, SIGNAL(triggered(bool)),
             this, SLOT(onEscapeTriggered(bool)));
     this->addAction(escape);
+
+    // We'll mimic the static word wrap with dynamic word wrap for the time
+    // being. This is because setting the rewrapped content will result in
+    // either an infinite loop, the content not being set, or the cursor
+    // resetting to the beginning (for cursorPositionChanged signal). TODO:
+    // resolve this issue.
+    QSettings settings;
+    qreal width = settings.value(PreferencesDialog::WORD_WRAP_WIDTH,
+                                 QVariant(80)).toReal();
+    if (width > 0){
+        ui->chapterContent->setLineWrapMode(QTextEdit::FixedColumnWidth);
+        ui->chapterContent->setLineWrapColumnOrWidth(width);
+    }
 }
 
 FullScreenEditor::~FullScreenEditor()
@@ -75,10 +88,15 @@ bool FullScreenEditor::isFullScreen()
 
 void FullScreenEditor::on_chapterContent_textChanged()
 {
-    mEditor->setText(ui->chapterContent->toPlainText());
+    QString content = ui->chapterContent->toPlainText();
+    mEditor->setPlainText(content);
 }
 
 void FullScreenEditor::onEscapeTriggered(bool triggered)
 {
     emit close();
+}
+
+void FullScreenEditor::on_chapterContent_cursorPositionChanged()
+{
 }

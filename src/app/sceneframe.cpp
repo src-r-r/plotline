@@ -18,8 +18,8 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
 
     ui->sceneList->setDragEnabled(true);
     ui->sceneList->setAcceptDrops(true);
-
-    this->setMouseTracking(true);
+    setAcceptDrops(true);
+    setMouseTracking(true);
 }
 
 SceneFrame::~SceneFrame()
@@ -51,47 +51,6 @@ void SceneFrame::onNovelNew()
 
 }
 
-void SceneFrame::mousePressEvent(QMouseEvent *event)
-{
-    if (!event->button() == Qt::LeftButton
-        && ui->sceneList->geometry().contains(event->pos()))
-        return;
-
-    mDragPos = event->pos();
-}
-
-void SceneFrame::mouseMoveEvent(QMouseEvent *event)
-{
-    if (!(event->buttons() & Qt::LeftButton))
-        return;
-    if ((event->pos() - mDragPos).manhattanLength()
-         < QApplication::startDragDistance())
-        return;
-
-    QModelIndex index = ui->sceneList->indexAt(mDragPos);
-    if (!index.isValid()){
-        qWarning() << "scene drag: Could not fetch scene";
-        return;
-    }
-    Scene *scene = mainWindow()->novel()->scenes()[index.row()];
-
-    QDrag *drag = new QDrag(ui->sceneList);
-
-    // The mime data will be the scene serialized.
-    QMimeData *mimeData = new QMimeData;
-    QJsonDocument doc = QJsonDocument(scene->serialize());
-    mimeData->setData("text/scene", doc.toBinaryData());
-
-    drag->setMimeData(mimeData);
-
-    Qt::DropAction dropAction = drag->exec(Qt::MoveAction);
-}
-
-void SceneFrame::dragEnterEvent(QDragEnterEvent *event)
-{
-
-}
-
 void SceneFrame::on_detectCharacters_clicked()
 {
 
@@ -117,7 +76,7 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
                 this, SLOT(onCharacterToggled(bool,QVariant)));
     }
 
-    fillPlotlineCombo();
+    fillPlotlineCombo(mainWindow()->novel()->plotline(plotline));
 
     blockEditableSignals();
     ui->sceneDetails->setEnabled(true);
@@ -129,8 +88,12 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
 void SceneFrame::on_addScene_clicked()
 {
     mModel->insertRows(ui->sceneList->currentIndex().row(), 1);
+    // select the recently-added scene
+    QModelIndex index = ui->sceneList->currentIndex();
+    index = mModel->index(index.row(), index.column());
+    ui->sceneList->setCurrentIndex(index);
+    emit on_sceneList_activated(index);
     emit novelModified();
-    emit on_sceneList_activated(mModel->index(mModel->rowCount(), 0));
 }
 
 void SceneFrame::on_archiveScene_clicked()
@@ -176,6 +139,8 @@ void SceneFrame::onHeadlineModified()
     QModelIndex index = ui->sceneList->currentIndex();
     QString headline = ui->sceneHeadline->toPlainText();
     mModel->setData(index, headline, SceneItemModel::HeadlineRole);
+    emit mModel->dataChanged(ui->sceneList->currentIndex(),
+                             ui->sceneList->currentIndex());
 
     findCharacters(ui->sceneHeadline);
 
@@ -318,6 +283,11 @@ void SceneFrame::detectLabelStart(QTextEdit *editor)
     }
 
     mCompleter->complete(cursorRect);
+
+    ui->sceneList->setDragDropMode(QListView::DragDrop);
+    ui->sceneList->setDropIndicatorShown(true);
+    ui->sceneList->setDragEnabled(true);
+    ui->sceneList->setAcceptDrops(true);
 }
 
 void SceneFrame::fillPlotlineCombo(Plotline *selected)
@@ -351,4 +321,3 @@ void SceneFrame::HeadlineUpdater::run()
     SceneItemModel *model = (SceneItemModel *) mListView->model();
     model->setData(mListView->currentIndex(), mField->toPlainText());
 }
-

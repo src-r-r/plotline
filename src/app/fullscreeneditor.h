@@ -35,6 +35,8 @@ private slots:
     void on_chapterContent_textChanged();
     void onEscapeTriggered(bool triggered);
 
+    void on_chapterContent_cursorPositionChanged();
+
 private:
     Ui::FullScreenEditor *ui;
 

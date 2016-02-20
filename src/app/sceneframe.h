@@ -35,9 +35,6 @@ public slots:
     void onNovelNew();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
 
 private slots:
     void on_detectCharacters_clicked();

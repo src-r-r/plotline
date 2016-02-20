@@ -34,7 +34,7 @@ bool ChapterModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows(parent, row, end);
 
     for (int i = row; i <= end; ++i)
-        mNovel->addChapter(new Chapter(), i);
+        mNovel->addChapter(new Chapter(), i+1);
 
     endInsertRows();
 

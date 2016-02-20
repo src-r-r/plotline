@@ -63,6 +63,7 @@ public:
     void removeScene(Scene *scene);
     void removeScene(int id);
     Scene *scene(int id) const;
+    void moveScenes(int from, int to);
 
     QList<Chapter *> chapters() const;
     Chapter *chapterByNumber(int number);

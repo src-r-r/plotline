@@ -221,5 +221,22 @@
  <resources>
   <include location="../res/plotline.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>chapterComplete</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>chapterContent</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>693</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>687</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -153,6 +153,11 @@ void ChaptersFrame::onChapterModified()
     Novel *novel = mainWindow()->novel();
     Chapter *chapter = novel->chapters()[index.row()];
     mModel->setData(index, chapter->title());
+
+    emit mModel->dataChanged(index,
+                             mModel->index(index.row(),
+                                           mModel->columnCount()-1));
+
     emit novelModified();
 }
 
@@ -184,6 +189,14 @@ void ChaptersFrame::onChapterSelected()
     bool canMark = mModel->data(index, ChapterModel::RevisionMarkableRole)
             .toBool();
 
+    QSettings settings;
+    qreal width = settings.value(PreferencesDialog::WORD_WRAP_WIDTH,
+                                 QVariant(80)).toReal();
+    if (width > 0){
+        ui->chapterContent->setLineWrapMode(QTextEdit::FixedColumnWidth);
+        ui->chapterContent->setLineWrapColumnOrWidth(width);
+    }
+
     ui->chapterContent->document()->setModified(false);
 
     ui->chapterNumber->setText(QVariant(number).toString());
@@ -205,7 +218,6 @@ void ChaptersFrame::onChapterSelected()
         ui->chapterRevision->setStyleSheet("color: #000000;");
     }
 
-    QSettings settings;
     QString fontName = settings.value(PreferencesDialog::FONT).toString();
     QVariant size = settings.value(PreferencesDialog::FONT_SIZE,
                               QVariant(PreferencesDialog::DEFAULT_FONT_SIZE));
@@ -290,13 +302,16 @@ void ChaptersFrame::on_chapterFilter_activated(int index)
 
 void ChaptersFrame::on_addChapter_clicked()
 {
-    if (!mModel->insertRows(mModel->rowCount(), 1)){
+    QModelIndex index = ui->chapterTable->currentIndex();
+    if (!mModel->insertRows(index.row(), 1)){
         qWarning() << "Error inserting rows at" << mModel->rowCount();
         return;
     }
     emit novelModified();
 
-    ui->chapterTable->setCurrentIndex(mModel->index(mModel->rowCount(), 0));
+    // Move to the next index.
+    index = mModel->index(index.row()+1, index.column());
+    emit on_chapterTable_activated(index);
     emit chapterSelected();
 }
 

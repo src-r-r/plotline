@@ -23,6 +23,9 @@ public:
     bool removeRows(int row, int count,
                     const QModelIndex & parent = QModelIndex());
 
+    bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
+                  const QModelIndex &destinationParent, int destinationChild);
+
     static const int HeadlineRole = Qt::UserRole + 0,
         ActionRole = Qt::UserRole + 1,
         PlotlineRole = Qt::UserRole + 2,

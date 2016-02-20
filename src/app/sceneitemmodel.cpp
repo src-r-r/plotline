@@ -82,9 +82,11 @@ bool SceneItemModel::setData(const QModelIndex &index, const QVariant &value, in
         scene->setHeadline(value.toString());
     else if (role == ActionRole)
         scene->setAction(value.toString());
-    else if (role == PlotlineRole)
-        scene->setPlotline(mNovel->plotline(value.toInt()));
-    else if (role == CharactersRole){
+    else if (role == PlotlineRole){
+        Plotline *p = mNovel->plotline(value.toInt());
+        if (!p) qWarning() << "set scene data: Could not find plotline" << value.toInt();
+        scene->setPlotline(p);
+    }else if (role == CharactersRole){
         for (QJsonValue val : value.toJsonArray())
             characters << mNovel->character(val.toInt());
         scene->setCharacters(characters);
@@ -117,7 +119,7 @@ bool SceneItemModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows(parent, row, end);
 
     for (int i = start; i <= end; ++i)
-        mNovel->addScene(new Scene("New Scene", ""), i);
+        mNovel->addScene(new Scene("New Scene", ""), i+1);
 
     endInsertRows();
 
@@ -142,5 +144,27 @@ bool SceneItemModel::removeRows(int row, int count, const QModelIndex &parent)
         mNovel->removeScene(mNovel->scenes()[i]);
 
     endRemoveRows();
+    return true;
+}
+
+bool SceneItemModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
+                              int count, const QModelIndex &destinationParent,
+                              int destinationChild)
+{
+    QList<Scene *> move;
+
+    int sourceLast = sourceRow + (count-1);
+
+    beginMoveRows(sourceParent, sourceRow, sourceLast, destinationParent,
+                  destinationChild);
+
+    int currCount = 0;
+    for (int i = sourceRow; currCount < count; ++i){
+        mNovel->moveScenes(i, destinationParent.row());
+        ++count;
+    }
+
+    endMoveRows();
+
     return true;
 }
