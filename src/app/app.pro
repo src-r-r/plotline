@@ -32,8 +32,7 @@ HEADERS +=  mainwindow.h \
     styleproxyparser.h \
     scenelistdialog.h \
     fullscreeneditor.h \
-    chapterfilter.h \
-    meta/scenemeta.h
+    chapterfilter.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -58,8 +57,7 @@ SOURCES += main.cpp \
     styleproxyparser.cpp \
     scenelistdialog.cpp \
     fullscreeneditor.cpp \
-    chapterfilter.cpp \
-    meta/scenemeta.cpp
+    chapterfilter.cpp
 
 LIBS += \
     ../lib/libplotline.so

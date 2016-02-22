@@ -17,7 +17,7 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
             new CharacterHighlighter(novel, ui->sceneHeadline->document());
 
     // Set up the list view for drag/drop re-ordering.
-    ui->sceneList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    ui->sceneList->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->sceneList->setDragEnabled(true);
     ui->sceneList->viewport()->setAcceptDrops(true);
     ui->sceneList->setDropIndicatorShown(true);

@@ -109,7 +109,7 @@ QVariant SceneItemModel::headerData(int section, Qt::Orientation orientation, in
 
 Qt::ItemFlags SceneItemModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags defaultFlags = QStringListModel::flags(index);
+    Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
 
     if (index.isValid())
         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
@@ -168,31 +168,15 @@ bool SceneItemModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
     beginMoveRows(sourceParent, sourceRow, sourceLast, destinationParent,
                   destinationChild);
 
-    int currCount = 0;
-    for (int i = sourceRow; currCount < count; ++i){
+    for (int i = sourceRow; i <= sourceLast; ++i)
         mNovel->moveScenes(i, destinationChild);
-        ++count;
-    }
 
     endMoveRows();
 
     return true;
 }
 
-bool SceneItemModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
-                                  int row, int column, const QModelIndex &parent)
-{
-
-}
-
 Qt::DropActions SceneItemModel::supportedDropActions() const
 {
-    return Qt::CopyAction | Qt::MoveAction;
-}
-
-QStringList SceneItemModel::mimeTypes() const
-{
-    QStringList types;
-    types << "meta";
-    return types;
+    return Qt::MoveAction;
 }

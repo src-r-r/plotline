@@ -30,10 +30,10 @@ public:
 
     // Drag/drop support
 
-    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
-                      int column, const QModelIndex &parent);
+//    bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+//                      int column, const QModelIndex &parent);
     Qt::DropActions supportedDropActions() const;
-    QStringList mimeTypes() const;
+//    QStringList mimeTypes() const;
 
     static const int HeadlineRole = Qt::UserRole + 0,
         ActionRole = Qt::UserRole + 1,
