@@ -112,13 +112,14 @@ Qt::ItemFlags SceneItemModel::flags(const QModelIndex &index) const
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
 
     if (index.isValid())
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+        return Qt::ItemIsDragEnabled | defaultFlags;
     else
         return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
 bool SceneItemModel::insertRows(int row, int count, const QModelIndex &parent)
 {
+
     if (row > rowCount() || row < 0){
         qWarning() << "Invalid row" << row;
         row = rowCount();
@@ -129,7 +130,7 @@ bool SceneItemModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows(parent, row, end);
 
     for (int i = start; i <= end; ++i)
-        mNovel->addScene(new Scene("New Scene", ""), i+1);
+        mNovel->addScene(new Scene("New Scene", ""), i);
 
     endInsertRows();
 
@@ -140,6 +141,11 @@ bool SceneItemModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     int start = row;
     int end = row + (count-1);
+
+    if (parent.isValid()){
+        qWarning() << "remove scene - valid parent";
+        return false;
+    }
 
     if (row > rowCount()-1 || row < 0){
         qWarning() << "Could not delete from row" << row;
