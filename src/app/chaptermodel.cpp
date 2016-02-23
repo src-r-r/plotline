@@ -24,10 +24,10 @@ int ChapterModel::columnCount(const QModelIndex &parent) const
 
 bool ChapterModel::insertRows(int row, int count, const QModelIndex &parent)
 {
-    if (!parent.isValid()){
-        qWarning() << "[+] chapter insert rows: INVALID PARENT" << parent;
-        return false;
-    }
+//    if (parent.isValid()){
+//        qWarning() << "[+] chapter insert rows: INVALID PARENT" << parent;
+//        return false;
+//    }
     if (row > rowCount() || row < 0){
         qWarning() << "[+] chapter insert rows: setting row=" << rowCount();
         row = rowCount();
@@ -52,10 +52,10 @@ bool ChapterModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     int end = row + (count-1);
 
-    if (parent.isValid()){
-        qWarning() << "remove scene - valid parent";
-        return false;
-    }
+//    if (parent.isValid()){
+//        qWarning() << "[-] remove row: valid parent";
+//        return false;
+//    }
 
     if (row > rowCount()-1 || row < 0){
         qWarning() << "Could not delete from row" << row;
@@ -66,11 +66,14 @@ bool ChapterModel::removeRows(int row, int count, const QModelIndex &parent)
         end = rowCount()-1;
     beginRemoveRows(parent, row, end);
 
-    qDebug("[-] chapter remove rows (row=%d, count=%d, parent=[%d, %d])",
-           row, count, parent.row(), parent.column());
+    qDebug("[-] chapter remove rows (row=%d, count=%d, parent=[%d, %d][, "\
+           "end=%d])",
+           row, count, parent.row(), parent.column(), end);
 
-    for (int i = row; i <= end; ++i)
+    for (int i = row; i <= end; ++i){
+        qDebug() << "[-] chapter remove" << mNovel->chapters()[row]->number();
         mNovel->removeChapter(mNovel->chapters()[row]);
+    }
 
     endRemoveRows();
     return true;
@@ -83,6 +86,12 @@ bool ChapterModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
 
     int sourceLast = sourceRow + (count-1);
 
+    qDebug("[~] chapter move row (sourceParent=[%d, %d], sourceRow=%d, " \
+           "count=%d, destinationParent=[%d, %d], destinationChild=%d)",
+           sourceParent.row(), sourceParent.column(), sourceRow,
+           count, destinationParent.row(), destinationParent.column(),
+           destinationChild);
+
     beginMoveRows(sourceParent, sourceRow, sourceLast, destinationParent,
                   destinationChild);
 
@@ -91,6 +100,15 @@ bool ChapterModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
 
     endMoveRows();
 }
+
+//void ChapterModel::rowsMoved(const QModelIndex &parent, int start, int end,
+//                             const QModelIndex &destination, int row)
+//{
+
+//    qDebug("*emit* rowsMoved(parent=[%d, %d], start=%d, end=%d" \
+//           ", destination=[%d, %d], row=%d", parent.row(), parent.column(),
+//           start, end, destination.row(), destination.column(), row);
+//}
 
 QVariant ChapterModel::data(const QModelIndex &index, int role) const
 {
@@ -179,13 +197,17 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
         qDebug() << "   role = title";
     } else if (role == ContentRole) {
         chapter->setContent(value.toString());
+        qDebug() << "   role = content";
     } else if (role == RevisionRole) {
         qDebug() << "   role = revision";
         chapter->setCurrentRevision(value.toInt());
+        qDebug() << "   role = revision";
     } else if (role == RevisionMarkableRole) {
         qWarning() << "RevisionMarkableRole is read-only. Leaving alone";
+        qDebug() << "   role = revisionMarkable";
     } else if (role == NumberRole) {
         qWarning() << "Number role is read-only. Leaving alone.";
+        qDebug() << "   role = number";
     } else if (role == CompleteRole) {
         chapter->setIsComplete(value.toBool());
         qDebug() << "   role = complete";

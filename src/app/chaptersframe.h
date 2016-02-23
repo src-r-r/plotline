@@ -9,6 +9,7 @@
 #include "scenelistdialog.h"
 #include "fullscreeneditor.h"
 #include "chapterfilter.h"
+#include "chapterreorderdialog.h"
 
 class PlotlineAppFrame;
 
@@ -85,6 +86,7 @@ private slots:
     void clearLayout(bool enabled, bool clear);
     void onDistractionTimeout(void);
     void onChapterContentModified(int from, int charsAdded, int charsRemoved);
+    void on_reorderChapter_clicked();
 };
 
 #endif // CHAPTERSFRAME_H

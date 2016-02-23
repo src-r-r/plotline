@@ -14,12 +14,15 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
     ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
 
     // Set up the chapter table for drag/drop re-ordering.
+//    ui->chapterTable->setDragEnabled(true);
+//    ui->chapterTable->setAcceptDrops(true);
+//    ui->chapterTable->viewport()->setAcceptDrops(true);
+//    ui->chapterTable->setDragDropOverwriteMode(false);
+//    ui->chapterTable->setDropIndicatorShown(true);
+
     ui->chapterTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->chapterTable->setDragDropMode(QAbstractItemView::DragDrop);
-    ui->chapterTable->setDragEnabled(true);
-    ui->chapterTable->setDragDropOverwriteMode(false);
-    ui->chapterTable->setAcceptDrops(true);
-    ui->chapterTable->setDropIndicatorShown(true);
+    ui->chapterTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+//    ui->chapterTable->setDragDropMode(QAbstractItemView::InternalMove);
 
     // Set all action buttons (except add) as disabled for default
     ui->archiveChapter->setDisabled(true);
@@ -253,8 +256,8 @@ void ChaptersFrame::onRevisionChanged()
     int revision = ui->chapterRevision->value()-1;
     mModel->setData(index, QVariant(revision), ChapterModel::RevisionRole);
 
-    emit chapterSelected();
     emit chapterModified();
+    emit chapterSelected();
 }
 
 void ChaptersFrame::onRevisionSet()
@@ -448,5 +451,12 @@ void ChaptersFrame::onFullscreenEditorDestroyed(QObject *object)
                                    ChapterModel::ContentRole).toString();
     ui->chapterContent->setText(content);
     mHighlighter->rehighlight();
+    emit chapterSelected();
+}
+
+void ChaptersFrame::on_reorderChapter_clicked()
+{
+    ChapterReorderDialog *dialog = new ChapterReorderDialog(ui->chapterTable);
+    dialog->show();
     emit chapterSelected();
 }

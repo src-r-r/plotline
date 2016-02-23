@@ -33,9 +33,6 @@ public:
                     const QModelIndex & parent = QModelIndex());
     bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
                   const QModelIndex &destinationParent, int destinationChild);
-    void rowsMoved(const QModelIndex & parent, int start,
-                                       int end, const QModelIndex & destination,
-                                       int row);
 
 
     Qt::ItemFlags flags(const QModelIndex & index) const;
@@ -67,6 +64,9 @@ private:
 signals:
 
 public slots:
+//    void rowsMoved(const QModelIndex & parent, int start,
+//                                       int end, const QModelIndex & destination,
+//                                       int row);
 };
 
 #endif // CHAPTERMODEL_H
