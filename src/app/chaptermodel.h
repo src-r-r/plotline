@@ -31,8 +31,18 @@ public:
                     const QModelIndex & parent = QModelIndex());
     bool removeRows(int row, int count,
                     const QModelIndex & parent = QModelIndex());
+    bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
+                  const QModelIndex &destinationParent, int destinationChild);
+    void rowsMoved(const QModelIndex & parent, int start,
+                                       int end, const QModelIndex & destination,
+                                       int row);
+
 
     Qt::ItemFlags flags(const QModelIndex & index) const;
+    Qt::DropActions supportedDropActions() const;
+
+//    QMimeData *dropMimeData(const QMimeData *data, Qt::DropAction action,
+//                            int row, int column, const QModelIndex &parent);
 
     Novel *novel() const;
     void setNovel(Novel *novel);

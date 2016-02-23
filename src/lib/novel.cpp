@@ -167,13 +167,13 @@ void Novel::setChapters(const QList<Chapter *> &value)
 void Novel::addChapter(Chapter *chapter, int loc)
 {
     // Add revisions to the chapter.
+    chapter->setNovel(this);
     while(chapter->revisions().count() < mRevisions.count())
         chapter->addRevision();
-    if (loc < 0)
+    if (loc < 0 || loc >= mCharacters.count())
         mChapters.append(chapter);
     else
         mChapters.insert(loc, chapter);
-    chapter->setNovel(this);
 }
 
 Revision *Novel::chapterRevision(int chapter, int revision)
@@ -192,6 +192,11 @@ void Novel::removeChapterAt(int index, bool doDelete)
     mChapters.removeAt(index);
     if (doDelete)
         delete chapter;
+}
+
+void Novel::moveChapter(int from, int to)
+{
+    mChapters.move(from, to);
 }
 
 Novel::PointOfView Novel::getPointOfView() const

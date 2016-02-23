@@ -24,17 +24,24 @@ int ChapterModel::columnCount(const QModelIndex &parent) const
 
 bool ChapterModel::insertRows(int row, int count, const QModelIndex &parent)
 {
-    if (row > rowCount() || row < 0){
-        qWarning() << "chapter: Invalid row" << row;
+    if (!parent.isValid()){
+        qWarning() << "[+] chapter insert rows: INVALID PARENT" << parent;
         return false;
     }
+    if (row > rowCount() || row < 0){
+        qWarning() << "[+] chapter insert rows: setting row=" << rowCount();
+        row = rowCount();
+    }
 
-    int end = row + count-1;
+    int end = row + (count-1);
+
+    qDebug("[+] chapter insert rows (row=%d, count=%d, parent=[%d, %d])",
+           row, count, parent.row(), parent.column());
 
     beginInsertRows(parent, row, end);
 
     for (int i = row; i <= end; ++i)
-        mNovel->addChapter(new Chapter(), i+1);
+        mNovel->addChapter(new Chapter(), i);
 
     endInsertRows();
 
@@ -45,6 +52,11 @@ bool ChapterModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     int end = row + (count-1);
 
+    if (parent.isValid()){
+        qWarning() << "remove scene - valid parent";
+        return false;
+    }
+
     if (row > rowCount()-1 || row < 0){
         qWarning() << "Could not delete from row" << row;
         return false;
@@ -54,12 +66,30 @@ bool ChapterModel::removeRows(int row, int count, const QModelIndex &parent)
         end = rowCount()-1;
     beginRemoveRows(parent, row, end);
 
-    for (int i = row; i <= end; ++i){
-        mNovel->removeChapterAt(i, true);
-    }
+    qDebug("[-] chapter remove rows (row=%d, count=%d, parent=[%d, %d])",
+           row, count, parent.row(), parent.column());
+
+    for (int i = row; i <= end; ++i)
+        mNovel->removeChapter(mNovel->chapters()[row]);
 
     endRemoveRows();
     return true;
+}
+
+bool ChapterModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
+                            int count, const QModelIndex &destinationParent,
+                            int destinationChild)
+{
+
+    int sourceLast = sourceRow + (count-1);
+
+    beginMoveRows(sourceParent, sourceRow, sourceLast, destinationParent,
+                  destinationChild);
+
+    for (int i = 0; i < count; ++i)
+        mNovel->moveChapter(sourceRow, destinationChild);
+
+    endMoveRows();
 }
 
 QVariant ChapterModel::data(const QModelIndex &index, int role) const
@@ -74,20 +104,15 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
 
     if ( !index.isValid() || mNovel->chapters().isEmpty() ||
          row > mNovel->chapters().count()){
-        qWarning() << "Chapter: Invalid index:" << index;
+        qWarning() << "chapter get data: Invalid index:" << index;
         return QVariant();
     }
 
     Chapter *chapter = mNovel->chapters()[row];
 
     if (!chapter){
-        qWarning() << "Chapter is null!";
+        qWarning() << "chapter get data: chapter is null";
         return QVariant();
-    }
-
-    if (role == IdRole){
-        qDebug() << "Returning chapter ID" << chapter->id();
-        return QVariant(chapter->id());
     }
 
     if (role == Qt::EditRole || role == Qt::DisplayRole){
@@ -102,15 +127,21 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
     if (role >= Qt::UserRole)
         qDebug() << "getdata Chapter" << chapter->number();
 
+
+    if (role == IdRole){
+        qDebug() << "chapter get data ID" << chapter->id();
+        return QVariant(chapter->id());
+    }
     if (role == TitleRole)
         return chapter->title();
     if (role == ContentRole){
-        qDebug() << " - content for revision" << chapter->currentRevision()
+        qDebug() << "chapter get data revision content"
+                 << chapter->currentRevision()
                  << ":" << chapter->currentContent().length() << "bytes";
         return chapter->currentContent();
     }
     if (role == RevisionRole){
-        qDebug() << " - revision:" << chapter->currentRevision();
+        qDebug() << "chapter get data revision:" << chapter->currentRevision();
         return QVariant(chapter->currentRevision());
     } if (role == NumberRole)
         return QVariant(chapter->number());
@@ -133,35 +164,23 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
 {
     int row = index.row();
 
-    if (!index.isValid()){
-        qWarning() << "Setting chapter data: invalid index.";
+    if (!index.isValid() || row >= mNovel->chapters().count() || row < 0){
+        qWarning() << "chapter set data: invalid index:" << index;
         return false;
     }
 
-    if (row >= mNovel->chapters().count() || row < 0){
-        qWarning() << "Setting chapter data: invalid index" << index;
-        return false;
-    }
+    qDebug() << "chapter set data";
+    qDebug("    index=(%d, %d)", index.row(), index.column());
 
     Chapter *chapter = mNovel->chapters()[row];
 
-//    if (role >= Qt::UserRole){
-//        qDebug() << "setdata Chapter" << chapter->number();
-//        for (int i = 0; i < chapter->revisions().count(); ++i)
-//            qDebug() << " > Revision" << i << ":"
-//                     << chapter->revisions()[i]->content().size()
-//                     << "bytes";
-//    }
-
     if (role == TitleRole){
         chapter->setTitle(value.toString());
+        qDebug() << "   role = title";
     } else if (role == ContentRole) {
         chapter->setContent(value.toString());
-//        qDebug() << "ch" << chapter->number()
-//                 << "rev" << chapter->currentRevision()
-//                 << ":" << value.toString();
     } else if (role == RevisionRole) {
-        qDebug() << " - Setting current revision:" << value.toInt();
+        qDebug() << "   role = revision";
         chapter->setCurrentRevision(value.toInt());
     } else if (role == RevisionMarkableRole) {
         qWarning() << "RevisionMarkableRole is read-only. Leaving alone";
@@ -169,12 +188,15 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
         qWarning() << "Number role is read-only. Leaving alone.";
     } else if (role == CompleteRole) {
         chapter->setIsComplete(value.toBool());
+        qDebug() << "   role = complete";
     } else if (role == SceneRole) {
+        qDebug() << "   role = scene";
         QList<Scene *> scenes;
         for (QJsonValue v : value.toJsonArray())
             scenes << mNovel->scene(v.toInt());
         chapter->setScenes(scenes);
     } else {
+        qDebug() << "   role = (invalid)" << role;
         return false;
     }
     return true;
@@ -183,24 +205,17 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
 QVariant ChapterModel::headerData(int section, Qt::Orientation orientation,
                                       int role) const
 {
-    // kind of obvious what this table is and what the columns mean.
-    // Leave blank and just return a QVariant.
-
-//    if (orientation == Qt::Horizontal) {
-//        if (role == Qt::DisplayRole || role == Qt::EditRole) {
-//            if (section == NUMBER)
-//                return QString("");
-//            if (section == TITLE)
-//                return tr("Chapter");
-//        }
-//    }
     return QVariant();
 }
 
 Qt::ItemFlags ChapterModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index);
-    return Qt::ItemIsSelectable|Qt::ItemIsEnabled;
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+
+    if (index.isValid())
+        return Qt::ItemIsDragEnabled | defaultFlags;
+    else
+        return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
 Novel *ChapterModel::novel() const
@@ -221,3 +236,9 @@ void ChapterModel::setNovel(Novel *novel)
         }
     }
 }
+
+Qt::DropActions ChapterModel::supportedDropActions() const
+{
+    return Qt::MoveAction | Qt::CopyAction;
+}
+

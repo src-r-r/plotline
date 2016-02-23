@@ -13,6 +13,9 @@ public:
     Plotline *plotline() const;
     void setPlotline(Plotline *plotline);
 
+//    bool insertRows(int row, int count, const QModelIndex &parent);
+//    bool removeRows(int row, int count, const QModelIndex &parent);
+
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 //    bool filterAcceptsColumn(int source_column, const QModelIndex & source_parent) const;

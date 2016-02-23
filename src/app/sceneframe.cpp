@@ -18,6 +18,7 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
 
     // Set up the list view for drag/drop re-ordering.
     ui->sceneList->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->sceneList->setDragDropMode(QAbstractItemView::InternalMove);
     ui->sceneList->setDragEnabled(true);
     ui->sceneList->viewport()->setAcceptDrops(true);
     ui->sceneList->setDropIndicatorShown(true);

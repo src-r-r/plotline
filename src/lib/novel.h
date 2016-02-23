@@ -73,6 +73,7 @@ public:
     Revision *chapterRevision(int chapter, int revision);
     void removeChapter(Chapter *chapter);
     void removeChapterAt(int index, bool doDelete=false);
+    void moveChapter(int from, int to);
 
     Novel::PointOfView getPointOfView() const;
     void setPointOfView(const Novel::PointOfView &pointOfView);

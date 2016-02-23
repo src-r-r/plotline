@@ -7,10 +7,19 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Set up the chapter table and model.
     mModel = new ChapterModel(mainWindow->novel());
     ui->chapterTable->setModel(mModel);
     ui->chapterTable->resizeColumnsToContents();
     ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
+
+    // Set up the chapter table for drag/drop re-ordering.
+    ui->chapterTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->chapterTable->setDragDropMode(QAbstractItemView::DragDrop);
+    ui->chapterTable->setDragEnabled(true);
+    ui->chapterTable->setDragDropOverwriteMode(false);
+    ui->chapterTable->setAcceptDrops(true);
+    ui->chapterTable->setDropIndicatorShown(true);
 
     // Set all action buttons (except add) as disabled for default
     ui->archiveChapter->setDisabled(true);
@@ -104,7 +113,7 @@ void ChaptersFrame::onNovelLoad()
 
     mFilter = new ChapterFilter();
     mFilter->setSourceModel(mModel);
-    ui->chapterTable->setModel(mFilter);
+    ui->chapterTable->setModel(mModel);
 
     ui->chapterTable->resizeColumnsToContents();
     ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
@@ -115,6 +124,9 @@ void ChaptersFrame::onNovelLoad()
         if (!ui->chapterFilter->itemData(i, PlotlineRole).isNull())
             ui->chapterFilter->removeItem(i);
     }
+
+    // Add the plotlines to the plotlines dropdown. The value for
+    // retreival will be the plotline ID.
 
     QList<Plotline *> plotlines = mainWindow()->novel()->plotlines();
     Plotline *p = 0;
@@ -303,7 +315,7 @@ void ChaptersFrame::on_chapterFilter_activated(int index)
 void ChaptersFrame::on_addChapter_clicked()
 {
     QModelIndex index = ui->chapterTable->currentIndex();
-    if (!mModel->insertRows(index.row(), 1)){
+    if (!mModel->insertRows(index.row()+1, 1)){
         qWarning() << "Error inserting rows at" << mModel->rowCount();
         return;
     }
