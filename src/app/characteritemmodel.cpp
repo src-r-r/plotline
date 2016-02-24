@@ -1,22 +1,12 @@
 #include "characteritemmodel.h"
 
-CharacterItemModel::CharacterItemModel(Novel *novel, QObject *parent)
+CharacterModel::CharacterModel(Novel *novel, QObject *parent)
     : QAbstractListModel(parent)
 {
     mNovel = novel;
-    for (int i = 0; i < mNovel->characters().length(); ++i)
-    {
-        QModelIndex index = createIndex(i, 0);
-        QBrush brush = QBrush();
-        brush.setColor(mNovel->characters()[i]->color());
-        this->setData(index, mNovel->characters()[i]->name(),
-                      Qt::UserRole);
-        this->setData(index, brush, Qt::BackgroundRole);
-        setData(index, QVariant(mNovel->characters()[i]->id()), CharacterIdRole);
-    }
 }
 
-void CharacterItemModel::addCharacter()
+void CharacterModel::addCharacter()
 {
     Character *c = new Character("New Character");
     mNovel->addCharacter(c);
@@ -27,39 +17,59 @@ void CharacterItemModel::addCharacter()
     setData(index, c->color(), Qt::BackgroundRole);
 }
 
-int CharacterItemModel::rowCount(const QModelIndex &parent) const
+int CharacterModel::rowCount(const QModelIndex &parent) const
 {
-    return parent.isValid() ? 0 : mNovel->characters().size();
+    return parent.isValid() ? 0 : mNovel->characters().count();
 }
 
-QVariant CharacterItemModel::data(const QModelIndex &index, int role) const
+QVariant CharacterModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid()){
-        qWarning() << "Invalid index";
+        qWarning() << "[<] character data: Invalid index";
         return QVariant();
     }
 
     if (index.row() > mNovel->characters().size()){
-        qWarning() << index.row() << " > # of characters(" <<
-                      mNovel->characters().count() << ")";
+        qWarning("[<] character data: invalid row %d", index.row());
         return QVariant();
     }
 
     Character *c = mNovel->characters()[index.row()];
-    QVariant value;
-    if (role == Qt::BackgroundRole) {
-        QBrush value = QBrush();
-        value.setColor(c->color());
-        return value;
+
+    if (role == Qt::BackgroundRole || role == ColorRole) {
+        if (c->color().isValid())
+            return QBrush(c->color());
+        return QVariant();
     } else if (role == Qt::DisplayRole || role ==  Qt::EditRole) {
+        qDebug("    role = Qt::DisplayRole");
         return c->name();
     } else if (role == CharacterIdRole) {
+        qDebug("    role = CharacterIdRole");
         return c->id();
+    } else if (role == NameRole) {
+        qDebug("    role = NameRole");
+        return c->name();
+    } else if (role == LabelRole) {
+        qDebug("    role = LabelRole");
+        return c->label();
+    } else if (role == HeadshotRole) {
+        qDebug("    role = HeadshotRole");
+        QVariant headshot;
+        headshot = c->getHeadshot();
+        return headshot;
+    } else if (role == ColorRole) {
+        qDebug("    role = ColorRole");
+        if (c->color().isValid())
+            return c->color().name();
+        return QString();
+    } else if (role == ArchivedRole) {
+    } else {
+        qWarning("[<] character data: Invalid role %d", role);
     }
     return QVariant();
 }
 
-QVariant CharacterItemModel::headerData(int section,
+QVariant CharacterModel::headerData(int section,
                                         Qt::Orientation orientation,
                                         int role) const
 {
@@ -70,39 +80,73 @@ QVariant CharacterItemModel::headerData(int section,
     return QVariant();
 }
 
-Qt::ItemFlags CharacterItemModel::flags(const QModelIndex &index) const
+bool CharacterModel::setData(const QModelIndex &index, const QVariant &value,
+                             int role)
+{
+    if (!index.isValid()){
+        qWarning() << "[>] character set data: Invalid index";
+        return false;
+    }
+
+    if (index.row() > mNovel->characters().size()){
+        qWarning() << index.row() << " > # of characters(" <<
+                      mNovel->characters().count() << ")";
+        return false;
+    }
+
+    Character *c = mNovel->characters()[index.row()];
+
+    if (role == Qt::BackgroundRole) {
+        c->setColor(QColor(value.toString()));
+    } else if (role == Qt::DisplayRole || role ==  Qt::EditRole) {
+        c->setName(value.toString());
+    } else if (role == CharacterIdRole) {
+    } else if (role == NameRole) {
+        c->setName(value.toString());
+    } else if (role == LabelRole) {
+        c->setLabel(value.toString());
+    } else if (role == HeadshotRole) {
+        QImage headshot = value.value<QImage>();
+        c->setHeadshot(headshot);
+    } else if (role == ColorRole) {
+        c->setColor(QColor(value.toString()));
+    } else if (role == ArchivedRole) {
+    } else {
+        qWarning("[>] character set data: Invalid role %d", role);
+    }
+}
+
+Qt::ItemFlags CharacterModel::flags(const QModelIndex &index) const
 {
     Q_UNUSED(index);
     return Qt::ItemFlag::ItemIsEnabled|Qt::ItemIsSelectable;
 }
 
-QModelIndex CharacterItemModel::lastRow() const
+QModelIndex CharacterModel::lastRow() const
 {
     return index(rowCount()-1);
 }
 
-bool CharacterItemModel::insertRows(int row, int count,
+bool CharacterModel::insertRows(int row, int count,
                                     const QModelIndex &parent)
 {
     qDebug() << "Inserting rows for novel" << mNovel->getWorkingTitle();
     if (parent.isValid() || row + count <=0 )
         return false;
 
-    bool inserted = false;
+    int end = row + (count-1);
 
-    beginInsertRows(QModelIndex(), row, row+count-1);
+    beginInsertRows(QModelIndex(), row, end);
 
-    for (int i = 0; i < (row + count - 1); ++i){
-        mNovel->characters().insert(row+i, new Character(QString()));
-        inserted = true;
-    }
+    for (int i = row; i <= end; ++i)
+        mNovel->addCharacter(new Character(""), i);
 
     endInsertRows();
 
-    return inserted;
+    return true;
 }
 
-bool CharacterItemModel::removeRows(int row, int count,
+bool CharacterModel::removeRows(int row, int count,
                                     const QModelIndex &parent)
 {
     if (parent.isValid())

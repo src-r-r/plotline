@@ -313,9 +313,12 @@ Character *Novel::character(const QString label) const
  * @brief Novel::addCharacter Add a character to the novel.
  * @param character Character to add.
  */
-void Novel::addCharacter(Character *character)
+void Novel::addCharacter(Character *character, const int i)
 {
-    this->mCharacters.append(character);
+    if (i < 0)
+        this->mCharacters.append(character);
+    else
+        this->mCharacters.insert(i, character);
 }
 
 void Novel::setCharacters(const QList<Character *> &characters)

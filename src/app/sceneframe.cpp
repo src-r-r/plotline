@@ -22,6 +22,8 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
     ui->sceneList->setDragEnabled(true);
     ui->sceneList->viewport()->setAcceptDrops(true);
     ui->sceneList->setDropIndicatorShown(true);
+
+    ui->sceneDetails->setDisabled(true);
 }
 
 SceneFrame::~SceneFrame()
@@ -60,6 +62,7 @@ void SceneFrame::on_detectCharacters_clicked()
 
 void SceneFrame::on_sceneList_activated(const QModelIndex &index)
 {
+    ui->sceneDetails->setDisabled(true);
     QString headline = mModel->data(index, SceneItemModel::HeadlineRole).toString(),
             action = mModel->data(index, SceneItemModel::ActionRole).toString();
     int plotline = mModel->data(index, SceneItemModel::PlotlineRole).toInt();
@@ -72,9 +75,10 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
     mCharacters.clear();
     for (Character *c : mainWindow()->novel()->characters()){
         checkbox = new ModelCheckbox(c->name(), QVariant(c->id()));
+        checkbox->setChecked(characters.contains(c));
         mCharacters.append(checkbox);
         ui->characterList->addWidget(checkbox);
-        connect(checkbox, SIGNAL(toggled(bool,QVariant)),
+        connect(checkbox, SIGNAL(toggled(bool, QVariant)),
                 this, SLOT(onCharacterToggled(bool,QVariant)));
     }
 
@@ -114,8 +118,10 @@ void SceneFrame::onCharacterToggled(bool checked, QVariant value)
     QList<Character *> characters = getSelectedCharacters();
     int i = characters.indexOf(selected);
     if (checked && i < 0){
+        qDebug() << "Adding character" << selected->name();
         characters << selected;
     } else if (!checked && i >= 0){
+        qDebug() << "Removing character" << characters[i]->name();
         characters.removeAt(i);
     }
     setSelectedCharacters(characters);

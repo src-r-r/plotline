@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Plotline</DisplayName>
+    <Description>
+        Application to create, manage, and publish a novel.
+    </Description>
+    <Version>0.0.1a</Version>
+    <ReleaseDate>2016-02-23</ReleaseDate>
+    <Name>me.rngr.plotline</Name>
+    <Licenses>
+        <License name="GPL v3" file="license.txt" />
+    </Licenses>
+    <Default>script</Default>
+    <Script>installscript.qs</Script>
+    <UserInterfaces>
+        <UserInterface>page.ui</UserInterface>
+    </UserInterfaces>
+</Package>

@@ -34,19 +34,18 @@ public slots:
 
     void on_characterList_clicked(const QModelIndex &index);
 
-//    void on_characterName_cursorPositionChanged(int arg1, int arg2);
-
     void on_characterName_textChanged(const QString &arg1);
 
 private slots:
-    void on_characterName_cursorPositionChanged(int arg1, int arg2);
 
     void on_characterColor_clicked();
+    void on_chooseHeadshot_clicked();
+    void on_characterLabel_textChanged(const QString &arg1);
 
 private:
     Ui::CharacterFrame *ui;
 
-    CharacterItemModel *mItemModel;
+    CharacterModel *mModel;
     Character *mSelectedCharacter;
 
     // methods

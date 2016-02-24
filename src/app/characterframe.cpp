@@ -6,8 +6,8 @@ CharacterFrame::CharacterFrame(MainWindow *mainWindow, QWidget *parent) :
     ui(new Ui::CharacterFrame)
 {
     ui->setupUi(this);
-    mItemModel = new CharacterItemModel(mMainWindow->novel());
-    ui->characterList->setModel(mItemModel);
+    mModel = new CharacterModel(mMainWindow->novel());
+    ui->characterList->setModel(mModel);
 
     // connect signals
     connect(this, SIGNAL(characterListModified()), this,
@@ -18,111 +18,90 @@ CharacterFrame::CharacterFrame(MainWindow *mainWindow, QWidget *parent) :
 
 CharacterFrame::~CharacterFrame()
 {
-    delete mItemModel;
+    delete mModel;
     delete ui;
 }
 
 void CharacterFrame::onNovelLoad()
 {
-    mItemModel->removeRows(0, mItemModel->rowCount());
-    delete mItemModel;
-    mItemModel = new CharacterItemModel(mainWindow()->novel());
-    QList<Character *> characters = mainWindow()->novel()->characters();
-    int row = 0;
-    QModelIndex index;
-    for (Character *c : characters){
-        row = mItemModel->rowCount();
-        mItemModel->insertRows(row, 1);
-        index = mItemModel->index(row);
-        mItemModel->setData(index, c->name());
-        mItemModel->setData(index, c->color(), Qt::BackgroundRole);
-        mItemModel->setData(index, QVariant(c->id()),
-                            CharacterItemModel::CharacterIdRole);
-        qDebug() << index.row() << "-" << "Character ID =" << c->id() << "?"
-                 << mItemModel->data(index, CharacterItemModel::CharacterIdRole)
-                    .toInt();
-    }
-    ui->characterList->setModel(mItemModel);
-
-    // Automatically select the first item in the list.
-    if (mItemModel->rowCount() > 0)
-        ui->characterList->setCurrentIndex(mItemModel->index(0));
+    delete mModel;
+    mModel = new CharacterModel(mainWindow()->novel());
+    ui->characterList->setModel(mModel);
+    if (mModel->rowCount() > 0)
+        ui->characterList->setCurrentIndex(mModel->lastRow());
+    on_characterList_activated(ui->characterList->currentIndex());
 }
 
 void CharacterFrame::onNovelNew()
 {
-    while (mItemModel->rowCount() > 0) mItemModel->removeRow(0);
-    ui->deleteCharacter->setDisabled(true);
-    ui->archiveCharacter->setDisabled(true);
+    while (mModel->rowCount() > 0) mModel->removeRow(0);
     ui->characterName->clear();
     ui->characterLabel->clear();
     ui->characterNickname->clear();
     clearCharacterHeadshot();
+    ui->deleteCharacter->setDisabled(true);
+    ui->archiveCharacter->setDisabled(true);
+    ui->characterAttrList->setDisabled(true);
     ui->scrollAreaCharDetails->setDisabled(true);
 }
 
 void CharacterFrame::on_addCharacter_clicked()
 {
-    Character *c = new Character("New Character");
-
-    int row = mItemModel->rowCount();
-
-    mainWindow()->novel()->addCharacter(c);
-    mItemModel->insertRows(row, 1);
-
-    QModelIndex index = mItemModel->index(row);
-    mItemModel->setData(index, c->name(), Qt::DisplayRole|Qt::EditRole);
-    mItemModel->setData(index, c->color(), Qt::BackgroundRole);
-    mItemModel->setData(index, QVariant(c->id()),
-                        CharacterItemModel::CharacterIdRole);
-
-    emit characterListModified();
+    QModelIndex index = ui->characterList->currentIndex();
+    mModel->insertRows(index.row()+1, 1);
+    index = mModel->index(index.row()+1, 0);
     ui->characterList->setCurrentIndex(index);
-    emit ui->characterList->activated(mItemModel->lastRow());
+    emit ui->characterList->activated(index);
 }
 
 void CharacterFrame::onCharacterListModified()
 {
-    ui->scrollAreaCharDetails->setEnabled(mItemModel->rowCount() > 0);
+    ui->scrollAreaCharDetails->setEnabled(mModel->rowCount() > 0);
     emit novelModified();
 }
 
 void CharacterFrame::onCharacterModified()
 {
-    QModelIndex index = ui->characterList->currentIndex();
-    mItemModel->setData(index, mSelectedCharacter->name(),
-                        Qt::DisplayRole|Qt::EditRole);
-    mItemModel->setData(index, mSelectedCharacter->color(),
-                        Qt::BackgroundRole);
+    on_characterList_activated(ui->characterList->currentIndex());
     emit novelModified();
 }
 
 void CharacterFrame::on_characterList_activated(const QModelIndex &index)
 {
+    ui->deleteCharacter->setEnabled(index.isValid());
+    ui->archiveCharacter->setEnabled(index.isValid());
     if (!index.isValid()){
         qWarning() << "Invalid index";
+
         return;
     }
 
-    int characterId = mItemModel->data(index,
-                                       CharacterItemModel::CharacterIdRole)
-            .toInt();
-
+    ui->characterAttrList->setEnabled(true);
+    ui->scrollAreaWidgetContents->setEnabled(true);
     ui->scrollAreaCharDetails->setEnabled(true);
 
-    qDebug() << "Selecting character (id=" << characterId << ")";
-    mSelectedCharacter = mMainWindow->novel()->character(characterId);
+    QString name = mModel->data(index, CharacterModel::NameRole).toString(),
+            label = mModel->data(index, CharacterModel::LabelRole).toString(),
+            nickname = mModel->data(index, CharacterModel::NicknameRole).toString(),
+            colorName = mModel->data(index, CharacterModel::ColorRole).toString();
+    QVariant headshotData = mModel->data(index, CharacterModel::HeadshotRole);
 
-    ui->characterName->setText(mSelectedCharacter->name());
-    ui->characterNickname->setText(mSelectedCharacter->nickname());
-    ui->characterLabel->setText(mSelectedCharacter->label());
+    ui->characterName->setText(name);
+    ui->characterLabel->setText(label);
+    ui->characterNickname->setText(nickname);
 
-    setCharacterHeadshot(mSelectedCharacter);
+    QGraphicsScene *scene = new QGraphicsScene();
 
-    setButtonColor(mSelectedCharacter->color());
+    int h = ui->characterHeadshot->geometry().height(),
+            w = ui->characterHeadshot->geometry().width();
+    QImage headshot = headshotData.value<QImage>()
+            .scaledToWidth(w-2)
+            .scaledToHeight(h-2);
+    scene->addPixmap(QPixmap::fromImage(headshot));
+    ui->characterHeadshot->setScene(scene);
 
-    ui->deleteCharacter->setEnabled(true);
-    ui->archiveCharacter->setEnabled(true);
+    setButtonColor(QColor(colorName));
+
 }
 
 void CharacterFrame::setCharacterHeadshot(Character *c)
@@ -167,23 +146,38 @@ void CharacterFrame::on_characterList_clicked(const QModelIndex &index)
 
 void CharacterFrame::on_characterName_textChanged(const QString &arg1)
 {
-    mSelectedCharacter->setName(arg1);
-    mSelectedCharacter->setLabel(Character::generateLabel(arg1));
-    mItemModel->setData(ui->characterList->currentIndex(), mSelectedCharacter->name());
-    ui->characterLabel->setText(mSelectedCharacter->label());
+    QModelIndex index = ui->characterList->currentIndex();
+    mModel->setData(index, arg1, Qt::DisplayRole);
+    ui->characterLabel->setText(Character::generateLabel(arg1));
+    emit mModel->dataChanged(index, index);
     emit characterModified();
-}
-
-void CharacterFrame::on_characterName_cursorPositionChanged(int arg1, int arg2)
-{
-    Q_UNUSED(arg1);
-    Q_UNUSED(arg2);
-    on_characterName_textChanged(ui->characterName->text());
 }
 
 void CharacterFrame::on_characterColor_clicked()
 {
     QColor color = QColorDialog::getColor(mSelectedCharacter->color());
-    mSelectedCharacter->setColor(color);
+    mModel->setData(ui->characterList->currentIndex(),
+                    color, CharacterModel::ColorRole);
+}
+
+void CharacterFrame::on_chooseHeadshot_clicked()
+{
+    QString headshotFile = QFileDialog::getOpenFileName(this,
+                                                tr("Select Headshot"),
+                                                QDir::homePath(),
+                                                tr("Image (*.jpg *.png *.JPEG *.jpeg *.gif *.tif)"));
+    if (headshotFile.isEmpty())
+        return;
+    QImage img = QImage(headshotFile);
+    QVariant variant = img;
+    mModel->setData(ui->characterList->currentIndex(), variant,
+                    CharacterModel::HeadshotRole);
+    emit characterModified();
+}
+
+void CharacterFrame::on_characterLabel_textChanged(const QString &arg1)
+{
+    mModel->setData(ui->characterList->currentIndex(),
+                    arg1, CharacterModel::LabelRole);
     emit characterModified();
 }

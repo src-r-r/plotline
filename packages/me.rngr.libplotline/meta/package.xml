@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Plotline (Library)</DisplayName>
+    <Description>Library Components for Plotline</Description>
+    <Version>0.0.1</Version>
+    <ReleaseDate>2016-02-23</ReleaseDate>
+    <Name>me.rngr.libplotline</Name>
+    <Licenses>
+        <License name="GPL v3" file="license.txt" />
+    </Licenses>
+    <Default>script</Default>
+    <Script>installscript.qs</Script>
+    <UserInterfaces>
+        <UserInterface>page.ui</UserInterface>
+    </UserInterfaces>
+</Package>

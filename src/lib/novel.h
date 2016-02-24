@@ -93,7 +93,7 @@ public:
     void setCharacters(const QList<Character *> &characters);
     Character *character(int id) const;
     Character *character(const QString label) const;
-    void addCharacter(Character *character);
+    void addCharacter(Character *character, const int i=-1);
 
     QJsonObject serialize() const;
     static Novel *deserialize(const QJsonObject &object);
