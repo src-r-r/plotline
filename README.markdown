@@ -98,11 +98,7 @@ Modify the value to look like this:
 
     /usr/lib/x86_64-linux-gnu/:../lib/
 
-Remember, `:` means "append" in make. ;-)
+Remember, `:` means "append" in BASH. ;-)
 
 Do the same for the other subprojects by selecting the run button (that looks
-like this:
-
-![Qt Run Button](./doc/images/qt-run-button.png)
-
-)
+like this: ![Qt Run Button](./doc/images/qt-run-button.png) )

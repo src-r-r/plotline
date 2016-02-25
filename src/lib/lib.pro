@@ -4,6 +4,8 @@ TARGET = plotline
 QT += core gui
 DEFINES += LIBPLOTLINE
 
+LIBPLOTLINE.path = $$OUT_PWD/
+
 HEADERS += chapter.h \
     character.h \
     completable.h \
@@ -25,5 +27,7 @@ SOURCES += chapter.cpp \
     revision.cpp \
     utils.cpp \
     characterparser.cpp
+
+INSTALLS += LIBPLOTLINE
 
 CONFIG += c++11

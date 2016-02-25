@@ -9,7 +9,9 @@ ChaptersFrame::ChaptersFrame(MainWindow *mainWindow, QWidget *parent) :
 
     // Set up the chapter table and model.
     mModel = new ChapterModel(mainWindow->novel());
-    ui->chapterTable->setModel(mModel);
+    mFilter = new ChapterFilter();
+    mFilter->setSourceModel(mModel);
+    ui->chapterTable->setModel(mFilter);
     ui->chapterTable->resizeColumnsToContents();
     ui->chapterTable->horizontalHeader()->setStretchLastSection(true);
 
@@ -181,11 +183,6 @@ void ChaptersFrame::onChapterSelected()
 
     blockEditableSignals();
     clearLayout(true, false);
-
-    ui->deleteChapter->setEnabled(true);
-    ui->archiveChapter->setEnabled(true);
-    ui->assignScenes->setEnabled(true);
-
     QModelIndex index = ui->chapterTable->currentIndex();
 
     if (!index.isValid()){
@@ -193,8 +190,14 @@ void ChaptersFrame::onChapterSelected()
         ui->deleteChapter->setEnabled(false);
         ui->archiveChapter->setEnabled(false);
         ui->assignScenes->setEnabled(false);
+        ui->reorderChapter->setEnabled(false);
         return;
     }
+
+    ui->deleteChapter->setEnabled(true);
+    ui->archiveChapter->setEnabled(true);
+    ui->assignScenes->setEnabled(true);
+    ui->reorderChapter->setEnabled(true);
 
     int number = mModel->data(index, ChapterModel::NumberRole).toInt();
     QString title = mModel->data(index, ChapterModel::TitleRole).toString();
@@ -318,15 +321,14 @@ void ChaptersFrame::on_chapterFilter_activated(int index)
 void ChaptersFrame::on_addChapter_clicked()
 {
     QModelIndex index = ui->chapterTable->currentIndex();
-    if (!mModel->insertRows(index.row()+1, 1)){
-        qWarning() << "Error inserting rows at" << mModel->rowCount();
+    if (!mModel->insertRows(index.row()+1, 1))
         return;
-    }
     emit novelModified();
 
     // Move to the next index.
-    index = mModel->index(index.row()+1, index.column());
-    emit on_chapterTable_activated(index);
+    index = mModel->index(index.row()+1, 0);
+    ui->chapterTable->setCurrentIndex(index);
+    emit ui->chapterTable->activated(index);
     emit chapterSelected();
 }
 

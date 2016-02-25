@@ -20,6 +20,10 @@
         <file>images/list-remove.png</file>
         <file>images/utilities-file-archiver.png</file>
         <file>images/revision.svg</file>
+        <file>images/format-list-ordered.png</file>
+        <file>images/45834457236.svg</file>
+        <file>images/gtk-edit.svg</file>
+        <file>images/plotline-launcher.svg</file>
     </qresource>
     <qresource prefix="/styles">
         <file>styles/default.json</file>

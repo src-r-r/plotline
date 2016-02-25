@@ -23,6 +23,8 @@ PlotFrame::PlotFrame(MainWindow *mainWindow, QWidget *parent) :
     ui->plotlineTable->setColumnWidth(PlotlineItemModel::SYNOPSIS,
                                       PlotlineItemModel::SYNOPSIS_WIDTH);
     ui->plotlineTable->horizontalHeader()->setStretchLastSection(true);
+    ui->plotlineTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->plotlineTable->setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
 PlotFrame::~PlotFrame()
@@ -111,6 +113,10 @@ void PlotFrame::setModel(PlotlineItemModel *model)
 
 void PlotFrame::on_plotlineTable_activated(const QModelIndex &index)
 {
+    bool enable = index.isValid();
+    ui->deletePlotline->setEnabled(enable);
+    ui->archivePlotline->setEnabled(enable);
+    ui->editPlotline->setEnabled(enable);
 }
 
 void PlotFrame::onPlotlineAdded(const QModelIndex &index)
@@ -121,7 +127,9 @@ void PlotFrame::onPlotlineAdded(const QModelIndex &index)
 void PlotFrame::showPlotlineDialog(bool isNew)
 {
     QModelIndex index = ui->plotlineTable->currentIndex();
-    PlotlineDialog *dialog = new PlotlineDialog(mModel, index, isNew);
+    PlotlineDialog *dialog = new PlotlineDialog(ui->plotlineTable,
+                                                mainWindow()->novel(),
+                                                isNew);
     connect(dialog, SIGNAL(plotlineAdded(QModelIndex)),
             this, SLOT(onPlotlineAdded(QModelIndex)));
     dialog->exec();

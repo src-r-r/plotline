@@ -9,6 +9,7 @@
 #include <QModelIndex>
 #include <QWidget>
 #include <QCheckBox>
+#include <QtWidgets>
 
 #include "plotline.h"
 #include "plotframe.h"
@@ -25,8 +26,8 @@ class PlotlineDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit PlotlineDialog(PlotlineItemModel *model,
-                            const QModelIndex &index,
+    explicit PlotlineDialog(QTableView *tableView,
+                            Novel *novel,
                             bool isNew = false,
                             QWidget *parent = 0);
     ~PlotlineDialog();
@@ -46,9 +47,8 @@ signals:
 private:
     Ui::PlotlineDialog *ui;
 
-    PlotlineItemModel *mModel;
-    Plotline *mPlotline;
-    QModelIndex mIndex;
+    Novel *mNovel;
+    QTableView *mTableView;
     QMap<QCheckBox *, Character *> mCharacterList;
 
     QColor mColor;

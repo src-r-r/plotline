@@ -11,3 +11,11 @@ SUBDIRS = src \
 
 OTHER_FILES = \
     README.markdown
+
+# Copy the bash executable.
+
+copydata.commands = $(COPY_DIR) $$PWD/plotline.sh $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata

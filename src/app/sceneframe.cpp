@@ -93,13 +93,13 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
 
 void SceneFrame::on_addScene_clicked()
 {
-    mModel->insertRows(ui->sceneList->currentIndex().row()+1, 1);
-    // select the recently-added scene
     QModelIndex index = ui->sceneList->currentIndex();
-    index = mModel->index(index.row()+1, index.column());
+    mModel->insertRows(index.row()+1, 1);
+    index = mModel->index(index.row()+1, 0);
+    // select the recently-added scene
     ui->sceneList->setCurrentIndex(index);
-    emit on_sceneList_activated(index);
     emit novelModified();
+    emit ui->sceneList->activated(index);
 }
 
 void SceneFrame::on_archiveScene_clicked()

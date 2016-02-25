@@ -119,7 +119,7 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
 bool PlotlineItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if (!index.isValid()){
-        qWarning() << "set plotline data: invalid index";
+        qWarning() << "set plotline data: invalid index" << index;
         return false;
     }
 

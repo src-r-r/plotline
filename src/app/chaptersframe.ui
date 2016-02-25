@@ -98,6 +98,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="archiveChapter">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -115,6 +118,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="deleteChapter">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -132,27 +138,47 @@
            </item>
            <item>
             <widget class="QPushButton" name="assignScenes">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="whatsThis">
+              <string>Assign Scenes</string>
+             </property>
              <property name="text">
               <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../res/plotline.qrc">
+               <normaloff>:/images/images/45834457236.svg</normaloff>:/images/images/45834457236.svg</iconset>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QToolButton" name="reorderChapter">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="whatsThis">
+              <string>Reorder Chapter</string>
+             </property>
              <property name="text">
               <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../res/plotline.qrc">
+               <normaloff>:/images/images/format-list-ordered.png</normaloff>:/images/images/format-list-ordered.png</iconset>
              </property>
             </widget>
            </item>

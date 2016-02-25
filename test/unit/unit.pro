@@ -35,6 +35,6 @@ INCLUDEPATH += \
     ../../src/lib \
     ../../src/app
 
-LIBS += ../../src/lib/libplotline.so
+LIBS += $$OUT_PWD/../../src/lib/libplotline.so
 
 CONFIG += console testcase c++11

@@ -90,13 +90,23 @@
        </item>
        <item>
         <widget class="QPushButton" name="editPlotline">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Edit</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../res/plotline.qrc">
+           <normaloff>:/images/images/gtk-edit.svg</normaloff>:/images/images/gtk-edit.svg</iconset>
          </property>
         </widget>
        </item>
        <item alignment="Qt::AlignLeft">
         <widget class="QPushButton" name="archivePlotline">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -114,6 +124,9 @@
        </item>
        <item alignment="Qt::AlignLeft">
         <widget class="QPushButton" name="deletePlotline">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
            <horstretch>0</horstretch>
