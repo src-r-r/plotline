@@ -84,35 +84,33 @@ void CharacterFrame::on_characterList_activated(const QModelIndex &index)
             label = mModel->data(index, CharacterModel::LabelRole).toString(),
             nickname = mModel->data(index, CharacterModel::NicknameRole).toString(),
             colorName = mModel->data(index, CharacterModel::ColorRole).toString();
-    QVariant headshotData = mModel->data(index, CharacterModel::HeadshotRole);
 
     ui->characterName->setText(name);
     ui->characterLabel->setText(label);
     ui->characterNickname->setText(nickname);
 
-    QGraphicsScene *scene = new QGraphicsScene();
-
-    int h = ui->characterHeadshot->geometry().height(),
-            w = ui->characterHeadshot->geometry().width();
-    QImage headshot = headshotData.value<QImage>()
-            .scaledToWidth(w-2)
-            .scaledToHeight(h-2);
-    scene->addPixmap(QPixmap::fromImage(headshot));
-    ui->characterHeadshot->setScene(scene);
+    setCharacterHeadshot();
 
     setButtonColor(QColor(colorName));
 
 }
 
-void CharacterFrame::setCharacterHeadshot(Character *c)
+void CharacterFrame::setCharacterHeadshot()
 {
     QGraphicsScene *scene = new QGraphicsScene();
-
     int h = ui->characterHeadshot->geometry().height(),
             w = ui->characterHeadshot->geometry().width();
 
-    QImage headshot = c->getHeadshot().scaledToWidth(w-2)
-            .scaledToHeight(h-2);
+    QModelIndex index = ui->characterList->currentIndex();
+    if (!index.isValid())
+        return;
+    QVariant headshotData = mModel->data(index, CharacterModel::HeadshotRole);
+
+    QImage headshot = headshotData.value<QImage>();
+    if (headshot.width() > headshot.height())
+        headshot = headshot.scaledToWidth(w-2);
+    else
+        headshot = headshot.scaledToHeight(h-2);
     scene->addPixmap(QPixmap::fromImage(headshot));
     ui->characterHeadshot->setScene(scene);
 }
@@ -155,7 +153,9 @@ void CharacterFrame::on_characterName_textChanged(const QString &arg1)
 
 void CharacterFrame::on_characterColor_clicked()
 {
-    QColor color = QColorDialog::getColor(mSelectedCharacter->color());
+    QColor current = mModel->data(ui->characterList->currentIndex(),
+                                  CharacterModel::ColorRole).value<QColor>();
+    QColor color = QColorDialog::getColor(current);
     mModel->setData(ui->characterList->currentIndex(),
                     color, CharacterModel::ColorRole);
 }

@@ -23,6 +23,15 @@ private slots:
     void on_workingTitle_textEdited(const QString &arg1);
     void on_genre_textEdited(const QString &arg1);
     void on_setting_textEdited(const QString &arg1);
+    void on_authorName_textEdited(const QString &arg1);
+
+    void on_authorPenName_textEdited(const QString &arg1);
+
+    void on_authorPhone_textEdited(const QString &arg1);
+
+    void on_authorEmail_textEdited(const QString &arg1);
+
+    void on_authorAddress_textChanged();
 
 public slots:
     void onNovelLoad();

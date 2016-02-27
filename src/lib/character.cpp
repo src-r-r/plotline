@@ -82,7 +82,7 @@ QJsonObject Character::serialize() const
     character[J_NICKNAME] = mNickname;
     character[J_LABEL] = mLabel;
     character[J_HEADSHOT] = jsonValFromImage(mHeadshot);
-    character[J_COLOR] = mColor.name();
+    character[J_COLOR] = mColor.isValid() ? mColor.name() : "";
     character[J_IS_ARCHIVED] = QJsonValue(mIsArchived);
 
     return character;

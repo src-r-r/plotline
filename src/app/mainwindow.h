@@ -73,6 +73,8 @@ signals:
 
 private slots:
 
+    void onWarningChecked(bool checked);
+
     void onNovelModified();
     void onSaveNovel();
     void onNovelNew();
@@ -91,6 +93,8 @@ private slots:
     void on_actionNovelClose_triggered();
     void on_MainWindow_destroyed();
 
+    void on_MainWindow_destroyed(QObject *arg1);
+
 protected:
 
     void mouseMoveEvent(QMouseEvent *event);
@@ -98,6 +102,7 @@ protected:
 private:
 
     static const QStringList frameTitles;
+    static const QString ShowWarning;
 
     // Frames
     NovelFrame *mNovelFrame;

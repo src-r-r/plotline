@@ -36,7 +36,12 @@ QVariant CharacterModel::data(const QModelIndex &index, int role) const
 
     Character *c = mNovel->characters()[index.row()];
 
-    if (role == Qt::BackgroundRole || role == ColorRole) {
+    if (role == Qt::ForegroundRole){
+        QColor textColor = QColor(0, 0, 0);
+        if ((255 / 2) > c->color().value())
+            textColor = QColor(255, 255, 255);      // White text.
+        return QBrush(textColor);
+    }if (role == Qt::BackgroundRole || role == ColorRole) {
         if (c->color().isValid())
             return QBrush(c->color());
         return QVariant();

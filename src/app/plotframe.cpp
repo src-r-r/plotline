@@ -89,6 +89,12 @@ void PlotFrame::on_deletePlotline_clicked()
     } else if (res == QMessageBox::Save){
         // TODO: archiving.
     }
+
+    if (mModel->rowCount() == 0){
+        ui->deletePlotline->setEnabled(false);
+        ui->archivePlotline->setEnabled(false);
+        ui->editPlotline->setEnabled(false);
+    }
 }
 
 void PlotFrame::on_searchPlotlines_textChanged(const QString &arg1)
@@ -133,4 +139,9 @@ void PlotFrame::showPlotlineDialog(bool isNew)
     connect(dialog, SIGNAL(plotlineAdded(QModelIndex)),
             this, SLOT(onPlotlineAdded(QModelIndex)));
     dialog->exec();
+}
+
+void PlotFrame::on_plotlineTable_clicked(const QModelIndex &index)
+{
+    on_plotlineTable_activated(index);
 }

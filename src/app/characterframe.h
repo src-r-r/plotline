@@ -49,7 +49,7 @@ private:
     Character *mSelectedCharacter;
 
     // methods
-    void setCharacterHeadshot(Character *c);
+    void setCharacterHeadshot();
     void clearCharacterHeadshot();
 
     void setButtonColor(const QColor &color);

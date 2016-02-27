@@ -13,4 +13,4 @@ SUBDIRS += \
 CONFIG += gnu++11
 
 app.depends = lib
-test.depends = lib app
+test.depends = lib

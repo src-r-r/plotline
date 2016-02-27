@@ -22,7 +22,7 @@ void CharacterHighlighter::highlightBlock(const QString &text)
         QTextCharFormat format;
         QColor bgColor = set.value(i)->color();
         QColor textColor = QColor(0, 0, 0);         // Black text.
-        if (((255 / 2) + 25) < bgColor.value())
+        if ((255 / 2) > bgColor.value())
             textColor = QColor(255, 255, 255);      // White text.
         format.setFontWeight(QFont::Bold);
         format.setBackground(QBrush(bgColor));

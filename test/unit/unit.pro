@@ -35,6 +35,18 @@ INCLUDEPATH += \
     ../../src/lib \
     ../../src/app
 
-LIBS += $$OUT_PWD/../../src/lib/libplotline.so
+##
+# Depending on whether we're building the libraries statically or dynamically,
+# Either the .so will be found or the .a will be found.
+# There is probably a more elegant solution.
+##
+
+exists($$OUT_PWD/../../src/lib/libplotline.a){
+    LIBS += $$OUT_PWD/../../src/lib/libplotline.a
+}
+
+exists($$OUT_PWD/../../src/lib/libplotline.so){
+    LIBS += $$OUT_PWD/../../src/lib/libplotline.so
+}
 
 CONFIG += console testcase c++11

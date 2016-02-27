@@ -24,6 +24,7 @@
         <file>images/45834457236.svg</file>
         <file>images/gtk-edit.svg</file>
         <file>images/plotline-launcher.svg</file>
+        <file>images/document-open-folder.png</file>
     </qresource>
     <qresource prefix="/styles">
         <file>styles/default.json</file>

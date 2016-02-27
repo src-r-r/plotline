@@ -15,7 +15,8 @@ HEADERS += chapter.h \
     serializable.h \
     revision.h \
     utils.h \
-    characterparser.h
+    characterparser.h \
+    author.h
 
 SOURCES += chapter.cpp \
     character.cpp \
@@ -26,7 +27,8 @@ SOURCES += chapter.cpp \
     serializable.cpp \
     revision.cpp \
     utils.cpp \
-    characterparser.cpp
+    characterparser.cpp \
+    author.cpp
 
 INSTALLS += LIBPLOTLINE
 

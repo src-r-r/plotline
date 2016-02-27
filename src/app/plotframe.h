@@ -43,6 +43,8 @@ private slots:
 
     void onPlotlineAdded(const QModelIndex &index);
 
+    void on_plotlineTable_clicked(const QModelIndex &index);
+
 private:
     Ui::PlotFrame *ui;
 

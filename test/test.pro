@@ -10,6 +10,6 @@ SUBDIRS += \
 INCLUDEPATH += \
     ../src/lib
 
-LIBS += ../src/lib/libplotline.so
+LIBS += $$OUT_PWD/../../src/lib/libplotline.a
 
 CONFIG += c++11

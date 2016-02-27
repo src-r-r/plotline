@@ -1,11 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "publisherdialog.h"
 
 const QStringList MainWindow::frameTitles = QStringList(tr("Novel"))
         << tr("Character")
         << tr("Plotline")
         << tr("Scene")
         << tr("Chapter");
+
+const QString MainWindow::ShowWarning = "showWarning";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -47,6 +50,23 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mChapterFrame, SIGNAL(showDistractions()),
             this, SLOT(onShowDistractions()));
 
+    QSettings settings;
+    bool showWarning = settings.value(ShowWarning, QVariant(true)).toBool();
+    if (showWarning){
+        QString msg = tr("This application is still heavily under " \
+                         "development and is potentially unstable which " \
+                         "may (though theoritically won't) result " \
+                         "in loss of data. You have been warned.");
+        QMessageBox *messageBox = new QMessageBox(
+                    QMessageBox::Warning,
+                    tr("Development Version"),
+                    msg);
+        QCheckBox *checkBox = new QCheckBox(tr("Show this message next time."));
+        checkBox->setChecked(true);
+        connect(checkBox, SIGNAL(toggled(bool)), this, SLOT(onWarningChecked()));
+        messageBox->setCheckBox(checkBox);
+        messageBox->show();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -166,7 +186,8 @@ void MainWindow::on_actionNovelExport_triggered()
 
 void MainWindow::on_actionNovelBind_triggered()
 {
-
+    PublisherDialog *dialog = new PublisherDialog(mNovel);
+    dialog->show();
 }
 
 void MainWindow::on_actionNovelSaveAs_triggered()
@@ -191,15 +212,6 @@ void MainWindow::on_actionNovelClose_triggered()
 
 void MainWindow::on_MainWindow_destroyed()
 {
-    if (!mIsSaved)
-    {
-        int result = QMessageBox::question(this, tr("Quit"),
-            tr("Do you want to save the current novel?"),
-            QMessageBox::Save | QMessageBox::Discard,
-            QMessageBox::Save);
-        if (result == QMessageBox::Yes)
-            emit saveNovel();
-    }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
@@ -268,6 +280,12 @@ void MainWindow::openTab(const int index)
     ui->tabWidget->setCurrentIndex(index);
 }
 
+void MainWindow::onWarningChecked(bool checked)
+{
+    QSettings settings;
+    settings.setValue(ShowWarning, QVariant(checked));
+}
+
 void MainWindow::onNovelLoaded()
 {
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
@@ -291,4 +309,18 @@ void MainWindow::onShowDistractions()
 {
     for (QWidget *widget : mDistractions)
         widget->show();
+}
+
+void MainWindow::on_MainWindow_destroyed(QObject *arg1)
+{
+    Q_UNUSED(arg1);
+    if (!mIsSaved)
+    {
+        int result = QMessageBox::question(this, tr("Quit"),
+            tr("Do you want to save the current novel?"),
+            QMessageBox::Save | QMessageBox::Discard,
+            QMessageBox::Save);
+        if (result == QMessageBox::Yes)
+            emit saveNovel();
+    }
 }

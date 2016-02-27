@@ -4,7 +4,7 @@
     <Description>
         Application to create, manage, and publish a novel.
     </Description>
-    <Version>0.0.1a</Version>
+    <Version>0.0.1</Version>
     <ReleaseDate>2016-02-23</ReleaseDate>
     <Name>me.rngr.plotline</Name>
     <Licenses>

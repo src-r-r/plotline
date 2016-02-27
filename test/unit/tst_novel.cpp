@@ -81,7 +81,7 @@ void TestNovel::testSerialize()
               << new Plotline(QString("Plotline 2"), QString("Synopsis 1"))
               << new Plotline(QString("Plotline 3"), QString("Synopsis 1"));
 
-    Novel *novel = new Novel(title, genre, setting, tense, pointOfView,
+    Novel *novel = new Novel(title, genre, setting, tense, pointOfView, 0,
                              characters, scenes, chapters, plotlines);
 
     QJsonObject jNovel = novel->serialize();

@@ -5,6 +5,7 @@ const QString Novel::JSON_WORKING_TITLE = QString("workingTitle"),
     Novel::JSON_SETTING = QString("setting"),
     Novel::JSON_TENSE = QString("tense"),
     Novel::JSON_POV = QString("pointOfView"),
+    Novel::JSON_AUTHOR = "author",
     Novel::JSON_SCENES = QString("scenes"),
     Novel::JSON_CHARACTERS = QString("characters"),
     Novel::JSON_CHAPTERS = QString("chapters"),
@@ -17,6 +18,7 @@ Novel::Novel(const QString &workingTitle,
              const QString &setting,
              const Novel::Tense tense,
              const Novel::PointOfView pov,
+             Author *author,
              const QList<Character *> characters,
              const QList<Scene *> scenes,
              const QList<Chapter *> chapters,
@@ -32,6 +34,8 @@ Novel::Novel(const QString &workingTitle,
     this->mTense = tense;
     this->mSetting = setting;
     this->mPointOfView = pov;
+    this->mAuthor = (author == 0) ? new Author() : author;
+    mAuthor->setNovel(this);
     this->mCharacters = characters;
     this->mScenes = scenes;
     this->mChapters = chapters;
@@ -50,6 +54,7 @@ Novel::Novel(const QString &workingTitle,
 
 Novel::~Novel()
 {
+    delete mAuthor;
     qDeleteAll(mCharacters);
     qDeleteAll(mScenes);
     qDeleteAll(mChapters);
@@ -357,6 +362,8 @@ QJsonObject Novel::serialize() const
     novel[JSON_GENRE] = mGenre;
     novel[JSON_POV] = QJsonValue(mPointOfView);
     novel[JSON_TENSE] = QJsonValue(mTense);
+    if (mAuthor != 0)
+        novel[JSON_AUTHOR] = mAuthor->serialize();
     novel[JSON_CHARACTERS] = jCharacters;
     novel[JSON_SCENES] = jScenes;
     novel[JSON_CHAPTERS] = jChapters;
@@ -426,9 +433,13 @@ Novel *Novel::deserialize(const QJsonObject &object)
         notFound << JSON_CURRENT_REVISION;
 
     Novel *novel = new Novel(workingTitle, genre, setting, tense,
-                             pointOfView, characters, scenes, chapters,
+                             pointOfView, 0, characters, scenes, chapters,
                              plotlines, revisions, currentRevision);
 
+    if (object.contains(JSON_AUTHOR))
+        novel->setAuthor(Author::deserialize(novel, object[JSON_AUTHOR].toObject()));
+    else
+        notFound << JSON_AUTHOR;
 
     if (object.contains(JSON_CHARACTERS))
         characters = Character::deserialize(novel, object[JSON_CHARACTERS].toArray());
@@ -583,4 +594,14 @@ void Novel::setCurrentRevision(int currentRevison)
     // Also syncronize the chapters.
     for (Chapter *c : mChapters)
         c->setCurrentRevision(mCurrentRevision);
+}
+
+Author *Novel::author() const
+{
+    return mAuthor;
+}
+
+void Novel::setAuthor(Author *author)
+{
+    mAuthor = author;
 }

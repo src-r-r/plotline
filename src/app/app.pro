@@ -33,7 +33,8 @@ HEADERS +=  mainwindow.h \
     scenelistdialog.h \
     fullscreeneditor.h \
     chapterfilter.h \
-    chapterreorderdialog.h
+    chapterreorderdialog.h \
+    publisherdialog.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -59,12 +60,24 @@ SOURCES += main.cpp \
     scenelistdialog.cpp \
     fullscreeneditor.cpp \
     chapterfilter.cpp \
-    chapterreorderdialog.cpp
+    chapterreorderdialog.cpp \
+    publisherdialog.cpp
 
-LIBS += \
-    ../lib/libplotline.so
+##
+# Depending on whether we're building the libraries statically or dynamically,
+# Either the .so will be found or the .a will be found.
+# There is probably a more elegant solution.
+##
 
-PRE_TARGETDEPS += ../lib/libplotline.so
+exists($$OUT_PWD/../lib/libplotline.a){
+    LIBS += $$OUT_PWD/../lib/libplotline.a
+    PRE_TARGETDEPS += $$OUT_PWD/../lib/libplotline.a
+}
+
+exists($$OUT_PWD/../lib/libplotline.so){
+    LIBS += $$OUT_PWD/../lib/libplotline.so
+    PRE_TARGETDEPS += $$OUT_PWD/../lib/libplotline.so
+}
 
 FORMS += mainwindow.ui \
     preferencesdialog.ui \
@@ -77,7 +90,8 @@ FORMS += mainwindow.ui \
     revisiondialog.ui \
     scenelistdialog.ui \
     fullscreeneditor.ui \
-    chapterreorderdialog.ui
+    chapterreorderdialog.ui \
+    publisherdialog.ui
 
 RESOURCES += ../res/plotline.qrc
 

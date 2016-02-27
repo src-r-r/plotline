@@ -32,6 +32,12 @@ QVariant SceneItemModel::data(const QModelIndex &index, int role) const
 
     QJsonArray characterIds;
 
+    if (role == Qt::ForegroundRole){
+        QColor textColor = QColor(0, 0, 0);
+        if ((255 / 2) > scene->plotline()->getColor().value())
+            textColor = QColor(255, 255, 255);      // White text.
+        return QBrush(textColor);
+    }
     if (role == Qt::DisplayRole || role == Qt::EditRole)
         return scene->headline();
     if (scene->plotline() && role == Qt::BackgroundRole)

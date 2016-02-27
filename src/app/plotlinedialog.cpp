@@ -85,7 +85,7 @@ void PlotlineDialog::on_buttonBox_accepted()
     PlotlineItemModel *model = (PlotlineItemModel *) mTableView->model();
     QModelIndex index = mTableView->currentIndex();
     if (mIsNew){
-        if (!model->insertRows(index.row(), 1)){
+        if (!model->insertRows(index.row()+1, 1)){
             qWarning("[+] plotline - could not insert rows at [%d, %d]",
                      index.row(), index.column());
             return;
@@ -104,6 +104,8 @@ void PlotlineDialog::on_buttonBox_accepted()
                     PlotlineItemModel::SynopsisRole);
     model->setData(index, charIds, PlotlineItemModel::CharacterRole);
     model->setData(index, mColor, PlotlineItemModel::ColorRole);
+
+    emit mTableView->activated(index);
 
     if (mIsNew)
         emit plotlineAdded(index);

@@ -8,12 +8,14 @@
 #include "chapter.h"
 #include "serializable.h"
 #include "revision.h"
+#include "author.h"
 
 class Chapter;
 class Plotline;
 class Character;
 class Scene;
 class Revision;
+class Author;
 
 class Novel : public QObject, public Serializable
 {
@@ -35,6 +37,7 @@ public:
                    const QString &mSetting = QString(),
                    const Novel::Tense tense = Past,
                    const Novel::PointOfView pov = ThirdPersonSingular,
+                   Author *author = 0,
                    const QList<Character *> characters = QList<Character *>(),
                    const QList<Scene *> scenes = QList<Scene *>(),
                    const QList<Chapter *> chapters = QList<Chapter *>(),
@@ -114,6 +117,9 @@ public:
     int currentRevision() const;
     void setCurrentRevision(int currentRevison);
 
+    Author *author() const;
+    void setAuthor(Author *author);
+
 private:
 
     static const QString JSON_WORKING_TITLE,
@@ -122,6 +128,7 @@ private:
         JSON_TENSE,
         JSON_POV,
         JSON_SCENES,
+        JSON_AUTHOR,
         JSON_CHARACTERS,
         JSON_CHAPTERS,
         JSON_PLOTLINES,
@@ -133,6 +140,7 @@ private:
         mSetting;
     Novel::Tense mTense;
     Novel::PointOfView mPointOfView;
+    Author *mAuthor;
     QList<Character *> mCharacters;
     QList<Scene *> mScenes;
     QList<Chapter *> mChapters;
