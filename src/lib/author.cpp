@@ -8,7 +8,7 @@ const QString Author::J_NAME = "name",
 
 Author::Author(const QString &name, const QString &penName,
                const QString &email, const QString &address,
-               const QString &phone, Novel *novel, int id, QObject *parent)
+               const QString &phone, Novel *novel, const QUuid &id, QObject *parent)
     : QObject(parent), Serializable(id)
 {
     mName = name;
@@ -23,7 +23,7 @@ QJsonObject Author::serialize() const
 {
     QJsonObject obj;
 
-    obj[JSON_ID] = id();
+    obj[JSON_ID] = id().toString();
     obj[J_NAME] = mName;
     obj[J_PENNAME] = mPenName;
     obj[J_EMAIL] = mEmail;
@@ -41,7 +41,7 @@ Author *Author::deserialize(Novel *novel, const QJsonObject &object)
                       object.value(J_ADDRESS).toString(),
                       object.value(J_PHONE).toString(),
                       novel,
-                      object.value(JSON_ID).toInt());
+                      QUuid(object.value(JSON_ID).toString()));
 }
 
 QString Author::name() const

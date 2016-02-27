@@ -38,6 +38,8 @@ QVariant CharacterModel::data(const QModelIndex &index, int role) const
 
     if (role == Qt::ForegroundRole){
         QColor textColor = QColor(0, 0, 0);
+        if (!c->color().isValid())
+            return textColor;
         if ((255 / 2) > c->color().value())
             textColor = QColor(255, 255, 255);      // White text.
         return QBrush(textColor);
@@ -123,8 +125,17 @@ bool CharacterModel::setData(const QModelIndex &index, const QVariant &value,
 
 Qt::ItemFlags CharacterModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index);
-    return Qt::ItemFlag::ItemIsEnabled|Qt::ItemIsSelectable;
+    Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
+
+    if (index.isValid())
+        return Qt::ItemIsDragEnabled | defaultFlags;
+    else
+        return Qt::ItemIsDropEnabled | defaultFlags;
+}
+
+Qt::DropActions CharacterModel::supportedDropActions()
+{
+    return Qt::MoveAction;
 }
 
 QModelIndex CharacterModel::lastRow() const
@@ -171,5 +182,26 @@ bool CharacterModel::removeRows(int row, int count,
     }
 
     endRemoveRows();
+    return true;
+}
+
+bool CharacterModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
+                              int count, const QModelIndex &destinationParent,
+                              int destinationChild)
+{
+    int sourceLast = sourceRow + (count-1);
+
+    beginMoveRows(sourceParent, sourceRow, sourceLast, destinationParent,
+                  destinationChild);
+
+    QList<Character *> characters = mNovel->characters();
+
+    for (int i = sourceRow; i <= sourceLast; ++i)
+        characters.move(i, destinationChild);
+
+    mNovel->setCharacters(characters);
+
+    endMoveRows();
+
     return true;
 }

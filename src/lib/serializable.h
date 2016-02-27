@@ -2,6 +2,7 @@
 #define SERIALIZABLE_H
 
 #include <QtCore>
+#include <QtGlobal>
 
 class Serializable
 {
@@ -12,19 +13,19 @@ private:
     // SERIALIZABLE instance instead of every subclass instance, but this
     // will take the work-load off the subclasses.
 
-    int mId;
+    QUuid mId;
 protected:
 
     static const QString JSON_ID;
 
 public:
-    Serializable(int id = -1);
+    Serializable(QUuid id = QUuid());
 
     virtual QJsonObject serialize() const = 0;
-    static int deserialize(const QJsonObject &object);
+    static QUuid deserialize(const QJsonObject &object);
 
-    int id() const;
-    void setId(const int id);
+    QUuid id() const;
+    void setId(const QUuid id);
 };
 
 #endif // SERIALIZABLE_H

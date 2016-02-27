@@ -32,7 +32,7 @@ public:
                      const QList<Scene *> &scenes = QList<Scene *>(),
                      Novel *novel = 0,
                      int currentRevision = -1,
-                     int id = -1,
+                     QUuid id = QUuid(),
                      QObject *parent = 0);
     ~Chapter();
 

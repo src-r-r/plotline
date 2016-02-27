@@ -12,7 +12,7 @@ Plotline::Plotline(const QString &brief,
                    const QList<Character *> &characters,
                    const QColor &color,
                    Novel *novel,
-                   int id,
+                   QUuid id,
                    QObject *parent)
     : QObject(parent), Serializable(id)
 {
@@ -110,25 +110,25 @@ QJsonObject Plotline::serialize() const{
 
     QJsonArray jCharacters = QJsonArray();
     for (Character *c : mCharacters)
-        jCharacters.append(QJsonValue(c->id()));
+        jCharacters.append(c->id().toString());
 
     QJsonArray jScenes = QJsonArray();
     for (Scene *s : mScenes)
-        jScenes.append(QJsonValue(s->id()));
+        jScenes.append(s->id().toString());
 
     plotline[J_CHARACTERS] = jCharacters;
     plotline[J_SCENES] = jScenes;
     plotline[J_BRIEF] = mBrief;
     plotline[J_SYNOPSIS] = mSynopsis;
     plotline[J_COLOR] = mColor.name();
-    plotline[JSON_ID] = QJsonValue(id());
+    plotline[JSON_ID] = id().toString();
 
     return plotline;
 }
 
 Plotline *Plotline::deserialize(Novel *novel, const QJsonObject &object)
 {
-    int id = Serializable::deserialize(object);
+    QUuid id = Serializable::deserialize(object);
 
     QString brief = QString(), synopsis = QString();
     QList<Character *> characters;
@@ -143,11 +143,11 @@ Plotline *Plotline::deserialize(Novel *novel, const QJsonObject &object)
 
     if (object.contains(J_CHARACTERS))
         for (QJsonValue val : object[J_CHARACTERS].toArray())
-            characters.append(novel->character(val.toInt()));
+            characters.append(novel->character(QUuid(val.toString())));
 
     if (object.contains(J_SCENES))
         for (QJsonValue val : object[J_SCENES].toArray())
-            scenes.append(novel->scene(val.toInt()));
+            scenes.append(novel->scene(QUuid(val.toString())));
 
     if (object.contains(J_COLOR))
         color = QColor(object[J_COLOR].toString());

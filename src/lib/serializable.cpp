@@ -1,33 +1,30 @@
 #include "serializable.h"
 
-const QString Serializable::JSON_ID = QString("id");
+const QString Serializable::JSON_ID = "id";
 
-int Serializable::sCurrentId = 0;
-
-Serializable::Serializable(int id)
+Serializable::Serializable(QUuid id)
 {
-    if (id < 0){
-        ++sCurrentId;
-        this->mId = sCurrentId;
+    if (id.isNull()){
+        mId = QUuid::createUuid();
     } else {
-        this->mId = id;
+        mId = id;
     }
 }
 
-int Serializable::deserialize(const QJsonObject &object)
+QUuid Serializable::deserialize(const QJsonObject &object)
 {
     QJsonValue value = object.value(JSON_ID);
     if (!value.isNull())
-        return value.toInt();
-    return -1;
+        return QUuid(value.toString());
+    return QUuid::createUuid();
 }
 
-int Serializable::id() const
+QUuid Serializable::id() const
 {
     return mId;
 }
 
-void Serializable::setId(const int id)
+void Serializable::setId(const QUuid id)
 {
     mId = id;
 }

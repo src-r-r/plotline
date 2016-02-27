@@ -171,7 +171,7 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
     if (role == SceneRole){
         QJsonArray sceneIds;
         for (Scene *s : chapter->scenes())
-            sceneIds.append(QJsonValue(s->id()));
+            sceneIds.append(QJsonValue(s->id().toString()));
         return sceneIds;
     }
     return QVariant();
@@ -215,7 +215,7 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
         qDebug() << "   role = scene";
         QList<Scene *> scenes;
         for (QJsonValue v : value.toJsonArray())
-            scenes << mNovel->scene(v.toInt());
+            scenes << mNovel->scene(QUuid(v.toString()));
         chapter->setScenes(scenes);
     } else {
         qDebug() << "   role = (invalid)" << role;

@@ -52,11 +52,11 @@ QVariant SceneItemModel::data(const QModelIndex &index, int role) const
         return QVariant(scene->plotline()->id());
     if (role == CharactersRole){
         for(Character *c : scene->getCharacters())
-            characterIds << QJsonValue(c->id());
+            characterIds << QJsonValue(c->id().toString());
         return characterIds;
     } if (role == PointsOfViewRole) {
         for (Character *c : scene->getPointsOfView())
-            characterIds << QJsonValue(c->id());
+            characterIds << QJsonValue(c->id().toString());
         return characterIds;
     }
 
@@ -91,16 +91,16 @@ bool SceneItemModel::setData(const QModelIndex &index, const QVariant &value, in
     else if (role == ActionRole)
         scene->setAction(value.toString());
     else if (role == PlotlineRole){
-        Plotline *p = mNovel->plotline(value.toInt());
+        Plotline *p = mNovel->plotline(QUuid(value.toString()));
         if (!p) qWarning() << "set scene data: Could not find plotline" << value.toInt();
         scene->setPlotline(p);
     }else if (role == CharactersRole){
         for (QJsonValue val : value.toJsonArray())
-            characters << mNovel->character(val.toInt());
+            characters << mNovel->character(QUuid(val.toString()));
         scene->setCharacters(characters);
     } else if (role == PointsOfViewRole) {
         for (QJsonValue val : value.toJsonArray())
-            characters << mNovel->character(val.toInt());
+            characters << mNovel->character(QUuid(val.toString()));
         scene->setPointsOfView(characters);
     }
     return true;

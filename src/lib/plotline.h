@@ -37,7 +37,7 @@ public:
                       const QList<Character *> &characters = QList<Character *>(),
                       const QColor &color = QColor(),
                       Novel *novel = 0,
-                      int id = -1,
+                      QUuid id = QUuid(),
                       QObject *parent = 0);
 
     QString synopsis() const;

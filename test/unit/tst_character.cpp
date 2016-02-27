@@ -39,11 +39,11 @@ void TestCharacter::testSerialize()
     Novel *novel = new Novel(QString("My Title"));
     QList<Scene *> scenes = QList<Scene *>();
     scenes.append(new Scene("Scene 1", "Scene 1 Action"));
-    scenes[0]->setId(123);
+    scenes[0]->setId(QUuid::createUuid());
     scenes.append(new Scene("Scene 2", "Scene 2 Action"));
-    scenes[1]->setId(55);
+    scenes[1]->setId(QUuid::createUuid());
     scenes.append(new Scene("Scene 3", "Scene 3 Action"));
-    scenes[2]->setId(42);
+    scenes[2]->setId(QUuid::createUuid());
     Character *c = new Character(QString("Theodore Roosevelt"),
                                  QString("Teddy"),
                                  QString(),
@@ -51,7 +51,7 @@ void TestCharacter::testSerialize()
                                  QColor("#ffaaff"),
                                  false,
                                  novel,
-                                 4);
+                                 QUuid::createUuid());
 
     QJsonObject jCharacter = c->serialize();
     QTRY_COMPARE(jCharacter["name"].toString(), QString("Theodore Roosevelt"));
@@ -69,7 +69,7 @@ void TestCharacter::testDeserialize()
     QJsonDocument doc = QJsonDocument::fromJson(json->readAll());
     json->close();
 
-    int testIds[]{9, 10, 11};
+    QUuid testIds[]{QUuid::createUuid(), QUuid::createUuid(), QUuid::createUuid()};
 
     Novel *novel = new Novel(QString("My Novel"));
     QList<Scene *> scenes = QList<Scene *>();

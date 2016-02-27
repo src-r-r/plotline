@@ -313,7 +313,7 @@ void ChaptersFrame::on_chapterFilter_activated(int index)
         mFilter->setPlotline(0);
         return;
     }
-    int id = data.toInt();
+    QUuid id = data.toUuid();
     Plotline *plotline = mainWindow()->novel()->plotline(id);
     mFilter->setPlotline(plotline);
 }

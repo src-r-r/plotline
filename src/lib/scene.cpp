@@ -32,7 +32,7 @@ Scene::Scene(QObject *parent) : Completable(parent), Serializable()
 }
 
 Scene::Scene(const QString &headline, const QString &action, Novel *novel,
-             Plotline *plotline, int id, QObject *parent) : Completable(parent),
+             Plotline *plotline, const QUuid &id, QObject *parent) : Completable(parent),
     Serializable(id)
 {
     this->mHeadline = headline;
@@ -81,7 +81,7 @@ void Scene::setCharacters(const QList<Character *> &characters)
     this->mCharacters = characters;
 }
 
-void Scene::addCharacter(const int id)
+void Scene::addCharacter(const QUuid &id)
 {
     mCharacters.append(mNovel->character(id));
 }
@@ -91,7 +91,7 @@ void Scene::removeCharacter(Character *character)
     mCharacters.removeAll(character);
 }
 
-void Scene::removeCharacter(const int id)
+void Scene::removeCharacter(const QUuid &id)
 {
     mCharacters.removeAll(mNovel->character(id));
 }
@@ -107,17 +107,17 @@ QJsonObject Scene::serialize() const
             jPovCharacters = QJsonArray();
 
     for (Character *c : mCharacters)
-        jCharacters.append(c->id());
+        jCharacters.append(c->id().toString());
 
     for (Character *c : mPovCharacters)
-        jPovCharacters.append(c->id());
+        jPovCharacters.append(c->id().toString());
 
     scene.insert(JSON_HEADLINE, mHeadline);
     scene.insert(JSON_ACTION, mAction);
     scene.insert(JSON_CHARACTERS, jCharacters);
     scene.insert(JSON_POV_CHARACTERS, jPovCharacters);
     if (mPlotline)
-        scene.insert(JSON_PLOTLINE, QJsonValue(mPlotline->id()));
+        scene.insert(JSON_PLOTLINE, QJsonValue(mPlotline->id().toString()));
 
     return scene;
 }
@@ -145,16 +145,16 @@ Scene *Scene::deserialize(Novel *novel, const QJsonObject &object)
 
     if (object.contains(JSON_CHARACTERS))
         for (QJsonValue val : object[JSON_CHARACTERS].toArray())
-          characters << novel->character(val.toInt());
+          characters << novel->character(QUuid(val.toString()));
     else
         missing.append(JSON_CHARACTERS);
 
     if (object.contains(JSON_POV_CHARACTERS))
         for (QJsonValue val : object[JSON_POV_CHARACTERS].toArray())
-          povCharacters.append(novel->character(val.toInt()));
+          povCharacters.append(novel->character(QUuid(val.toString())));
 
     if (object.contains(JSON_PLOTLINE))
-        plotline = novel->plotline(object[JSON_PLOTLINE].toInt());
+        plotline = novel->plotline(QUuid(object[JSON_PLOTLINE].toString()));
 
     if (!missing.empty())
         qWarning() << "Scene missing the following fields: "
@@ -174,7 +174,7 @@ QList<Scene *> Scene::deserialize(Novel *novel, const QJsonArray &object)
         if (obj.isObject())
             scenes << Scene::deserialize(novel, obj.toObject());
         else
-            scenes << novel->scene(obj.toInt());
+            scenes << novel->scene(QUuid(obj.toString()));
     }
 
     return scenes;

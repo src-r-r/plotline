@@ -65,7 +65,7 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
     ui->sceneDetails->setDisabled(true);
     QString headline = mModel->data(index, SceneItemModel::HeadlineRole).toString(),
             action = mModel->data(index, SceneItemModel::ActionRole).toString();
-    int plotline = mModel->data(index, SceneItemModel::PlotlineRole).toInt();
+    QUuid plotline = mModel->data(index, SceneItemModel::PlotlineRole).toUuid();
 
     QList<Character *> selectedCharacters = getSelectedCharacters();
     QList<Character *> pointsOfView = getSelectedPointsOfView();
@@ -78,7 +78,8 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
         checkbox->setChecked(false);
         bool checked = selectedCharacters.contains(c);
 //        checkbox->setChecked(checked);
-        qDebug("scene: [%s] {%d} %s", checked ? "*" : " ", c->id(),
+        qDebug("scene: [%s] %s %s", checked ? "*" : " ",
+               c->id().toString().toStdString().data(),
                c->name().toStdString().data());
         mCharacters << checkbox;
         ui->characterList->addWidget(checkbox);
@@ -118,7 +119,7 @@ void SceneFrame::on_deleteScene_clicked()
 
 void SceneFrame::onCharacterToggled(bool checked, QVariant value)
 {
-    Character *selected = mainWindow()->novel()->character(value.toInt());
+    Character *selected = mainWindow()->novel()->character(value.toUuid());
     QList<Character *> characters = getSelectedCharacters();
     int i = characters.indexOf(selected);
     if (checked && i < 0){
@@ -203,7 +204,7 @@ QList<Character *> SceneFrame::_getSelectedCharacters(bool pov)
     QJsonArray charIds = mModel->data(index, role).toJsonArray();
     QList<Character *> characters;
     for (QJsonValue v : charIds)
-        characters << mainWindow()->novel()->character(v.toInt());
+        characters << mainWindow()->novel()->character(QUuid(v.toString()));
     return characters;
 }
 
@@ -214,7 +215,7 @@ void SceneFrame::_setSelectedCharacters(QList<Character *> characters, bool pov)
                    : SceneItemModel::CharactersRole;
     QJsonArray a;
     for (Character *c : characters)
-        a.append(QJsonValue(c->id()));
+        a.append(QJsonValue(c->id().toString()));
     mModel->setData(index, a, role);
 }
 
@@ -248,7 +249,7 @@ void SceneFrame::findCharacters(const QTextEdit *editor)
     qDebug() << set.count() << "characters found in" << editor->objectName();
     for (ModelCheckbox *cb : mCharacters){
         for (int key : set.keys())
-            if (cb->value().toInt() == set.value(key)->id())
+            if (cb->value().toUuid() == set.value(key)->id())
                 cb->setChecked(true);
     }
 }

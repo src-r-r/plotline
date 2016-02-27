@@ -44,7 +44,7 @@ public:
                    const QList<Plotline *> plotlines = QList<Plotline *>(),
                    const QStringList &revisions = QStringList(),
                    int currentRevision = -1,
-                   int id = -1,
+                   QUuid id = QUuid(),
                    QObject *parent = 0);
     ~Novel();
 
@@ -64,13 +64,13 @@ public:
     void setScenes(const QList<Scene *> &value);
     void addScene(Scene *scene, int i=-1);
     void removeScene(Scene *scene);
-    void removeScene(int id);
-    Scene *scene(int id) const;
+    void removeScene(QUuid id);
+    Scene *scene(QUuid id) const;
     void moveScenes(int from, int to);
 
     QList<Chapter *> chapters() const;
     Chapter *chapterByNumber(int number);
-    Chapter *chapter(int id) const;
+    Chapter *chapter(QUuid id) const;
     void setChapters(const QList<Chapter *> &value);
     void addChapter(Chapter *chapter, int loc = -1);
     Revision *chapterRevision(int chapter, int revision);
@@ -82,11 +82,11 @@ public:
     void setPointOfView(const Novel::PointOfView &pointOfView);
 
     QList<Plotline *> plotlines() const;
-    Plotline *plotline(int id) const;
+    Plotline *plotline(QUuid id) const;
     void setPlotlines(const QList<Plotline *> &plotlines);
     void addPlotline(Plotline *plotline, int before=-1);
     void removePlotline(Plotline *plotline);
-    void removePlotline(const int id);
+    void removePlotline(const QUuid id);
 
     QList<Character *> characters();
     QList<Character *> characters(const QRegularExpression &exp) const;
@@ -94,8 +94,8 @@ public:
     QList<Character *> charactersByName(const QRegularExpression &exp) const;
     QList<Character *> charactersByName(const QString &name) const;
     void setCharacters(const QList<Character *> &characters);
-    Character *character(int id) const;
-    Character *character(const QString label) const;
+    Character *character(const QUuid &id) const;
+    Character *characterByLabel(const QString label) const;
     void addCharacter(Character *character, const int i=-1);
 
     QJsonObject serialize() const;

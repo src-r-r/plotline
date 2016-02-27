@@ -16,7 +16,7 @@ public:
                     const QString &address = QString(),
                     const QString &phone = QString(),
                     Novel *novel = 0,
-                    int id = 0,
+                    const QUuid &id = 0,
                     QObject *parent = 0);
 
     QJsonObject serialize() const;

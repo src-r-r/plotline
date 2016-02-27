@@ -104,7 +104,7 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
                role == CharacterRole) {
         QJsonArray jChars;
         for (Character *c : plotline->characters())
-            jChars.append(QJsonValue(c->id()));
+            jChars.append(QJsonValue(c->id().toString()));
         return jChars;
     } else if ((col == CHARACTERS) && (role == Qt::DisplayRole)) {
         QStringList names;
@@ -135,7 +135,7 @@ bool PlotlineItemModel::setData(const QModelIndex &index, const QVariant &value,
     } else if (role == CharacterRole){
         QList<Character *> characters;
         for (QJsonValue v : value.toJsonArray())
-            characters << mNovel->character(v.toInt());
+            characters << mNovel->character(QUuid(v.toString()));
         plotline->setCharacters(characters);
     } else if (role == ColorRole) {
         plotline->setColor(QColor(value.toString()));

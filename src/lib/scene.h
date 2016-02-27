@@ -33,7 +33,7 @@ public:
     explicit Scene(QObject *parent=0);
     explicit Scene(const QString &mHeadline, const QString &mAction,
                    Novel *novel = 0, Plotline *plotline = 0,
-                   int id = -1, QObject *parent = 0);
+                   const QUuid &id = QUuid(), QObject *parent = 0);
 
     QString headline() const;
     void setHeadline(const QString &mHeadline);
@@ -43,9 +43,9 @@ public:
 
     void setCharacters(const QList<Character *> &mCharacters);
     void addCharacter(Character *character);
-    void addCharacter(const int id);
+    void addCharacter(const QUuid &id);
     void removeCharacter(Character *character);
-    void removeCharacter(const int id);
+    void removeCharacter(const QUuid &id);
     QList<Character *> getCharacters() const;
 
     void setPointsOfView(const QList<Character *> &mCharacters);

@@ -9,6 +9,14 @@ CharacterFrame::CharacterFrame(MainWindow *mainWindow, QWidget *parent) :
     mModel = new CharacterModel(mMainWindow->novel());
     ui->characterList->setModel(mModel);
 
+    // Set up the list view for drag/drop re-ordering.
+    ui->characterList->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->characterList->setDragDropMode(QAbstractItemView::InternalMove);
+    ui->characterList->setDragEnabled(true);
+    ui->characterList->viewport()->setAcceptDrops(true);
+    ui->characterList->setAcceptDrops(true);
+    ui->characterList->setDropIndicatorShown(true);
+
     // connect signals
     connect(this, SIGNAL(characterListModified()), this,
             SLOT(onCharacterListModified()));

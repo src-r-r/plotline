@@ -16,7 +16,7 @@ SceneListDialog::SceneListDialog(Novel *novel, QTableView *chapterTable, QWidget
     QModelIndex index = chapterTable->currentIndex();
     QJsonArray data = model->data(index, ChapterModel::SceneRole).toJsonArray();
     for (QJsonValue v : data)
-        selected << mNovel->scene(v.toInt());
+        selected << mNovel->scene(v.toVariant().toUuid());
 
     // Now go through all the scenes and add a ModelCheckbox. If the scene
     // is a selected scene, mark it as checked.

@@ -36,7 +36,7 @@ PlotlineDialog::PlotlineDialog(QTableView *tableView,
         onColorSelected(QColor(color));
 
         for (QJsonValue v : jCharacters)
-            selectedCharacters << mNovel->character(v.toInt());
+            selectedCharacters << mNovel->character(QUuid(v.toString()));
     } else {
         mIsNew = true;
         setWindowTitle(tr("New Plotline"));
@@ -96,7 +96,7 @@ void PlotlineDialog::on_buttonBox_accepted()
     QJsonArray charIds;
     for (QCheckBox *cb : mCharacterList.keys())
         if (cb->isChecked())
-            charIds << QJsonValue(mCharacterList[cb]->id());
+            charIds << QJsonValue(mCharacterList[cb]->id().toString());
 
     model->setData(index, ui->plotlineBrief->text(), PlotlineItemModel
                     ::BriefRole);
@@ -111,4 +111,19 @@ void PlotlineDialog::on_buttonBox_accepted()
         emit plotlineAdded(index);
     else
         emit plotlineModified(index);
+}
+
+void PlotlineDialog::on_characterSearch_textEdited(const QString &arg1)
+{
+    for (QCheckBox *cb : mCharacterList.keys()){
+        if (arg1.isEmpty())
+            cb->show();
+        cb->hide();
+        QString name = mCharacterList[cb]->name();
+        QString label = mCharacterList[cb]->label();
+        if (arg1.startsWith("@") && label.contains(arg1.mid(1)))
+            cb->show();
+        else if (name.contains(arg1))
+            cb->show();
+    }
 }

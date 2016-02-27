@@ -25,7 +25,7 @@ Novel::Novel(const QString &workingTitle,
              const QList<Plotline *> plotlines,
              const QStringList &revisions,
              int currentRevision,
-             int id,
+             QUuid id,
              QObject *parent)
     : QObject(parent), Serializable(id)
 {
@@ -106,7 +106,7 @@ QList<Scene *> Novel::scenes() const
     return mScenes;
 }
 
-Scene *Novel::scene(int id) const
+Scene *Novel::scene(QUuid id) const
 {
     for (Scene *s : mScenes)
         if (s->id() == id)
@@ -138,7 +138,7 @@ void Novel::removeScene(Scene *scene)
     mScenes.removeAll(scene);
 }
 
-void Novel::removeScene(int id)
+void Novel::removeScene(QUuid id)
 {
     removeScene(scene(id));
 }
@@ -153,7 +153,7 @@ Chapter *Novel::chapterByNumber(int number)
     return mChapters[number];
 }
 
-Chapter *Novel::chapter(int id) const
+Chapter *Novel::chapter(QUuid id) const
 {
     for (Chapter *c : mChapters)
         if (c->id() == id)
@@ -219,7 +219,7 @@ QList<Plotline *> Novel::plotlines() const
     return mPlotlines;
 }
 
-Plotline *Novel::plotline(int id) const
+Plotline *Novel::plotline(QUuid id) const
 {
     for (Plotline *p : mPlotlines)
         if (p->id() == id)
@@ -247,7 +247,7 @@ void Novel::removePlotline(Plotline *plotline)
         mPlotlines.removeAll(plotline);
 }
 
-void Novel::removePlotline(const int id)
+void Novel::removePlotline(const QUuid id)
 {
     removePlotline(plotline(id));
 }
@@ -292,7 +292,7 @@ QList<Character *> Novel::charactersByName(const QString &name) const
  * @param id the character ID
  * @return The character whose ID is id, or NULL if not found.
  */
-Character *Novel::character(int id) const
+Character *Novel::character(const QUuid &id) const
 {
     for (Character *c : mCharacters)
         if (c->id() == id)
@@ -306,7 +306,7 @@ Character *Novel::character(int id) const
  * @param label The label for the character (e.g. "JoDo")
  * @return The character found, or 0 if no character is found.
  */
-Character *Novel::character(const QString label) const
+Character *Novel::characterByLabel(const QString label) const
 {
     for (Character *c : mCharacters)
         if (c->label() == label)
@@ -356,7 +356,7 @@ QJsonObject Novel::serialize() const
     for (QString s : mRevisions)
         jRevisions.append(s);
 
-    novel[JSON_ID] = QJsonValue(id());
+    novel[JSON_ID] = id().toString();
     novel[JSON_WORKING_TITLE] = mWorkingTitle;
     novel[JSON_SETTING] = mSetting;
     novel[JSON_GENRE] = mGenre;
@@ -392,7 +392,7 @@ Novel *Novel::deserialize(const QJsonObject &object)
 
     int currentRevision=0;
 
-    int id = Serializable::deserialize(object);
+    QUuid id = Serializable::deserialize(object);
 
     QStringList notFound = QStringList();
 

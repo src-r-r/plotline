@@ -38,6 +38,8 @@ private slots:
     void on_clearPlotlineColor_clicked();
     void on_buttonBox_accepted();
 
+    void on_characterSearch_textEdited(const QString &arg1);
+
 signals:
 
     void plotlineAdded(const QModelIndex &index);

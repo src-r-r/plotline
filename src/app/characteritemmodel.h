@@ -19,6 +19,8 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
     bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+    bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
+                  const QModelIndex &destinationParent, int destinationChild);
 
     QVariant data(const QModelIndex & index,
                                       int role = Qt::DisplayRole) const;
@@ -27,6 +29,7 @@ public:
     bool setData(const QModelIndex & index, const QVariant & value,
                  int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex & index) const;
+    Qt::DropActions supportedDropActions();
 
     QModelIndex lastRow() const;
 

@@ -29,7 +29,7 @@ Character::Character(const QString &name, const QString &nickname,
                      const QColor &color,
                      const bool isArchived,
                      Novel *novel,
-                     int id,
+                     QUuid id,
                      QObject *parent) : QObject(parent), Serializable(id)
 {
     this->mName = name;
@@ -77,7 +77,7 @@ QJsonObject Character::serialize() const
     QJsonObject character = QJsonObject();
     QJsonArray scenes = QJsonArray();
 
-    character[JSON_ID] = this->id();
+    character[JSON_ID] = this->id().toString();
     character[J_NAME] = mName;
     character[J_NICKNAME] = mNickname;
     character[J_LABEL] = mLabel;
@@ -90,7 +90,7 @@ QJsonObject Character::serialize() const
 
 Character *Character::deserialize(Novel *novel, const QJsonObject &object)
 {
-    int id = Serializable::deserialize(object);
+    QUuid id = Serializable::deserialize(object);
 
     QString name = QString(), nickname = QString(), label = QString();
     QImage headshot = QImage();

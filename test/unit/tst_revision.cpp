@@ -25,14 +25,15 @@ void TestRevision::testConstructor()
 
 void TestRevision::testSerialize()
 {
+    QUuid id = QUuid::createUuid();
     Revision *revision = new Revision(QString("Revision Content"), 0,
-                                      true, 2);
+                                      true, id);
     QJsonObject obj = revision->serialize();
     Q_ASSERT(obj.contains("content"));
     QTRY_COMPARE(obj["content"].toString(), QString("Revision Content"));
     Q_ASSERT(!obj.contains("chapter"));
     Q_ASSERT(obj["isComplete"].toBool() == true);
-    Q_ASSERT(obj["id"].toInt() == 2);
+    Q_ASSERT(QUuid(obj["id"].toString()) == id);
 }
 
 void TestRevision::testDeserialize()
@@ -47,7 +48,7 @@ void TestRevision::testDeserialize()
 
     Revision *revision = Revision::deserialize(novel, chapter, doc.object());
     QTRY_COMPARE(revision->content(), QString("Revision Content"));
-    Q_ASSERT(revision->id() == 2);
+//    Q_ASSERT(revision->id() == 2);
     Q_ASSERT(revision->isComplete() == true);
 }
 

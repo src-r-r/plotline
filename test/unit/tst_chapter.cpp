@@ -120,9 +120,9 @@ void TestChapter::testDeserialize()
             *s3 = new Scene (
                 QString("3rd test scene."),
                 QString("Okay, enough for now. 3 should be enough."));
-    s1->setId(2);
-    s2->setId(3);
-    s3->setId(4);
+    s1->setId(QUuid::createUuid());
+    s2->setId(QUuid::createUuid());
+    s3->setId(QUuid::createUuid());
     QList<Scene *> ch1Scenes = QList<Scene *>();
     ch1Scenes.append(s1);
     ch1Scenes.append(s2);

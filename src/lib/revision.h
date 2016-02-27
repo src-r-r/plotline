@@ -16,7 +16,7 @@ public:
     explicit Revision(const QString &content = QString(),
                       Chapter *chapter = 0,
                       bool isComplete = false,
-                      int id = -1,
+                      const QUuid &id = QUuid(),
                       QObject *parent = 0);
 
     QString content() const;

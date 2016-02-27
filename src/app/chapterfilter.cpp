@@ -16,7 +16,7 @@ bool ChapterFilter::filterAcceptsRow(int source_row, const QModelIndex &source_p
     Scene *scene = 0;
     bool found = false;
     for (QJsonValue v : sceneIds){
-        scene = mPlotline->novel()->scene(v.toInt());
+        scene = mPlotline->novel()->scene(v.toVariant().toUuid());
         if (scene == 0){
             qWarning() << "chapter filter: Could not find scene with id"
                        << v.toInt();

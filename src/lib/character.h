@@ -45,7 +45,7 @@ public:
                        const QColor &color = QColor(),
                        bool isArchived = false,
                        Novel *novel = 0,
-                       int id = -1,
+                       QUuid id = QUuid(),
                        QObject *parent = 0);
     ~Character();
 

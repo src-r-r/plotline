@@ -107,7 +107,7 @@ Chapter::Chapter(const QString &title, const QList<Revision *> &revisions,
                  const QList<Scene *> &scenes,
                  Novel *novel,
                  int currentRevision,
-                 int id,
+                 QUuid id,
                  QObject *parent) : QObject(parent), Serializable(id)
 {
     mTitle = title;
@@ -154,12 +154,12 @@ QJsonObject Chapter::serialize() const {
             jRevisions = QJsonArray();
 
     for (Scene *s : mScenes)
-        jScenes.append(s->id());
+        jScenes.append(s->id().toString());
 
     for (Revision *r : mRevisions)
         jRevisions.append(QJsonValue(r->serialize()));
 
-    chapter[JSON_ID] = QJsonValue(id());
+    chapter[JSON_ID] = QJsonValue(id().toString());
     chapter[JSON_TITLE] = mTitle;
     chapter[JSON_SCENES] = jScenes;
     chapter[JSON_REVISIONS] = jRevisions;
@@ -170,7 +170,7 @@ QJsonObject Chapter::serialize() const {
 
 Chapter *Chapter::deserialize(Novel *novel, const QJsonObject &object)
 {
-    int id = Serializable::deserialize(object);
+    QUuid id = Serializable::deserialize(object);
 
     QString title = QString();
     QList<Revision *> revisions = QList<Revision *>();
