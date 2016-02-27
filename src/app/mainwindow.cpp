@@ -84,6 +84,8 @@ void MainWindow::onNovelModified()
 
 void MainWindow::onSaveNovel()
 {
+    // Disable the interface.
+    setDisabled(true);
     QSettings settings;
     QString projDir = settings.value(
                 PreferencesDialog::DEFAULT_PROJECT_DIRECTORY,
@@ -100,6 +102,8 @@ void MainWindow::onSaveNovel()
     mIsSaved = true;
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle("Plotline - " + path);
+    // Re-enable the interface.
+    setEnabled(true);
 }
 
 void MainWindow::onNovelNew()

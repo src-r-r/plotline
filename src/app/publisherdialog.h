@@ -21,6 +21,12 @@ private slots:
 
     void on_chapterHeaderCombo_activated(int index);
 
+    void on_chapterHeaderText_cursorPositionChanged(int arg1, int arg2);
+
+    void on_titleText_cursorPositionChanged(int arg1, int arg2);
+
+    void on_titleCombo_activated(int index);
+
 private:
     Ui::PublisherDialog *ui;
 
@@ -35,6 +41,8 @@ private:
         LatinNumber = 3,
         TextNumber = 4,
         ChapterTitle = 5;
+
+    int chapterTextPos = 0, headerTextPos = 0;
 };
 
 #endif // PUBLISHERDIALOG_H

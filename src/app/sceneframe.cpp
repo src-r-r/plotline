@@ -67,7 +67,7 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
             action = mModel->data(index, SceneItemModel::ActionRole).toString();
     int plotline = mModel->data(index, SceneItemModel::PlotlineRole).toInt();
 
-    QList<Character *> characters = getSelectedCharacters();
+    QList<Character *> selectedCharacters = getSelectedCharacters();
     QList<Character *> pointsOfView = getSelectedPointsOfView();
 
     ModelCheckbox *checkbox;
@@ -75,11 +75,15 @@ void SceneFrame::on_sceneList_activated(const QModelIndex &index)
     mCharacters.clear();
     for (Character *c : mainWindow()->novel()->characters()){
         checkbox = new ModelCheckbox(c->name(), QVariant(c->id()));
-        checkbox->setChecked(characters.contains(c));
-        mCharacters.append(checkbox);
+        checkbox->setChecked(false);
+        bool checked = selectedCharacters.contains(c);
+//        checkbox->setChecked(checked);
+        qDebug("scene: [%s] {%d} %s", checked ? "*" : " ", c->id(),
+               c->name().toStdString().data());
+        mCharacters << checkbox;
         ui->characterList->addWidget(checkbox);
-        connect(checkbox, SIGNAL(toggled(bool, QVariant)),
-                this, SLOT(onCharacterToggled(bool,QVariant)));
+//        connect(checkbox, SIGNAL(toggled(bool, QVariant)),
+//                this, SLOT(onCharacterToggled(bool, QVariant)));
     }
 
     fillPlotlineCombo(mainWindow()->novel()->plotline(plotline));
