@@ -99,7 +99,14 @@
           <number>0</number>
          </property>
          <item>
-          <layout class="QFormLayout" name="characterListLayout"/>
+          <layout class="QFormLayout" name="characterListLayout">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMaximumSize</enum>
+           </property>
+           <property name="rowWrapPolicy">
+            <enum>QFormLayout::WrapLongRows</enum>
+           </property>
+          </layout>
          </item>
         </layout>
        </widget>
