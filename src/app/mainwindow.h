@@ -12,6 +12,8 @@
 #include <QItemSelectionModel>
 #include <QWidgetList>
 #include <QToolBar>
+#include <QCheckBox>
+#include "savethread.h"
 
 #include "novel.h"
 #include "characteritemmodel.h"
@@ -65,15 +67,19 @@ public:
 
     void openTab(const int index);
 
+    virtual void closeEvent(QCloseEvent *event);
+
 signals:
     void saveNovel();
     void novelChanged();
     void novelLoaded();
     void novelNew();
 
+public slots:
+
 private slots:
 
-    void onWarningChecked(bool checked);
+    void onVersionWarningChecked(bool checked);
 
     void onNovelModified();
     void onSaveNovel();
@@ -91,9 +97,6 @@ private slots:
     void on_actionNovelBind_triggered();
     void on_actionNovelSaveAs_triggered();
     void on_actionNovelClose_triggered();
-    void on_MainWindow_destroyed();
-
-    void on_MainWindow_destroyed(QObject *arg1);
 
 protected:
 
@@ -120,6 +123,9 @@ private:
     bool mIsSaved;
     QString mOpenedFile;
     QWidgetList mDistractions;
+
+    // widgets
+    QCheckBox *mShowVersionWarning;
 
     void disconnectAll();
     void connectAll();

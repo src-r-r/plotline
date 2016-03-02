@@ -34,7 +34,9 @@ HEADERS +=  mainwindow.h \
     fullscreeneditor.h \
     chapterfilter.h \
     chapterreorderdialog.h \
-    publisherdialog.h
+    publisherdialog.h \
+    scenefilter.h \
+    savethread.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -61,7 +63,9 @@ SOURCES += main.cpp \
     fullscreeneditor.cpp \
     chapterfilter.cpp \
     chapterreorderdialog.cpp \
-    publisherdialog.cpp
+    publisherdialog.cpp \
+    scenefilter.cpp \
+    savethread.cpp
 
 ##
 # Depending on whether we're building the libraries statically or dynamically,

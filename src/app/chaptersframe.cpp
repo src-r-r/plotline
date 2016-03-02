@@ -219,7 +219,11 @@ void ChaptersFrame::onChapterSelected()
 
     ui->chapterNumber->setText(QVariant(number).toString());
     ui->chapterTitle->setText(title);
+    ui->chapterContent->blockSignals(true);
+    ui->chapterContent->document()->blockSignals(true);
     ui->chapterContent->setPlainText(content);
+    ui->chapterContent->blockSignals(false);
+    ui->chapterContent->document()->blockSignals(false);
     ui->chapterRevision->setValue(revision+1);
     ui->chapterRevision->setMaximum(mainWindow()->novel()->revisionCount());
     ui->chapterRevision->setMinimum(1);
@@ -295,6 +299,7 @@ void ChaptersFrame::onShowDistractions()
 
 void ChaptersFrame::mouseMoveEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     if (mHasDistractions) return;
     if (mDistractionTimer->isActive()){
         mDistractionTimer->stop();
@@ -340,8 +345,26 @@ void ChaptersFrame::on_archiveChapter_clicked()
 void ChaptersFrame::on_deleteChapter_clicked()
 {
     QModelIndex index = ui->chapterTable->currentIndex();
-    int row = index.row();
-    mModel->removeRows(row, 1);
+    QString chNum = mModel->data(index, ChapterModel::NumberRole).toString();
+    QString chTitle = mModel->data(index, ChapterModel::TitleRole).toString();
+    QString title = tr("Delete Character?"),
+            text = QString("Are you sure you want to delete Chapter")
+                + chNum + (chTitle.isNull() ?
+                               QString("") : QString("-") + chTitle),
+            b0t = tr("Cancel"),
+            b1t = tr("Delete");
+    const int dflt = 0;
+    int res = QMessageBox::warning(this, title, text, b0t, b1t, QString(), dflt);
+    if (res == 0){
+        // cancel
+        return;
+    } if (res == 1) {
+        mModel->removeRows(index.row(), 1);
+        // Set the index to the previous. and activate it!
+//        index = mModel->index(index.row()-1, 0);
+        emit ui->chapterTable->activated(index);
+        emit novelModified();
+    }
 }
 
 void ChaptersFrame::on_assignScenes_clicked()
@@ -360,6 +383,7 @@ void ChaptersFrame::on_chapterTitle_textEdited(const QString &arg1)
 
 void ChaptersFrame::on_chapterTable_activated(const QModelIndex &index)
 {
+    Q_UNUSED(index);
     emit chapterSelected();
 }
 
@@ -395,6 +419,9 @@ void ChaptersFrame::on_chapterRevision_valueChanged(int arg1)
 void ChaptersFrame::onChapterContentModified(int from, int charsAdded,
                                              int charsRemoved)
 {
+    Q_UNUSED(from);
+    Q_UNUSED(charsAdded);
+    Q_UNUSED(charsRemoved);
     QSettings settings;
     int wordWrapWidth = settings.value(PreferencesDialog::WORD_WRAP_WIDTH,
                                        QVariant(0)).toInt();
@@ -449,6 +476,7 @@ void ChaptersFrame::on_chapterDistractionFree_clicked()
 
 void ChaptersFrame::onFullscreenEditorDestroyed(QObject *object)
 {
+    Q_UNUSED(object);
     QString content = mModel->data(ui->chapterTable->currentIndex(),
                                    ChapterModel::ContentRole).toString();
     ui->chapterContent->setText(content);

@@ -179,3 +179,12 @@ QString reflowParagraphs(const QString &content, const int width){
     }
     return content2;
 }
+
+QString toRomanNumeral(const int number)
+{
+    return QString();
+}
+
+QString toWord(const int number)
+{
+}

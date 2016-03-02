@@ -30,4 +30,8 @@ QPair<int, int> multilineOffset(QString string, int offset);
 QString reflowParagraph(const QString &paragraph, const int width);
 QString reflowParagraphs(const QString &paragraph, const int width);
 
+// Number conversion (intended for chapters)
+QString toRomanNumeral(const int number);
+QString toWord(const int number);
+
 #endif // UTILS_H

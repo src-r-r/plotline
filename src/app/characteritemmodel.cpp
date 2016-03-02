@@ -165,21 +165,27 @@ bool CharacterModel::insertRows(int row, int count,
 bool CharacterModel::removeRows(int row, int count,
                                     const QModelIndex &parent)
 {
-    if (parent.isValid())
+    int start = row;
+    int end = row + (count-1);
+
+    if (parent.isValid()){
+        qWarning() << "[-] remove character - valid parent";
         return false;
-
-    if (row >= mNovel->characters().size() || row + count <= 0)
-        return false;
-
-    int beginRow = qMax(0, row);
-    int endRow = qMin(row + count - 1, mNovel->characters().size() - 1);
-
-    beginRemoveRows(parent, beginRow, endRow);
-
-    while (beginRow <= endRow) {
-        mNovel->characters().removeAt(beginRow);
-        ++beginRow;
     }
+
+    if (row > rowCount()-1 || row < 0){
+        qWarning() << "[-] remove character - Invalid row" << row;
+        return false;
+    }
+
+    if (end > rowCount()-1)
+        end = rowCount()-1;
+    beginRemoveRows(parent, row, end);
+
+    QList<Character *> characters = mNovel->characters();
+    for (int i = start; i <= end; ++i)
+        characters.removeAt(i);
+    mNovel->setCharacters(characters);
 
     endRemoveRows();
     return true;

@@ -18,14 +18,12 @@ public:
 
 private slots:
     void on_chooseDirectory_clicked();
-
     void on_chapterHeaderCombo_activated(int index);
-
     void on_chapterHeaderText_cursorPositionChanged(int arg1, int arg2);
-
     void on_titleText_cursorPositionChanged(int arg1, int arg2);
-
     void on_titleCombo_activated(int index);
+
+    void on_PublisherDialog_accepted();
 
 private:
     Ui::PublisherDialog *ui;
@@ -36,13 +34,17 @@ private:
         HeaderPlaceholders;
 
     static const int Blank = 0,
-        NewLine = 1,
-        RomanNumber = 2,
-        LatinNumber = 3,
-        TextNumber = 4,
-        ChapterTitle = 5;
+        NewLine = 1,            // %n
+        ChapterTitle = 2,       // %t
+        RomanNumber = 3,        // %I
+        LatinNumber = 4,        // %1
+        TextNumber = 5;         // %O
 
     int chapterTextPos = 0, headerTextPos = 0;
+
+    void updatePreview();
+    QString formatTitleHeader() const;
+    QString formatChapterHeader(Chapter *) const;
 };
 
 #endif // PUBLISHERDIALOG_H

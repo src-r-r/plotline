@@ -70,32 +70,43 @@ void CharacterFrame::onCharacterListModified()
 
 void CharacterFrame::onCharacterModified()
 {
-    on_characterList_activated(ui->characterList->currentIndex());
+//    on_characterList_activated(ui->characterList->currentIndex());
     emit novelModified();
 }
 
 void CharacterFrame::on_characterList_activated(const QModelIndex &index)
 {
-    ui->deleteCharacter->setEnabled(index.isValid());
-    ui->archiveCharacter->setEnabled(index.isValid());
-    if (!index.isValid()){
-        qWarning() << "Invalid index";
-
+    ui->scrollAreaCharDetails->setDisabled(true);
+    ui->deleteCharacter->setDisabled(true);
+    ui->archiveCharacter->setDisabled(true);
+    clearCharacterHeadshot();
+    if (!index.isValid()) {
+        qDebug() << "character - none selected";
         return;
     }
 
     ui->characterAttrList->setEnabled(true);
     ui->scrollAreaWidgetContents->setEnabled(true);
     ui->scrollAreaCharDetails->setEnabled(true);
+    ui->deleteCharacter->setEnabled(true);
+    ui->archiveCharacter->setEnabled(true);
+
+    setCharacterHeadshot();
 
     QString name = mModel->data(index, CharacterModel::NameRole).toString(),
             label = mModel->data(index, CharacterModel::LabelRole).toString(),
             nickname = mModel->data(index, CharacterModel::NicknameRole).toString(),
             colorName = mModel->data(index, CharacterModel::ColorRole).toString();
 
+    ui->characterName->blockSignals(true);
     ui->characterName->setText(name);
+    ui->characterName->blockSignals(false);
+    ui->characterLabel->blockSignals(true);
     ui->characterLabel->setText(label);
+    ui->characterLabel->blockSignals(false);
+    ui->characterNickname->blockSignals(true);
     ui->characterNickname->setText(nickname);
+    ui->characterNickname->blockSignals(false);
 
     setCharacterHeadshot();
 
@@ -125,6 +136,7 @@ void CharacterFrame::setCharacterHeadshot()
 
 void CharacterFrame::clearCharacterHeadshot()
 {
+    if (!ui->characterHeadshot->scene()) return;
     QList<QGraphicsItem *> items = ui->characterHeadshot->scene()->items();
     for (QGraphicsItem *item : items)
         ui->characterHeadshot->scene()->removeItem(item);
@@ -154,7 +166,9 @@ void CharacterFrame::on_characterName_textChanged(const QString &arg1)
 {
     QModelIndex index = ui->characterList->currentIndex();
     mModel->setData(index, arg1, Qt::DisplayRole);
+    ui->characterLabel->blockSignals(true);
     ui->characterLabel->setText(Character::generateLabel(arg1));
+    ui->characterLabel->blockSignals(false);
     emit mModel->dataChanged(index, index);
     emit characterModified();
 }
@@ -188,4 +202,36 @@ void CharacterFrame::on_characterLabel_textChanged(const QString &arg1)
     mModel->setData(ui->characterList->currentIndex(),
                     arg1, CharacterModel::LabelRole);
     emit characterModified();
+}
+
+void CharacterFrame::on_archiveCharacter_clicked()
+{
+
+}
+
+void CharacterFrame::on_deleteCharacter_clicked()
+{
+    QModelIndex index = ui->characterList->currentIndex();
+    QString name = mModel->data(index, CharacterModel::NameRole).toString();
+    QString title = tr("Delete Character?"),
+            text = QString("Are you sure you want to delete \"")
+                + name + QString("?\"\nArchiving is a safer action."),
+            b0t = tr("Archive"),
+            b1t = tr("Cancel"),
+            b2t = tr("Delete");
+    const int dflt = 0;
+    int res = QMessageBox::warning(this, title, text, b0t, b1t, b2t, dflt);
+    if (res == 0){
+        // TODO: archive.
+        return;
+    } if (res == 1) {
+        // cancel
+        return;
+    } if (res == 2) {
+        mModel->removeRows(index.row(), 1);
+        // Set the index to the previous. and activate it!
+//        index = mModel->index(index.row()-1, 0);
+        emit ui->characterList->activated(index);
+        emit novelModified();
+    }
 }

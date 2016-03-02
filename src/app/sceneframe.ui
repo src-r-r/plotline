@@ -96,6 +96,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -167,8 +173,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>416</width>
-         <height>423</height>
+         <width>456</width>
+         <height>454</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -192,7 +198,7 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <layout class="QFormLayout" name="formLayout">
             <item row="0" column="0">
              <widget class="QLabel" name="label">
@@ -258,19 +264,35 @@
             </item>
            </layout>
           </widget>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
              <widget class="QLabel" name="label_13">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="text">
                <string>Characters Involved:</string>
               </property>
              </widget>
             </item>
             <item>
+             <widget class="QLineEdit" name="characterSearch">
+              <property name="placeholderText">
+               <string>Search...</string>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QScrollArea" name="characterScroll">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -292,7 +314,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>131</width>
+                 <width>166</width>
                  <height>398</height>
                 </rect>
                </property>

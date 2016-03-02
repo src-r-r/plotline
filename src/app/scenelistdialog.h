@@ -25,12 +25,21 @@ public:
 
 private slots:
 
+    void on_plotlineSelection_activated(int index);
+
+    void on_sceneSearch_textChanged(const QString &arg1);
+
 private:
     Ui::SceneListDialog *ui;
 
     Novel *mNovel;
     QTableView *mChapterTable;
-    QList<ModelCheckbox *> mSceneCheckboxes;
+    QList<ModelCheckbox *> mCheckboxes;
+
+    Plotline *mPlotline = 0;
+    QString mSearch;
+
+    void fillList();
 };
 
 #endif // SCENELISTDIALOG_H

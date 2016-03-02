@@ -37,7 +37,7 @@ void RevisionDialog::setMainWindow(MainWindow *mainWindow)
 
 void RevisionDialog::on_addRevision_clicked()
 {
-    Novel *novel = mainWindow()->novel();
+//    Novel *novel = mainWindow()->novel();
     mTmpRevisions.append(QString());
     ui->revisionNumber->setMaximum(mTmpRevisions.count());
     ui->revisionNumber->setValue(mTmpRevisions.count());

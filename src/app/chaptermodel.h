@@ -48,11 +48,13 @@ public:
     static const int IdRole = Qt::UserRole,
         NumberRole = Qt::UserRole + 1,
         TitleRole = Qt::UserRole + 2,
-        ContentRole = Qt::UserRole + 4,
-        RevisionRole = Qt::UserRole + 8,
-        RevisionMarkableRole = Qt::UserRole + 16,
-        CompleteRole = Qt::UserRole + 32,
-        SceneRole = Qt::UserRole + 64;
+        ContentRole = Qt::UserRole + 3,
+        RevisionRole = Qt::UserRole + 4,
+        RevisionMarkableRole = Qt::UserRole + 5,
+        CompleteRole = Qt::UserRole + 6,
+        SceneRole = Qt::UserRole + 7,
+        AddSceneRole = Qt::UserRole + 8,
+        RemoveSceneRole = Qt::UserRole + 9;
     // Column numbers
     static const int NUMBER = 0,
         TITLE = 1;

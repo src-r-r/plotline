@@ -42,6 +42,10 @@ private slots:
     void on_chooseHeadshot_clicked();
     void on_characterLabel_textChanged(const QString &arg1);
 
+    void on_archiveCharacter_clicked();
+
+    void on_deleteCharacter_clicked();
+
 private:
     Ui::CharacterFrame *ui;
 

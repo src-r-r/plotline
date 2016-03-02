@@ -12,6 +12,7 @@
 #include "characterparser.h"
 #include "characterhighlighter.h"
 #include "utils.h"
+#include "scenefilter.h"
 
 namespace Ui {
 class SceneFrame;
@@ -53,6 +54,14 @@ private slots:
 
     void on_sceneList_customContextMenuRequested(const QPoint &pos);
 
+    void on_filterScenes_activated(int index);
+
+    void on_searchScenes_textEdited(const QString &arg1);
+
+    void on_sceneList_indexesMoved(const QModelIndexList &indexes);
+
+    void on_characterSearch_textChanged(const QString &arg1);
+
 private:
 
     void disconnectSlots();
@@ -77,7 +86,7 @@ private:
 
     Scene *mSelectedScene = 0;
     QList<ModelCheckbox *> mCharacters;
-    SceneItemModel *mModel;
+    SceneFilter *mFilter;
     QCompleter *mCompleter;
     QPoint mDragPos;
 

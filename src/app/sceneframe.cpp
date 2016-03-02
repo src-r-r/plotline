@@ -6,24 +6,35 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
     ui(new Ui::SceneFrame)
 {
     ui->setupUi(this);
-    mModel = new SceneItemModel(mainWindow->novel());
-    ui->sceneList->setModel(mModel);
+    SceneModel *model = new SceneModel(mainWindow->novel());
+    SceneFilter *sceneFilter = new SceneFilter(mainWindow->novel());
+    sceneFilter->setSourceModel(model);
+    ui->sceneList->setModel(sceneFilter);
 
     Novel *novel = mMainWindow->novel();
 
+    ui->sceneAction->blockSignals(true);
+    ui->sceneAction->document()->blockSignals(true);
     mActionHighlighter =
             new CharacterHighlighter(novel, ui->sceneAction->document());
     mHeadlineHighlighter =
             new CharacterHighlighter(novel, ui->sceneHeadline->document());
+    ui->sceneAction->blockSignals(false);
+    ui->sceneAction->document()->blockSignals(false);
 
     // Set up the list view for drag/drop re-ordering.
-    ui->sceneList->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->sceneList->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->sceneList->setDragDropMode(QAbstractItemView::InternalMove);
     ui->sceneList->setDragEnabled(true);
     ui->sceneList->viewport()->setAcceptDrops(true);
     ui->sceneList->setDropIndicatorShown(true);
 
     ui->sceneDetails->setDisabled(true);
+
+    connect(ui->sceneAction, SIGNAL(textChanged()),
+            this, SLOT(onActionModified()));
+    connect(ui->sceneHeadline, SIGNAL(textChanged()),
+            this, SLOT(onHeadlineModified()));
 }
 
 SceneFrame::~SceneFrame()
@@ -34,20 +45,33 @@ SceneFrame::~SceneFrame()
 void SceneFrame::onNovelLoad()
 {
     blockEditableSignals();
-    delete mModel;
-
-    mModel = new SceneItemModel(mainWindow()->novel());
-    ui->sceneList->setModel(mModel);
-    mActionHighlighter->setNovel(mainWindow()->novel());
-    mHeadlineHighlighter->setNovel(mainWindow()->novel());
+//    delete mFilter;
 
     QStringList characterNames;
     for (Character *c : mainWindow()->novel()->characters())
         characterNames << c->name();
     mCompleter = new QCompleter(characterNames);
 
-    connectSlots();
-    unblockEditableSignals();
+    // Clear the filter of any plotlines.
+    for (int i = 0; i < ui->filterScenes->count(); ++i){
+        if (!ui->filterScenes->itemData(i, Qt::UserRole).isNull())
+            ui->filterScenes->removeItem(i);
+    }
+    // Refill them, starting with a blank item.
+    ui->filterScenes->addItem("", QVariant());
+    for (Plotline *plotline : mainWindow()->novel()->plotlines()){
+        ui->filterScenes->addItem(plotline->brief(), plotline->id());
+    }
+    ui->filterScenes->insertSeparator(ui->filterScenes->count());
+
+    SceneModel *model = new SceneModel(mainWindow()->novel());
+    mFilter = new SceneFilter(mainWindow()->novel());
+    mFilter->setSourceModel(model);
+    ui->sceneList->setModel(mFilter);
+    mActionHighlighter->setNovel(mainWindow()->novel());
+    mHeadlineHighlighter->setNovel(mainWindow()->novel());
+    mActionHighlighter->rehighlight();
+    mHeadlineHighlighter->rehighlight();
 }
 
 void SceneFrame::onNovelNew()
@@ -63,44 +87,58 @@ void SceneFrame::on_detectCharacters_clicked()
 void SceneFrame::on_sceneList_activated(const QModelIndex &index)
 {
     ui->sceneDetails->setDisabled(true);
-    QString headline = mModel->data(index, SceneItemModel::HeadlineRole).toString(),
-            action = mModel->data(index, SceneItemModel::ActionRole).toString();
-    QUuid plotline = mModel->data(index, SceneItemModel::PlotlineRole).toUuid();
+    if (!index.isValid()) {
+        qDebug() << "scene - none selected";
+        return;
+    }
+    QString headline = mFilter->data(index, SceneModel::HeadlineRole).toString(),
+            action = mFilter->data(index, SceneModel::ActionRole).toString();
+    QUuid plotline = mFilter->data(index, SceneModel::PlotlineRole).toUuid();
 
     QList<Character *> selectedCharacters = getSelectedCharacters();
-    QList<Character *> pointsOfView = getSelectedPointsOfView();
+//    QList<Character *> pointsOfView = getSelectedPointsOfView();
 
     ModelCheckbox *checkbox;
     clearLayout(ui->characterList, true);
     mCharacters.clear();
     for (Character *c : mainWindow()->novel()->characters()){
-        checkbox = new ModelCheckbox(c->name(), QVariant(c->id()));
+        checkbox = new ModelCheckbox(c->name(), c->id());
         checkbox->setChecked(false);
         bool checked = selectedCharacters.contains(c);
-//        checkbox->setChecked(checked);
-        qDebug("scene: [%s] %s %s", checked ? "*" : " ",
-               c->id().toString().toStdString().data(),
+        checkbox->setChecked(checked);
+        qDebug("scene: [%s] %s", checked ? "*" : " ",
                c->name().toStdString().data());
         mCharacters << checkbox;
         ui->characterList->addWidget(checkbox);
-//        connect(checkbox, SIGNAL(toggled(bool, QVariant)),
-//                this, SLOT(onCharacterToggled(bool, QVariant)));
+        connect(checkbox, SIGNAL(toggled(bool, QVariant)),
+                this, SLOT(onCharacterToggled(bool, QVariant)));
     }
 
     fillPlotlineCombo(mainWindow()->novel()->plotline(plotline));
 
-    blockEditableSignals();
     ui->sceneDetails->setEnabled(true);
-    ui->sceneHeadline->setText(headline);
-    ui->sceneAction->setText(action);
-    unblockEditableSignals();
+
+    ui->sceneHeadline->blockSignals(true);
+    ui->sceneHeadline->document()->blockSignals(true);
+    ui->sceneHeadline->document()->setPlainText(headline);
+    mActionHighlighter->rehighlight();
+    ui->sceneHeadline->blockSignals(false);
+    ui->sceneHeadline->document()->blockSignals(false);
+
+    ui->sceneAction->blockSignals(true);
+    ui->sceneAction->document()->blockSignals(true);
+    ui->sceneAction->document()->setPlainText(action);
+    mHeadlineHighlighter->rehighlight();
+    ui->sceneAction->document()->blockSignals(false);
+    ui->sceneAction->blockSignals(false);
+
 }
 
 void SceneFrame::on_addScene_clicked()
 {
     QModelIndex index = ui->sceneList->currentIndex();
-    mModel->insertRows(index.row()+1, 1);
-    index = mModel->index(index.row()+1, 0);
+    mFilter->insertRows(index.row()+1, 1);
+    index = mFilter->index(index.row()+1, 0);
     // select the recently-added scene
     ui->sceneList->setCurrentIndex(index);
     emit novelModified();
@@ -114,7 +152,37 @@ void SceneFrame::on_archiveScene_clicked()
 
 void SceneFrame::on_deleteScene_clicked()
 {
+    QModelIndex index = ui->sceneList->currentIndex();
+    QItemSelectionModel *model = ui->sceneList->selectionModel();
+    QModelIndexList indexes = model->selectedRows();
+    if (indexes.count() == 0)
+        return;
+    QString headline = mFilter->data(index, SceneModel::HeadlineRole)
+            .toString(),
+        message = tr("Scene Deletion Confirmation"),
+        text = tr("Are you sure you want to delete")
+            + tr((indexes.count() > 1) ? "  these " : " this ")
+            + ((indexes.count() > 1) ? QString::number(indexes.count())
+                                     : QString(""))
+            + tr((indexes.count() > 1) ? " scenes?\n" : " scene?\n")
+            + ((indexes.count() == 1) ? headline : tr(""))
+            + QString("\nArchiving is safer."),
 
+        b0t = tr("Archive"),
+        b1t = tr("Cancel"),
+        b2t = tr("Delete");
+    const int dflt = 0;
+
+    int result = QMessageBox::warning(this, message, text, b0t, b1t, b2t, dflt);
+    if (result == 0){
+        // archive
+    } if (result == 1) {
+        // cancel
+    } else if (result == 2) {
+        mFilter->removeRows(indexes);
+        index = mFilter->index(index.row()-1, 0);
+        emit ui->sceneList->activated(index);
+    }
 }
 
 void SceneFrame::onCharacterToggled(bool checked, QVariant value)
@@ -141,8 +209,8 @@ void SceneFrame::on_sceneList_clicked(const QModelIndex &index)
 void SceneFrame::on_plotline_activated(int index)
 {
     QModelIndex sceneIndex = ui->sceneList->currentIndex();
-    int id = ui->plotline->itemData(index).toInt();
-    mModel->setData(sceneIndex, QVariant(id), SceneItemModel::PlotlineRole);
+    QUuid id = ui->plotline->itemData(index).toUuid();
+    mFilter->setData(sceneIndex, id, SceneModel::PlotlineRole);
     emit novelModified();
 }
 
@@ -151,8 +219,8 @@ void SceneFrame::onHeadlineModified()
 {
     QModelIndex index = ui->sceneList->currentIndex();
     QString headline = ui->sceneHeadline->toPlainText();
-    mModel->setData(index, headline, SceneItemModel::HeadlineRole);
-    emit mModel->dataChanged(ui->sceneList->currentIndex(),
+    mFilter->setData(index, headline, SceneModel::HeadlineRole);
+    emit mFilter->dataChanged(ui->sceneList->currentIndex(),
                              ui->sceneList->currentIndex());
 
     findCharacters(ui->sceneHeadline);
@@ -164,7 +232,7 @@ void SceneFrame::onActionModified()
 {
     QModelIndex index = ui->sceneList->currentIndex();
     QString action = ui->sceneAction->toPlainText();
-    mModel->setData(index, action, SceneItemModel::ActionRole);
+    mFilter->setData(index, action, SceneModel::ActionRole);
     findCharacters(ui->sceneAction);
 
     emit novelModified();
@@ -199,9 +267,9 @@ void SceneFrame::unblockEditableSignals()
 QList<Character *> SceneFrame::_getSelectedCharacters(bool pov)
 {
     QModelIndex index = ui->sceneList->currentIndex();
-    int role = pov ? SceneItemModel::PointsOfViewRole
-                   : SceneItemModel::CharactersRole;
-    QJsonArray charIds = mModel->data(index, role).toJsonArray();
+    int role = pov ? SceneModel::PointsOfViewRole
+                   : SceneModel::CharactersRole;
+    QJsonArray charIds = mFilter->data(index, role).toJsonArray();
     QList<Character *> characters;
     for (QJsonValue v : charIds)
         characters << mainWindow()->novel()->character(QUuid(v.toString()));
@@ -211,12 +279,12 @@ QList<Character *> SceneFrame::_getSelectedCharacters(bool pov)
 void SceneFrame::_setSelectedCharacters(QList<Character *> characters, bool pov)
 {
     QModelIndex index = ui->sceneList->currentIndex();
-    int role = pov ? SceneItemModel::PointsOfViewRole
-                   : SceneItemModel::CharactersRole;
+    int role = pov ? SceneModel::PointsOfViewRole
+                   : SceneModel::CharactersRole;
     QJsonArray a;
     for (Character *c : characters)
         a.append(QJsonValue(c->id().toString()));
-    mModel->setData(index, a, role);
+    mFilter->setData(index, a, role);
 }
 
 QList<Character *> SceneFrame::getSelectedCharacters()
@@ -268,8 +336,6 @@ void SceneFrame::detectLabelStart(QTextEdit *editor)
     QRect cursorRect = editor->cursorRect(cursor);
     int cursorPos = cursor.position();
     int start = findCharReverse("@", text, cursorPos-1, " \t");
-    QMenu *menu;
-    QList<QAction *> actions;
 
     if (start < 0)
         return;
@@ -283,8 +349,6 @@ void SceneFrame::detectLabelStart(QTextEdit *editor)
         label.append(text[j]);
 
     qDebug() << "Search for" << label;
-
-    QPoint point = cursorRect.bottomRight();
 
     QStringList completions = QStringList();
 
@@ -331,7 +395,7 @@ SceneFrame::HeadlineUpdater::HeadlineUpdater(QTextEdit *field, QListView *listVi
 
 void SceneFrame::HeadlineUpdater::run()
 {
-    SceneItemModel *model = (SceneItemModel *) mListView->model();
+    SceneModel *model = (SceneModel *) mListView->model();
     model->setData(mListView->currentIndex(), mField->toPlainText());
 }
 
@@ -344,4 +408,43 @@ void SceneFrame::on_sceneList_customContextMenuRequested(const QPoint &pos)
 
     QMenu *m = new QMenu("Scene");
     m->addAction(tr("Delete"), this, SLOT(on_deleteScene_clicked()));
+}
+
+void SceneFrame::on_filterScenes_activated(int index)
+{
+    Q_UNUSED(index);
+    QVariant data = ui->filterScenes->currentData();
+    if (data.isNull()){
+        mFilter->setPlotline(0);
+        return;
+    }
+    QUuid id = data.toUuid();
+    Plotline *plotline = mainWindow()->novel()->plotline(id);
+    mFilter->setPlotline(plotline);
+}
+
+void SceneFrame::on_searchScenes_textEdited(const QString &arg1)
+{
+    mFilter->setSearch(arg1);
+}
+
+void SceneFrame::on_sceneList_indexesMoved(const QModelIndexList &indexes)
+{
+    qDebug() << "Finished moving:";
+    for (QModelIndex index : indexes){
+        qDebug() << "   -" << mFilter->data(index, SceneModel::HeadlineRole).toString();
+    }
+}
+
+void SceneFrame::on_characterSearch_textChanged(const QString &arg1)
+{
+    for (ModelCheckbox *cb : mCharacters){
+        Character *c = mainWindow()->novel()->character(cb->value().toUuid());
+        if (!c) break;
+        if (arg1.isEmpty() || (c->name().toLower().contains(arg1.toLower()))
+                || (arg1.startsWith("@") && c->label().contains(arg1.mid(1))))
+            cb->setVisible(true);
+        else
+            cb->setVisible(false);
+    }
 }

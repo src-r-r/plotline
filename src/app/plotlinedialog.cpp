@@ -25,9 +25,9 @@ PlotlineDialog::PlotlineDialog(QTableView *tableView,
         QString brief = model->data(index, PlotlineItemModel::BriefRole)
                                    .toString(),
                 synopsis = model->data(index, PlotlineItemModel::SynopsisRole)
-                                      .toString(),
-                color = model->data(index, PlotlineItemModel::ColorRole)
-                    .toString();
+                                      .toString();
+        QColor color = model->data(index, PlotlineItemModel::ColorRole)
+                    .value<QColor>();
         QJsonArray jCharacters = model->data(index,
                                              PlotlineItemModel::CharacterRole)
                 .toJsonArray();
@@ -68,10 +68,13 @@ void PlotlineDialog::on_plotlineColor_clicked()
 void PlotlineDialog::onColorSelected(const QColor &color)
 {
     mColor = color;
-    QImage image = QImage(40, 30, QImage::Format_RGB32);
-    image.fill(color);
-    QIcon icon = QIcon(QPixmap::fromImage(image));
-    ui->plotlineColor->setIcon(icon);
+    if (color.isValid()){
+        QImage image = QImage(40, 30, QImage::Format_RGB32);
+        image.fill(color);
+        QIcon icon = QIcon(QPixmap::fromImage(image));
+        ui->plotlineColor->setIcon(icon);
+    } else {
+    }
 }
 
 

@@ -13,19 +13,19 @@ const QStringList PublisherDialog::Extensions = QStringList({
                                            }),
 PublisherDialog::ChapterPlaceholders = QStringList({
                                                "",
+                                               "%n",
                                                "%t",
-                                               "%n",
-                                               "%r",
-                                               "%n",
-                                               "%t"
+                                               "%I",
+                                               "%1",
+                                               "%O"
                                            }),
 PublisherDialog::HeaderPlaceholders = QStringList({
                                                "",
-                                               "%t",
-                                               "%s",
-                                               "%l",
-                                               "%a",
-                                               "%p",
+                                               "%t",        // title
+                                               "%s",        // short title
+                                               "%l",        // author's last name
+                                               "%a",        // author's full name
+                                               "%p",        // page number
                                            });
 
 PublisherDialog::PublisherDialog(Novel *novel, QWidget *parent) :
@@ -75,6 +75,31 @@ void PublisherDialog::on_titleCombo_activated(int index)
     ui->titleText->blockSignals(false);
 }
 
+void PublisherDialog::updatePreview()
+{
+    // todo
+}
+
+QString PublisherDialog::formatTitleHeader() const
+{
+    QString name = mNovel->author()->name();
+    if (!mNovel->author()->penName().isEmpty())
+        name = mNovel->author()->penName();
+    return QString("# ") + mNovel->getWorkingTitle() + QString("\n")
+            + QString("# by\n# ") + name + QString("\n\n");
+}
+
+QString PublisherDialog::formatChapterHeader(Chapter *chapter) const
+{
+    QString format = ui->chapterHeaderText->text();
+    return format.replace("%n", "\n# ")
+            .replace("%t", chapter->title())
+            .replace("%I", QString::number(chapter->number()))
+            .replace("%1", QString::number(chapter->number()))
+            .replace("%O", QString::number(chapter->number()))
+            + QString("\n\n");
+}
+
 void PublisherDialog::on_chapterHeaderText_cursorPositionChanged(int arg1, int arg2)
 {
     Q_UNUSED(arg1);
@@ -85,4 +110,28 @@ void PublisherDialog::on_titleText_cursorPositionChanged(int arg1, int arg2)
 {
     Q_UNUSED(arg1);
     headerTextPos = arg2;
+}
+
+void PublisherDialog::on_PublisherDialog_accepted()
+{
+    QString text = formatTitleHeader();
+    for (Chapter *c : mNovel->chapters()){
+        text += formatChapterHeader(c);
+        text += c->latestContent() + QString("\n\n");
+    }
+    QString outPath = ui->outputFile->text();
+    QFile *outFile = new QFile(outPath);
+    int success = outFile->open(QFile::WriteOnly);
+    if (!success){
+        QMessageBox::critical(this, tr("Error"),
+                              tr("Could not publish to \"")
+                              + outPath + tr("\""), QMessageBox::Ok,
+                              QMessageBox::NoButton);
+        qWarning() << "Could not write to" << outPath;
+        return;
+    }
+    outFile->write(text.toStdString().data(), text.length());
+    qDebug() << "Wrote" << text.length() << "bytes to" << outPath;
+    outFile->close();
+    delete outFile;
 }

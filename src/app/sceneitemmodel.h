@@ -6,10 +6,10 @@
 #include <QBrush>
 #include "scene.h"
 
-class SceneItemModel : public QAbstractListModel
+class SceneModel : public QAbstractListModel
 {
 public:
-    SceneItemModel(Novel *novel, QObject *parent = 0 );
+    SceneModel(Novel *novel, QObject *parent = 0 );
 
     // Overrides
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -21,6 +21,8 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     bool insertRows(int row, int count,
+                    const QModelIndex & parent = QModelIndex());
+    bool insertRows(int row, int count, Plotline *plotline = 0,
                     const QModelIndex & parent = QModelIndex());
     bool removeRows(int row, int count,
                     const QModelIndex & parent = QModelIndex());
@@ -35,11 +37,13 @@ public:
     Qt::DropActions supportedDropActions() const;
 //    QStringList mimeTypes() const;
 
-    static const int HeadlineRole = Qt::UserRole + 0,
+    static const int
+        HeadlineRole = Qt::UserRole + 0,
         ActionRole = Qt::UserRole + 1,
         PlotlineRole = Qt::UserRole + 2,
-        CharactersRole = Qt::UserRole + 4,
-        PointsOfViewRole = Qt::UserRole + 8;
+        CharactersRole = Qt::UserRole + 3,
+        PointsOfViewRole = Qt::UserRole + 4,
+        IdRole = Qt::UserRole + 5;
 
 private:
 

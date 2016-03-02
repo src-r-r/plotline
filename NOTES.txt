@@ -1,0 +1,28 @@
+
+To-Do List for v. 0.1a
+=======================
+
+Bugs
+----
+! drag & drop feature for character list can't drop.
+! Sometimes adding a plotline will override another.
+! FIXED Adding a scene with a plotline selected will not assign the scene
+    to the plotline (in fact, the scene won't even be selected!).
+! Plotline dialog character list doesn't filter as expected.
+! FIXED Opening a novel will result in the save state automatically set to
+    false. possibly has to do with signals being emitted.
+! chapter editor doesn't break on a word.
+
+Features
+--------
++ Delete functionality for
+    + DONE Characcter
+    + DONE Scene
+    + Chapter
++ Archive functionality (might need different list structure) for...
+    + Character
+    + Scene
+    + Plotline
+    + Chapter
++ DONE Publish novel to flat markdown (other formats will come later).
++ Character name dropdown for scene frame

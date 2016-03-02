@@ -47,6 +47,7 @@ void PlotFrame::onNovelNew()
 
 void PlotFrame::onPlotlineDoubleClicked(QModelIndex index)
 {
+    Q_UNUSED(index);
     showPlotlineDialog();
 }
 
@@ -99,12 +100,12 @@ void PlotFrame::on_deletePlotline_clicked()
 
 void PlotFrame::on_searchPlotlines_textChanged(const QString &arg1)
 {
-
+    Q_UNUSED(arg1);
 }
 
 void PlotFrame::on_filterPlotlines_activated(int index)
 {
-
+    Q_UNUSED(index);
 }
 
 PlotlineItemModel *PlotFrame::model() const
@@ -132,7 +133,6 @@ void PlotFrame::onPlotlineAdded(const QModelIndex &index)
 
 void PlotFrame::showPlotlineDialog(bool isNew)
 {
-    QModelIndex index = ui->plotlineTable->currentIndex();
     PlotlineDialog *dialog = new PlotlineDialog(ui->plotlineTable,
                                                 mainWindow()->novel(),
                                                 isNew);

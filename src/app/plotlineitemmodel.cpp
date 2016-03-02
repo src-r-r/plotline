@@ -85,10 +85,15 @@ QVariant PlotlineItemModel::data(const QModelIndex &index, int role) const
     }
 
     // Paint the background color for any column.
-    if (role == Qt::BackgroundRole || role == ColorRole) {
-        QBrush brush = QBrush();
-        brush.setColor(plotline->getColor());
-        return brush;
+    if (role == Qt::BackgroundRole) {
+        if (plotline->getColor().isValid())
+            return QBrush(plotline->getColor());
+        return QBrush();
+    } else if (role == Qt::ForegroundRole) {
+        if ((255 / 2) > plotline->getColor().value())
+            return QColor(255, 255, 255);
+    } else if (role == ColorRole){
+        return plotline->getColor();
     }
 
     // Otherwise, just set column data accordingly.
@@ -140,7 +145,7 @@ bool PlotlineItemModel::setData(const QModelIndex &index, const QVariant &value,
     } else if (role == ColorRole) {
         plotline->setColor(QColor(value.toString()));
     }
-
+    return true;
 }
 
 QVariant PlotlineItemModel::headerData(int section, Qt::Orientation orientation,

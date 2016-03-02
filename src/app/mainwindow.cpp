@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mChapterFrame, SIGNAL(showDistractions()),
             this, SLOT(onShowDistractions()));
 
+    // Show a warning message.
     QSettings settings;
     bool showWarning = settings.value(ShowWarning, QVariant(true)).toBool();
     if (showWarning){
@@ -61,10 +62,11 @@ MainWindow::MainWindow(QWidget *parent) :
                     QMessageBox::Warning,
                     tr("Development Version"),
                     msg);
-        QCheckBox *checkBox = new QCheckBox(tr("Show this message next time."));
-        checkBox->setChecked(true);
-        connect(checkBox, SIGNAL(toggled(bool)), this, SLOT(onWarningChecked()));
-        messageBox->setCheckBox(checkBox);
+        mShowVersionWarning = new QCheckBox(tr("Show this message next time."));
+        mShowVersionWarning->setChecked(true);
+        connect(mShowVersionWarning, SIGNAL(toggled(bool)),
+                this, SLOT(onVersionWarningChecked(bool)));
+        messageBox->setCheckBox(mShowVersionWarning);
         messageBox->show();
     }
 }
@@ -84,8 +86,6 @@ void MainWindow::onNovelModified()
 
 void MainWindow::onSaveNovel()
 {
-    // Disable the interface.
-    setDisabled(true);
     QSettings settings;
     QString projDir = settings.value(
                 PreferencesDialog::DEFAULT_PROJECT_DIRECTORY,
@@ -98,12 +98,11 @@ void MainWindow::onSaveNovel()
             return;
         mOpenedFile = fileName;
     }
-    mNovel->writeTo(mOpenedFile);
+    SaveThread *saveThread = new SaveThread(this, mNovel, mOpenedFile);
+    saveThread->start();
     mIsSaved = true;
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle("Plotline - " + path);
-    // Re-enable the interface.
-    setEnabled(true);
 }
 
 void MainWindow::onNovelNew()
@@ -159,21 +158,6 @@ void MainWindow::on_actionNovelOpen_triggered()
 
 void MainWindow::on_actionNovelSave_triggered()
 {
-    QSettings settings;
-    QString defaultDir = settings.value(PreferencesDialog
-                                    ::DEFAULT_PROJECT_DIRECTORY,
-                                    QDir::homePath()).toString();
-    if (mOpenedFile.isEmpty()){
-        mOpenedFile = QFileDialog::getSaveFileName(this,
-                                                    tr("Save Novel"),
-                                                    defaultDir,
-                                                    tr("Plotline File (*.pln)"));
-        if (mOpenedFile.isEmpty())
-            return;
-
-        if (!mOpenedFile.endsWith(".pln"))
-            mOpenedFile.append(".pln");
-    }
     emit saveNovel();
 }
 
@@ -212,14 +196,12 @@ void MainWindow::on_actionNovelSaveAs_triggered()
 void MainWindow::on_actionNovelClose_triggered()
 {
     emit MainWindow::destroy();
-}
-
-void MainWindow::on_MainWindow_destroyed()
-{
+    QApplication::quit();
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event);
     emit mChapterFrame->showDistractions();
 }
 
@@ -284,14 +266,16 @@ void MainWindow::openTab(const int index)
     ui->tabWidget->setCurrentIndex(index);
 }
 
-void MainWindow::onWarningChecked(bool checked)
+void MainWindow::onVersionWarningChecked(bool checked)
 {
     QSettings settings;
+    qDebug() << "[?] Show warning next time?" << checked;
     settings.setValue(ShowWarning, QVariant(checked));
 }
 
 void MainWindow::onNovelLoaded()
 {
+    mIsSaved = true;
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle("Plotline - " + path);
 }
@@ -315,16 +299,29 @@ void MainWindow::onShowDistractions()
         widget->show();
 }
 
-void MainWindow::on_MainWindow_destroyed(QObject *arg1)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    Q_UNUSED(arg1);
-    if (!mIsSaved)
-    {
+    if (mIsSaved){
         int result = QMessageBox::question(this, tr("Quit"),
-            tr("Do you want to save the current novel?"),
-            QMessageBox::Save | QMessageBox::Discard,
-            QMessageBox::Save);
+            tr("Are you sure you want to quit?"),
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No);
         if (result == QMessageBox::Yes)
-            emit saveNovel();
+            event->accept();
+        else
+            event->ignore();
+        return;
+    }
+    int result = QMessageBox::question(this, tr("Quit"),
+        tr("Do you want to save the current novel?"),
+        QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard,
+        QMessageBox::Save);
+    if (result == QMessageBox::Save){
+        emit saveNovel();
+        event->accept();
+    } else if (result == QMessageBox::Discard) {
+        event->accept();
+    } else {
+        event->ignore();
     }
 }

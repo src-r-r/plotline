@@ -10,39 +10,87 @@ SceneListDialog::SceneListDialog(Novel *novel, QTableView *chapterTable, QWidget
     mNovel = novel;
     mChapterTable = chapterTable;
 
-    // Get the scenes that are selected for the selected chapter.
-    QList<Scene *> selected;
-    ChapterModel *model = (ChapterModel *) chapterTable->model();
+    // Get the chapter from the table.
     QModelIndex index = chapterTable->currentIndex();
-    QJsonArray data = model->data(index, ChapterModel::SceneRole).toJsonArray();
-    for (QJsonValue v : data)
-        selected << mNovel->scene(v.toVariant().toUuid());
+    ChapterModel *model = (ChapterModel *) chapterTable->model();
+    QUuid id = model->data(index, ChapterModel::IdRole).toUuid();
+    Chapter *chapter = mNovel->chapter(id);
+    QList<Plotline *> plotlines = mNovel->plotlines();
 
-    // Now go through all the scenes and add a ModelCheckbox. If the scene
-    // is a selected scene, mark it as checked.
-    QList<Scene *> all = novel->scenes();
-    ModelCheckbox *cb;
-    clearLayout(ui->sceneList, true);
-    for (Scene *scene : all){
-        cb = new ModelCheckbox(scene->headline(), QVariant(scene->id()));
-        cb->setChecked(selected.contains(scene));
-        mSceneCheckboxes << cb;
+    if (!chapter){
+        qWarning() << "No chapter selected.";
+        return;
+    }
+
+    // Fill the plotline selection
+    ui->plotlineSelection->addItem("", QVariant(0));
+    for (Plotline *p : plotlines)
+        ui->plotlineSelection->addItem(p->brief(), p->id());
+
+    // Get the scene lists to compare.
+    QList<Scene *> novelScenes = mNovel->scenes();
+    QList<Scene *> chapterScenes = chapter->scenes();
+
+    // Add all novel scenes as a model checkbox. If the scene is included
+    // as a scene assigned to the chapter, mark it as checked.
+    for (Scene *s : novelScenes){
+        ModelCheckbox *cb = new ModelCheckbox(s->headline(), s->id());
+        cb->setChecked(chapterScenes.contains(s));
+        mCheckboxes << cb;
         ui->sceneList->addWidget(cb);
     }
+
+    fillList();
 }
 
 void SceneListDialog::accept(){
     QAbstractItemModel *model = mChapterTable->model();
     QModelIndex index = mChapterTable->currentIndex();
-    QJsonArray value;
-    for (ModelCheckbox *cb : mSceneCheckboxes)
+    int role = 0;
+    for (ModelCheckbox *cb : mCheckboxes){
+        QUuid id = cb->value().toUuid();
         if (cb->isChecked())
-            value << QJsonValue(cb->value().toInt());
-    model->setData(index, value, ChapterModel::SceneRole);
+            role = ChapterModel::AddSceneRole;
+        else
+            role = ChapterModel::RemoveSceneRole;
+        model->setData(index, id, role);
+    }
     this->close();
 }
 
 SceneListDialog::~SceneListDialog()
 {
     delete ui;
+}
+
+void SceneListDialog::fillList()
+{
+    Scene *s = 0;
+
+    for (ModelCheckbox *cb : mCheckboxes){
+        s = mNovel->scene(cb->value().toUuid());
+        bool contains = s->headline().toLower().contains(mSearch.toLower());
+        bool plotlineMatches = (s->plotline() == mPlotline);
+        if ((mPlotline == 0 || plotlineMatches) && (mSearch.isNull() || contains))
+            cb->setVisible(true);
+        else
+            cb->setVisible(false);
+    }
+}
+
+void SceneListDialog::on_plotlineSelection_activated(int index)
+{
+    if (index == 0){
+        mPlotline = 0;
+        fillList();
+    }
+    QUuid id = ui->plotlineSelection->currentData().toUuid();
+    mPlotline = mNovel->plotline(id);
+    fillList();
+}
+
+void SceneListDialog::on_sceneSearch_textChanged(const QString &arg1)
+{
+    mSearch = arg1;
+    fillList();
 }

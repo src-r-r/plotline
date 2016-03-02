@@ -30,7 +30,10 @@ void NovelFrame::onNovelLoad()
     ui->authorPenName->setText(author->penName());
     ui->authorEmail->setText(author->email());
     ui->authorPhone->setText(author->phone());
+//    ui->authorAddress->document()->setPlainText(author->address());
+    ui->authorAddress->blockSignals(true);
     ui->authorAddress->setPlainText(author->address());
+    ui->authorAddress->blockSignals(false);
 }
 
 void NovelFrame::onNovelNew()

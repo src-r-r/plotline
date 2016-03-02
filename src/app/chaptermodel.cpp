@@ -169,7 +169,7 @@ QVariant ChapterModel::data(const QModelIndex &index, int role) const
     if (role == RevisionMarkableRole)
         return QVariant(chapter->canMarkCompleted());
     if (role == SceneRole){
-        QJsonArray sceneIds;
+        QJsonArray sceneIds = QJsonArray();
         for (Scene *s : chapter->scenes())
             sceneIds.append(QJsonValue(s->id().toString()));
         return sceneIds;
@@ -212,10 +212,16 @@ bool ChapterModel::setData(const QModelIndex &index, const QVariant &value,
         chapter->setIsComplete(value.toBool());
         qDebug() << "   role = complete";
     } else if (role == SceneRole) {
-        qDebug() << "   role = scene";
-        QList<Scene *> scenes;
-        for (QJsonValue v : value.toJsonArray())
-            scenes << mNovel->scene(QUuid(v.toString()));
+        qDebug() << "    role = scene (readonly)";
+    } else if (role == AddSceneRole) {
+        qDebug() << "    role = add scene";
+        QList<Scene *> scenes = chapter->scenes();
+        scenes.append(mNovel->scene(value.toUuid()));
+        chapter->setScenes(scenes);
+    } else if (role == RemoveSceneRole) {
+        qDebug() << "    role = remove scene";
+        QList<Scene *> scenes = chapter->scenes();
+        scenes.removeAll(mNovel->scene(value.toUuid()));
         chapter->setScenes(scenes);
     } else {
         qDebug() << "   role = (invalid)" << role;

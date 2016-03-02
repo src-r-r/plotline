@@ -1,17 +1,17 @@
 #include "sceneitemmodel.h"
 
-SceneItemModel::SceneItemModel(Novel *novel, QObject *parent)
+SceneModel::SceneModel(Novel *novel, QObject *parent)
     : QAbstractListModel(parent)
 {
     mNovel = novel;
 }
 
-int SceneItemModel::rowCount(const QModelIndex &parent) const
+int SceneModel::rowCount(const QModelIndex &parent) const
 {
     return parent.isValid() ? 0 : mNovel->scenes().count();
 }
 
-QVariant SceneItemModel::data(const QModelIndex &index, int role) const
+QVariant SceneModel::data(const QModelIndex &index, int role) const
 {
     int row = index.row();
 
@@ -58,13 +58,15 @@ QVariant SceneItemModel::data(const QModelIndex &index, int role) const
         for (Character *c : scene->getPointsOfView())
             characterIds << QJsonValue(c->id().toString());
         return characterIds;
+    } else if (role == IdRole) {
+        return scene->id();
     }
 
 //    qWarning() << "Scene::data - returning general QVariant";
     return QVariant();
 }
 
-bool SceneItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool SceneModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     int row = index.row();
     if (row >= mNovel->scenes().count()){
@@ -106,7 +108,7 @@ bool SceneItemModel::setData(const QModelIndex &index, const QVariant &value, in
     return true;
 }
 
-QVariant SceneItemModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant SceneModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     Q_UNUSED(section);
     Q_UNUSED(orientation);
@@ -115,7 +117,7 @@ QVariant SceneItemModel::headerData(int section, Qt::Orientation orientation, in
     return QString("Scene");
 }
 
-Qt::ItemFlags SceneItemModel::flags(const QModelIndex &index) const
+Qt::ItemFlags SceneModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags defaultFlags = QAbstractListModel::flags(index);
 
@@ -125,11 +127,11 @@ Qt::ItemFlags SceneItemModel::flags(const QModelIndex &index) const
         return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
-bool SceneItemModel::insertRows(int row, int count, const QModelIndex &parent)
+bool SceneModel::insertRows(int row, int count, const QModelIndex &parent)
 {
 
     if (row > rowCount() || row < 0){
-        qWarning() << "Invalid row" << row;
+        qWarning() << "[+] scene model : invalid row" << row;
         row = rowCount();
     }
 
@@ -137,15 +139,41 @@ bool SceneItemModel::insertRows(int row, int count, const QModelIndex &parent)
 
     beginInsertRows(parent, row, end);
 
-    for (int i = start; i <= end; ++i)
-        mNovel->addScene(new Scene("New Scene", ""), i);
+    for (int i = start; i <= end; ++i){
+        Scene *scene = new Scene("New Scene", "");
+        mNovel->addScene(scene, i);
+    }
 
     endInsertRows();
 
     return true;
 }
 
-bool SceneItemModel::removeRows(int row, int count, const QModelIndex &parent)
+bool SceneModel::insertRows(int row, int count, Plotline *plotline,
+                            const QModelIndex &parent)
+{
+
+    if (row > rowCount() || row < 0){
+        qWarning() << "[+] scene model : invalid row" << row;
+        row = rowCount();
+    }
+
+    int start = row, end = row+(count-1);
+
+    beginInsertRows(parent, row, end);
+
+    for (int i = start; i <= end; ++i){
+        Scene *scene = new Scene("New Scene", "");
+        scene->setPlotline(plotline);
+        mNovel->addScene(scene, i);
+    }
+
+    endInsertRows();
+
+    return true;
+}
+
+bool SceneModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     int start = row;
     int end = row + (count-1);
@@ -164,14 +192,16 @@ bool SceneItemModel::removeRows(int row, int count, const QModelIndex &parent)
         end = rowCount()-1;
     beginRemoveRows(parent, row, end);
 
+    QList<Scene *> scenes = mNovel->scenes();
     for (int i = start; i <= end; ++i)
-        mNovel->removeScene(mNovel->scenes()[i]);
+        scenes.removeAt(start);
+    mNovel->setScenes(scenes);
 
     endRemoveRows();
     return true;
 }
 
-bool SceneItemModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
+bool SceneModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
                               int count, const QModelIndex &destinationParent,
                               int destinationChild)
 {
@@ -190,7 +220,7 @@ bool SceneItemModel::moveRows(const QModelIndex &sourceParent, int sourceRow,
     return true;
 }
 
-Qt::DropActions SceneItemModel::supportedDropActions() const
+Qt::DropActions SceneModel::supportedDropActions() const
 {
     return Qt::MoveAction;
 }

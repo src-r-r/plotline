@@ -28,7 +28,7 @@ ParsedCharacterSet ParsedCharacterSet::parse(Novel *novel, const QString &string
         match = matches.next();
         label = match.captured(1);
         index = match.capturedStart(1);
-        character = novel->character(label);
+        character = novel->characterByLabel(label);
         if (character)
             set.insert(index-1, character);
     }
