@@ -118,20 +118,15 @@ void PlotlineDialog::on_buttonBox_accepted()
 
 void PlotlineDialog::on_characterSearch_textEdited(const QString &arg1)
 {
-    if (!arg1.isEmpty())
-        clearLayout(ui->characterListLayout, false);
     for (QCheckBox *cb : mCharacterList.keys()){
-        if (arg1.isEmpty()){
-//            ui->characterListLayout->addWidget(cb);
+        Character *c = mCharacterList[cb];
+        if (arg1.isEmpty() || (c->name().toLower().contains(arg1.toLower()))
+                || (arg1.startsWith("@") && c->label().contains(arg1.mid(1)))){
+            ui->characterListLayout->addWidget(cb);
+            cb->setVisible(true);
         } else {
-            QString name = mCharacterList[cb]->name();
-            QString label = mCharacterList[cb]->label();
-            qDebug() << "[?] character search: " << arg1.mid(1) << "in"
-                     << label;
-            if ((arg1.startsWith("@") && label.contains(arg1.mid(1)))
-                || name.contains(arg1)){
-//                ui->characterListLayout->addWidget(cb);
-            }
+            ui->characterListLayout->removeWidget(cb);
+            cb->setVisible(false);
         }
     }
 }

@@ -182,8 +182,17 @@ Chapter *Chapter::deserialize(Novel *novel, const QJsonObject &object)
     if (object.contains(JSON_REVISIONS))
         revisions = Revision::deserialize(novel, 0,
                                           object[JSON_REVISIONS].toArray());
-    if (object.contains(JSON_SCENES))
-        scenes = Scene::deserialize(novel, object[JSON_SCENES].toArray());
+    if (object.contains(JSON_SCENES)){
+        QJsonArray sceneIds = object[JSON_SCENES].toArray();
+        for (QJsonValue sceneId : sceneIds){
+            QUuid id2 = sceneId.toVariant().toUuid();
+            Scene *scene = novel->scene(id2);
+            if (!scene)
+                qWarning() << "[#] deserialize chapter: no scene " << id2;
+            else
+                scenes.append(scene);
+        }
+    }
 
     if (object.contains(JSON_CURRENT_REVISION))
         currentRevision = object[JSON_CURRENT_REVISION].toInt();

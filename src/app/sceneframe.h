@@ -26,9 +26,6 @@ public:
     explicit SceneFrame(MainWindow *mainWindow, QWidget *parent = 0);
     ~SceneFrame();
 
-    QCompleter *completer() const;
-    void setCompleter(QCompleter *completer);
-
 signals:
 
 public slots:
@@ -87,7 +84,6 @@ private:
     Scene *mSelectedScene = 0;
     QList<ModelCheckbox *> mCharacters;
     SceneFilter *mFilter;
-    QCompleter *mCompleter;
     QPoint mDragPos;
 
     class HeadlineUpdater : public QRunnable
@@ -102,6 +98,8 @@ private:
 
     CharacterHighlighter *mActionHighlighter,
         *mHeadlineHighlighter;
+    QCompleter *mHeadlineCompleter,
+        *mActionCompleter;
 };
 
 #endif // SCENEFRAME_H

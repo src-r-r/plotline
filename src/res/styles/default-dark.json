@@ -1,12 +1,12 @@
 {
     "META" : {
-        "name" : "Default",
-        "comment" : "Default plotline theme."
+        "name" : "Default (Dark)",
+        "comment" : "Default theme with a sinister twist."
     },
     "style" : {
         "document" : {
-            "foreground" : "#000000",
-            "background" : "#ffffff"
+            "foreground" : "#ffffff",
+            "background" : "#000000"
         },
         "HtmlEscape" : {
             "foreground" : "#2715b0",

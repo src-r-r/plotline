@@ -77,12 +77,16 @@ signals:
 
 public slots:
 
+    void show();
+
 private slots:
 
     void onVersionWarningChecked(bool checked);
 
     void onNovelModified();
     void onSaveNovel();
+    void onSaveNovel_started();
+    void onSaveNovel_finished();
     void onNovelNew();
     void onNovelLoaded();
     void onHideDistractions();
@@ -107,6 +111,8 @@ private:
     static const QStringList frameTitles;
     static const QString ShowWarning;
 
+    void showWarningMessage();
+
     // Frames
     NovelFrame *mNovelFrame;
     CharacterFrame *mCharacterFrame;
@@ -126,6 +132,9 @@ private:
 
     // widgets
     QCheckBox *mShowVersionWarning;
+
+    // Threads
+    SaveThread *mSaveThread;
 
     void disconnectAll();
     void connectAll();

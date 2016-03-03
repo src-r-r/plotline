@@ -149,9 +149,9 @@ void ChaptersFrame::onNovelLoad()
     // TODO: save a property in settings or in the novel to save the position
     // of the last edit.
     if (mModel->rowCount() > 0){
-        ui->chapterTable->setCurrentIndex(
-                    mModel->index(mModel->rowCount()-1, 0));
-        emit chapterSelected();
+        emit ui->chapterTable->activated(
+                    mModel->index(mModel->rowCount()-1, 0)
+                    );
     }
 }
 
@@ -211,8 +211,8 @@ void ChaptersFrame::onChapterSelected()
     qreal width = settings.value(PreferencesDialog::WORD_WRAP_WIDTH,
                                  QVariant(80)).toReal();
     if (width > 0){
-        ui->chapterContent->setLineWrapMode(QTextEdit::FixedColumnWidth);
-        ui->chapterContent->setLineWrapColumnOrWidth(width);
+//        ui->chapterContent->setLineWrapMode(QTextEdit::FixedColumnWidth);
+//        ui->chapterContent->setLineWrapColumnOrWidth(width);
     }
 
     ui->chapterContent->document()->setModified(false);

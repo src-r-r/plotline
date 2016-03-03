@@ -8,10 +8,10 @@ StyleProxyParser::StyleProxyParser(const QJsonObject &object)
 StyleProxy *StyleProxyParser::parse(const QString &key) const
 {
     if (!mObject.contains(key)){
-        qWarning() << "Missing key" << key;
+//        qWarning() << "Missing key" << key;
         return 0;
     }
-    qDebug() << "Entering SyleProxy::parse for key" << key;
+//    qDebug() << "Entering SyleProxy::parse for key" << key;
     return StyleProxy::parse(mObject[key].toObject());
 }
 

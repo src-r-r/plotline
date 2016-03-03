@@ -242,10 +242,7 @@
          <item row="1" column="0" colspan="4">
           <widget class="QTextEdit" name="chapterContent">
            <property name="lineWrapMode">
-            <enum>QTextEdit::FixedColumnWidth</enum>
-           </property>
-           <property name="lineWrapColumnOrWidth">
-            <number>80</number>
+            <enum>QTextEdit::NoWrap</enum>
            </property>
           </widget>
          </item>

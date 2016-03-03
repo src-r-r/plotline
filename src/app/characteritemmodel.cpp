@@ -40,38 +40,40 @@ QVariant CharacterModel::data(const QModelIndex &index, int role) const
         QColor textColor = QColor(0, 0, 0);
         if (!c->color().isValid())
             return textColor;
-        if ((255 / 2) > c->color().value())
+        if ((255 / 2) + 25 > c->color().value())
             textColor = QColor(255, 255, 255);      // White text.
         return QBrush(textColor);
-    }if (role == Qt::BackgroundRole || role == ColorRole) {
+    }if (role == Qt::BackgroundRole) {
         if (c->color().isValid())
             return QBrush(c->color());
         return QVariant();
+    } else if (role == ColorRole) {
+        return QVariant(c->color());
     } else if (role == Qt::DisplayRole || role ==  Qt::EditRole) {
-        qDebug("    role = Qt::DisplayRole");
+//        qDebug("    role = Qt::DisplayRole");
         return c->name();
     } else if (role == CharacterIdRole) {
-        qDebug("    role = CharacterIdRole");
+//        qDebug("    role = CharacterIdRole");
         return c->id();
     } else if (role == NameRole) {
-        qDebug("    role = NameRole");
+//        qDebug("    role = NameRole");
         return c->name();
     } else if (role == LabelRole) {
-        qDebug("    role = LabelRole");
+//        qDebug("    role = LabelRole");
         return c->label();
     } else if (role == HeadshotRole) {
-        qDebug("    role = HeadshotRole");
+//        qDebug("    role = HeadshotRole");
         QVariant headshot;
         headshot = c->getHeadshot();
         return headshot;
     } else if (role == ColorRole) {
-        qDebug("    role = ColorRole");
+//        qDebug("    role = ColorRole");
         if (c->color().isValid())
             return c->color().name();
         return QString();
     } else if (role == ArchivedRole) {
     } else {
-        qWarning("[<] character data: Invalid role %d", role);
+//        qWarning("[<] character data: Invalid role %d", role);
     }
     return QVariant();
 }

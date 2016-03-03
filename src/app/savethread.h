@@ -11,14 +11,12 @@ class SaveThread : public QThread
     Q_OBJECT
 
 public:
-    SaveThread(MainWindow *mainWindow, Novel *novel,
-               const QString &openedFile = QString());
+    SaveThread(Novel *novel, const QString &openedFile = QString());
 
 protected:
     void run();
 
 private:
-    MainWindow *mMainWindow;
     Novel *mNovel;
     QString mOpenedFile;
 };

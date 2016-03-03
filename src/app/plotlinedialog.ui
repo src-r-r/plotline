@@ -100,8 +100,8 @@
          </property>
          <item>
           <layout class="QFormLayout" name="characterListLayout">
-           <property name="sizeConstraint">
-            <enum>QLayout::SetMaximumSize</enum>
+           <property name="fieldGrowthPolicy">
+            <enum>QFormLayout::ExpandingFieldsGrow</enum>
            </property>
            <property name="rowWrapPolicy">
             <enum>QFormLayout::WrapLongRows</enum>

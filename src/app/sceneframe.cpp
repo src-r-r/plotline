@@ -39,6 +39,10 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
 
 SceneFrame::~SceneFrame()
 {
+    delete mActionCompleter;
+//    delete mActionHighlighter;
+    delete mHeadlineCompleter;
+//    delete mHeadlineHighlighter;
     delete ui;
 }
 
@@ -46,11 +50,6 @@ void SceneFrame::onNovelLoad()
 {
     blockEditableSignals();
 //    delete mFilter;
-
-    QStringList characterNames;
-    for (Character *c : mainWindow()->novel()->characters())
-        characterNames << c->name();
-    mCompleter = new QCompleter(characterNames);
 
     // Clear the filter of any plotlines.
     for (int i = 0; i < ui->filterScenes->count(); ++i){
@@ -63,6 +62,22 @@ void SceneFrame::onNovelLoad()
         ui->filterScenes->addItem(plotline->brief(), plotline->id());
     }
     ui->filterScenes->insertSeparator(ui->filterScenes->count());
+
+
+    // Set up the QCompleter for the headline and action fields.
+    QStringList completions;
+    for (Character *c : mainWindow()->novel()->characters())
+        completions << c->label();
+    mHeadlineCompleter = new QCompleter(completions);
+    mActionCompleter = new QCompleter(completions);
+
+    mHeadlineCompleter->setWidget(ui->sceneHeadline);
+    mHeadlineCompleter->setCompletionPrefix("@");
+    mHeadlineCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+
+    mActionCompleter->setWidget(ui->sceneAction);
+    mActionCompleter->setCompletionPrefix("@");
+    mActionCompleter->setCaseSensitivity(Qt::CaseInsensitive);
 
     SceneModel *model = new SceneModel(mainWindow()->novel());
     mFilter = new SceneFilter(mainWindow()->novel());
@@ -333,7 +348,7 @@ void SceneFrame::detectLabelStart(QTextEdit *editor)
 {
     QString text = editor->toPlainText();
     QTextCursor cursor = editor->textCursor();
-    QRect cursorRect = editor->cursorRect(cursor);
+//    QRect cursorRect = editor->cursorRect(cursor);
     int cursorPos = cursor.position();
     int start = findCharReverse("@", text, cursorPos-1, " \t");
 
@@ -344,22 +359,15 @@ void SceneFrame::detectLabelStart(QTextEdit *editor)
     // character before an "@" just return.
 
     // Copy the substring
-    QString label = QString();
+    QString label;
     for (int j = start; j < cursorPos; ++j)
         label.append(text[j]);
 
     qDebug() << "Search for" << label;
-
-    QStringList completions = QStringList();
-
-    mCompleter = new QCompleter(completions);
-
-    for (Character *c : mainWindow()->novel()->characters(label)){
-        QString text = QString("[") + c->label() + QString("] ") + c->name();
-        completions.append(text);
-    }
-
-    mCompleter->complete(cursorRect);
+    if (editor == ui->sceneAction)
+        emit mActionCompleter->activated(label);
+    else if (editor == ui->sceneHeadline)
+        emit mHeadlineCompleter->activated(label);
 
     ui->sceneList->setDragDropMode(QListView::DragDrop);
     ui->sceneList->setDropIndicatorShown(true);
@@ -375,16 +383,6 @@ void SceneFrame::fillPlotlineCombo(Plotline *selected)
         if (selected != 0 && p == selected)
             ui->plotline->setCurrentIndex(ui->plotline->count()-1);
     }
-}
-
-QCompleter *SceneFrame::completer() const
-{
-    return mCompleter;
-}
-
-void SceneFrame::setCompleter(QCompleter *completer)
-{
-    mCompleter = completer;
 }
 
 SceneFrame::HeadlineUpdater::HeadlineUpdater(QTextEdit *field, QListView *listView)
@@ -442,9 +440,12 @@ void SceneFrame::on_characterSearch_textChanged(const QString &arg1)
         Character *c = mainWindow()->novel()->character(cb->value().toUuid());
         if (!c) break;
         if (arg1.isEmpty() || (c->name().toLower().contains(arg1.toLower()))
-                || (arg1.startsWith("@") && c->label().contains(arg1.mid(1))))
+                || (arg1.startsWith("@") && c->label().contains(arg1.mid(1)))){
+            ui->characterList->addWidget(cb);
             cb->setVisible(true);
-        else
+        } else {
+            ui->characterList->removeWidget(cb);
             cb->setVisible(false);
+        }
     }
 }

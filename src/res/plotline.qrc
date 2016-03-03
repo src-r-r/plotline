@@ -28,5 +28,6 @@
     </qresource>
     <qresource prefix="/styles">
         <file>styles/default.json</file>
+        <file>styles/default-dark.json</file>
     </qresource>
 </RCC>

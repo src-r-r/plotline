@@ -12,6 +12,8 @@ Bugs
 ! FIXED Opening a novel will result in the save state automatically set to
     false. possibly has to do with signals being emitted.
 ! chapter editor doesn't break on a word.
+!! CRITICAL Saving before exit: mainWindow is destroyed before thread
+    can save.
 
 Features
 --------

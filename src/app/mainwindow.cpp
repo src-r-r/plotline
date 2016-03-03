@@ -45,30 +45,14 @@ MainWindow::MainWindow(QWidget *parent) :
     for (QToolBar *toolbar : findChildren<QToolBar *>(""))
         mDistractions << toolbar;
 
+    // Initialize the save thread to null.
+    mSaveThread = 0;
+
     connect(mChapterFrame, SIGNAL(hideDistractions()),
             this, SLOT(onHideDistractions()));
     connect(mChapterFrame, SIGNAL(showDistractions()),
             this, SLOT(onShowDistractions()));
 
-    // Show a warning message.
-    QSettings settings;
-    bool showWarning = settings.value(ShowWarning, QVariant(true)).toBool();
-    if (showWarning){
-        QString msg = tr("This application is still heavily under " \
-                         "development and is potentially unstable which " \
-                         "may (though theoritically won't) result " \
-                         "in loss of data. You have been warned.");
-        QMessageBox *messageBox = new QMessageBox(
-                    QMessageBox::Warning,
-                    tr("Development Version"),
-                    msg);
-        mShowVersionWarning = new QCheckBox(tr("Show this message next time."));
-        mShowVersionWarning->setChecked(true);
-        connect(mShowVersionWarning, SIGNAL(toggled(bool)),
-                this, SLOT(onVersionWarningChecked(bool)));
-        messageBox->setCheckBox(mShowVersionWarning);
-        messageBox->show();
-    }
 }
 
 MainWindow::~MainWindow()
@@ -90,6 +74,9 @@ void MainWindow::onSaveNovel()
     QString projDir = settings.value(
                 PreferencesDialog::DEFAULT_PROJECT_DIRECTORY,
                     QDir::homePath()).toString();
+
+    // If no path is given for the current novel then this is a new novel.
+    // Give the user a chance to actually select a file name.
     if (mOpenedFile.isNull()){
         QString fileTypes = tr("Plotline Files (*.json *.pln);;All Files (*.*)");
         QString fileName = QFileDialog::getSaveFileName(this,
@@ -98,11 +85,33 @@ void MainWindow::onSaveNovel()
             return;
         mOpenedFile = fileName;
     }
-    SaveThread *saveThread = new SaveThread(this, mNovel, mOpenedFile);
-    saveThread->start();
+
+    // Start the save thread.
+    mSaveThread = new SaveThread(mNovel, mOpenedFile);
+    connect(mSaveThread, SIGNAL(started()),
+            this, SLOT(onSaveNovel_started()));
+    connect(mSaveThread, SIGNAL(finished()),
+            this, SLOT(onSaveNovel_finished()));
+    mSaveThread->start();
+
     mIsSaved = true;
     QString path = mOpenedFile.isEmpty() ? "Untitled" : mOpenedFile;
     setWindowTitle("Plotline - " + path);
+}
+
+void MainWindow::onSaveNovel_started()
+{
+    qDebug() << "[\360\237\222\276] Start save novel thread";
+    statusBar()->showMessage(tr("Writing novel to \"")
+                + mOpenedFile + tr("\""));
+    setDisabled(true);
+}
+
+void MainWindow::onSaveNovel_finished()
+{
+    qDebug() << "[\360\237\222\276] Finish save novel thread";
+    statusBar()->clearMessage();
+    setEnabled(true);
 }
 
 void MainWindow::onNovelNew()
@@ -203,6 +212,30 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     Q_UNUSED(event);
     emit mChapterFrame->showDistractions();
+}
+
+void MainWindow::showWarningMessage()
+{
+    // Show a warning message.
+    QSettings settings;
+    bool showWarning = settings.value(ShowWarning, QVariant(true)).toBool();
+    if (showWarning){
+        QString msg = tr("This application is currently under development." \
+                         "\n\nWhile great care has been taken to guarantee " \
+                         "stability, the application may still crash, " \
+                         "resulting in data loss."
+                         );
+        QMessageBox *messageBox = new QMessageBox(
+                    QMessageBox::Warning,
+                    tr("Development Version"),
+                    msg);
+        mShowVersionWarning = new QCheckBox(tr("Show this message next time."));
+        mShowVersionWarning->setChecked(true);
+        connect(mShowVersionWarning, SIGNAL(toggled(bool)),
+                this, SLOT(onVersionWarningChecked(bool)));
+        messageBox->setCheckBox(mShowVersionWarning);
+        messageBox->show();
+    }
 }
 
 void MainWindow::disconnectAll()
@@ -318,10 +351,18 @@ void MainWindow::closeEvent(QCloseEvent *event)
         QMessageBox::Save);
     if (result == QMessageBox::Save){
         emit saveNovel();
+        setEnabled(false);
+        while (mSaveThread != 0 && !mSaveThread->isFinished());
         event->accept();
     } else if (result == QMessageBox::Discard) {
         event->accept();
     } else {
         event->ignore();
     }
+}
+
+void MainWindow::show()
+{
+    QMainWindow::show();
+    showWarningMessage();
 }

@@ -70,13 +70,13 @@ StyleProxy *StyleProxy::parse(QJsonObject object)
 
     if (object.contains("bold")){
         bold = object["bold"].toBool();
-        qDebug() << "  found bold=" << bold;
+//        qDebug() << "  found bold=" << bold;
     }if (object.contains("italic")){
         italic = object["italic"].toBool();
-        qDebug() << "  found italic=" << italic;
+//        qDebug() << "  found italic=" << italic;
     }if (object.contains("relSize")){
         relSize = object["relSize"].toInt();
-        qDebug() << "  found relSize=" << relSize;
+//        qDebug() << "  found relSize=" << relSize;
     }if (object.contains("foreground") && !object["foreground"].isNull()){
         if (object["foreground"].isArray()){
             QJsonArray arr = object["foreground"].toArray();
@@ -102,10 +102,10 @@ StyleProxy *StyleProxy::parse(QJsonObject object)
         }
         if (!background.isValid())
             qWarning() << "Invalid bg color:" << object["foreground"].toString();
-        qDebug() << "  found background=" << background;
+//        qDebug() << "  found background=" << background;
     }
 
-    qDebug() << "Leaving styleProxy::parse";
+//    qDebug() << "Leaving styleProxy::parse";
 
     return new StyleProxy(bold, italic, relSize, foreground, background);
 }
@@ -126,10 +126,10 @@ QTextCharFormat StyleProxy::toFormat(const QTextCharFormat &base) const
     if (mBackground.isValid())
         fmt.setBackground(QBrush(mBackground));
 
-    qDebug() << "Entering toFormat";
-    qDebug() << "is bold?" << fmt.font().bold();
-    qDebug() << "is Italic?" << fmt.font().italic();
-    qDebug() << "point size:" << fmt.font().pointSize();
+//    qDebug() << "Entering toFormat";
+//    qDebug() << "is bold?" << fmt.font().bold();
+//    qDebug() << "is Italic?" << fmt.font().italic();
+//    qDebug() << "point size:" << fmt.font().pointSize();
 
     return fmt;
 }

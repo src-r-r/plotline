@@ -95,8 +95,9 @@ void CharacterFrame::on_characterList_activated(const QModelIndex &index)
 
     QString name = mModel->data(index, CharacterModel::NameRole).toString(),
             label = mModel->data(index, CharacterModel::LabelRole).toString(),
-            nickname = mModel->data(index, CharacterModel::NicknameRole).toString(),
-            colorName = mModel->data(index, CharacterModel::ColorRole).toString();
+            nickname = mModel->data(index, CharacterModel::NicknameRole).toString();
+    QColor color = mModel->data(index, CharacterModel::ColorRole)
+            .value<QColor>();
 
     ui->characterName->blockSignals(true);
     ui->characterName->setText(name);
@@ -110,7 +111,7 @@ void CharacterFrame::on_characterList_activated(const QModelIndex &index)
 
     setCharacterHeadshot();
 
-    setButtonColor(QColor(colorName));
+    setButtonColor(color);
 
 }
 

@@ -112,10 +112,11 @@ QJsonObject Scene::serialize() const
     for (Character *c : mPovCharacters)
         jPovCharacters.append(c->id().toString());
 
-    scene.insert(JSON_HEADLINE, mHeadline);
-    scene.insert(JSON_ACTION, mAction);
-    scene.insert(JSON_CHARACTERS, jCharacters);
-    scene.insert(JSON_POV_CHARACTERS, jPovCharacters);
+    scene[JSON_HEADLINE] = mHeadline;
+    scene[JSON_ACTION] = mAction;
+    scene[JSON_CHARACTERS] = jCharacters;
+    scene[JSON_POV_CHARACTERS] = jPovCharacters;
+    scene[JSON_ID] = id().toString();
     if (mPlotline)
         scene.insert(JSON_PLOTLINE, QJsonValue(mPlotline->id().toString()));
 
@@ -160,8 +161,9 @@ Scene *Scene::deserialize(Novel *novel, const QJsonObject &object)
         qWarning() << "Scene missing the following fields: "
                    << missing.join(",");
 
-    Scene *scene = new Scene(headline, action, novel, plotline,
-                             Serializable::deserialize(object));
+    QUuid id = QUuid(object[JSON_ID].toString());
+    qDebug() << "[+] deserialize scene with id" << id;
+    Scene *scene = new Scene(headline, action, novel, plotline, id);
     scene->setCharacters(characters);
     scene->setPointsOfView(povCharacters);
     return scene;
