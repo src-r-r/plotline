@@ -6,3 +6,4 @@ qt.conf
 moc_*
 ui_*.[chp]*
 *~
+Makefile*

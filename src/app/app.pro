@@ -73,16 +73,6 @@ SOURCES += main.cpp \
 # There is probably a more elegant solution.
 ##
 
-exists($$OUT_PWD/../lib/libplotline.a){
-    LIBS += $$OUT_PWD/../lib/libplotline.a
-    PRE_TARGETDEPS += $$OUT_PWD/../lib/libplotline.a
-}
-
-exists($$OUT_PWD/../lib/libplotline.so){
-    LIBS += $$OUT_PWD/../lib/libplotline.so
-    PRE_TARGETDEPS += $$OUT_PWD/../lib/libplotline.so
-}
-
 FORMS += mainwindow.ui \
     preferencesdialog.ui \
     plotlinedialog.ui \
@@ -108,3 +98,10 @@ CONFIG += c++11
 
 #REQUIRES += $$PWD/../lib
 #LIBS += $$PWD/../lib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/release/ -lplotline
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/debug/ -lplotline
+else:unix: LIBS += -L$$OUT_PWD/../lib/ -lplotline
+
+INCLUDEPATH += $$PWD/../lib
+DEPENDPATH += $$PWD/../lib

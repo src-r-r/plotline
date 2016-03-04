@@ -7,9 +7,9 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
 {
     ui->setupUi(this);
     SceneModel *model = new SceneModel(mainWindow->novel());
-    SceneFilter *sceneFilter = new SceneFilter(mainWindow->novel());
-    sceneFilter->setSourceModel(model);
-    ui->sceneList->setModel(sceneFilter);
+    mFilter = new SceneFilter(mainWindow->novel());
+    mFilter->setSourceModel(model);
+    ui->sceneList->setModel(mFilter);
 
     Novel *novel = mMainWindow->novel();
 
@@ -39,9 +39,9 @@ SceneFrame::SceneFrame(MainWindow *mainWindow, QWidget *parent) :
 
 SceneFrame::~SceneFrame()
 {
-    delete mActionCompleter;
+//    delete mActionCompleter;
 //    delete mActionHighlighter;
-    delete mHeadlineCompleter;
+//    delete mHeadlineCompleter;
 //    delete mHeadlineHighlighter;
     delete ui;
 }
@@ -233,6 +233,7 @@ void SceneFrame::on_plotline_activated(int index)
 void SceneFrame::onHeadlineModified()
 {
     QModelIndex index = ui->sceneList->currentIndex();
+    if (!index.isValid()) return;
     QString headline = ui->sceneHeadline->toPlainText();
     mFilter->setData(index, headline, SceneModel::HeadlineRole);
     emit mFilter->dataChanged(ui->sceneList->currentIndex(),
@@ -246,6 +247,7 @@ void SceneFrame::onHeadlineModified()
 void SceneFrame::onActionModified()
 {
     QModelIndex index = ui->sceneList->currentIndex();
+    if (!index.isValid()) return;
     QString action = ui->sceneAction->toPlainText();
     mFilter->setData(index, action, SceneModel::ActionRole);
     findCharacters(ui->sceneAction);
