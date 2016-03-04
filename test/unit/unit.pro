@@ -31,26 +31,17 @@ DISTFILES += \
     fixtures/revision-deserialize.json \
     fixtures/revision-bug-test.json
 
-REQUIRES += \
-    $$PWD/../../src/lib \
-    $$PWD/../../src/app
-
-INCLUDEPATH += \
-    $$OUT_PWD/../../src/lib \
-    $$OUT_PWD/../../src/app
-
 ##
 # Depending on whether we're building the libraries statically or dynamically,
 # Either the .so will be found or the .a will be found.
 # There is probably a more elegant solution.
 ##
 
-exists($$OUT_PWD/../../src/lib/libplotline.a){
-    LIBS += $$OUT_PWD/../../src/lib/libplotline.a
-}
-
-exists($$OUT_PWD/../../src/lib/libplotline.so){
-    LIBS += $$OUT_PWD/../../src/lib/libplotline.so
-}
-
 CONFIG += console testcase c++11
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../src/lib/release/ -lplotline
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../../src/lib/debug/ -lplotline
+else:unix: LIBS += -L$$OUT_PWD/../../src/lib/ -lplotline
+
+INCLUDEPATH += $$PWD/../../src/lib
+DEPENDPATH += $$PWD/../../src/lib

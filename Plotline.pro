@@ -7,8 +7,9 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = src \
-    test \
     doc
+
+CONFIG(debug, debug|release): SUBDIRS += test
 
 OTHER_FILES = \
     README.markdown
