@@ -31,9 +31,13 @@ DISTFILES += \
     fixtures/revision-deserialize.json \
     fixtures/revision-bug-test.json
 
+REQUIRES += \
+    $$PWD/../../src/lib \
+    $$PWD/../../src/app
+
 INCLUDEPATH += \
     $$OUT_PWD/../../src/lib \
-    ../../src/app
+    $$OUT_PWD/../../src/app
 
 ##
 # Depending on whether we're building the libraries statically or dynamically,
@@ -41,8 +45,8 @@ INCLUDEPATH += \
 # There is probably a more elegant solution.
 ##
 
-exists($$OUT_PWD/../../../src/lib/libplotline.a){
-    LIBS += $$OUT_PWD/../../../src/lib/libplotline.a
+exists($$OUT_PWD/../../src/lib/libplotline.a){
+    LIBS += $$OUT_PWD/../../src/lib/libplotline.a
 }
 
 exists($$OUT_PWD/../../src/lib/libplotline.so){

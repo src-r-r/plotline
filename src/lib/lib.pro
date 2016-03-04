@@ -35,4 +35,4 @@ INSTALLS += LIBPLOTLINE
 CONFIG += c++11
 
 CONFIG +=  -Wl,-export-all-symbols
-LIBS += -lws2_32
+win:LIBS += -lws2_32

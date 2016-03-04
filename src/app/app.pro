@@ -106,5 +106,5 @@ INSTALLS += styles
 
 CONFIG += c++11
 
-REQUIRES += $$PWD/../lib
+#REQUIRES += $$PWD/../lib
 #LIBS += $$PWD/../lib

@@ -28,6 +28,7 @@ QJsonValue jsonValFromImage(const QImage &i)
 
 QString friendlyList(const QStringList &stringList)
 {
+    Q_UNUSED(stringList);
     QString result = QString();
     qWarning() << "friendlyList() Not implemented";
     return result;
@@ -182,10 +183,12 @@ QString reflowParagraphs(const QString &content, const int width){
 
 QString toRomanNumeral(const int number)
 {
+    Q_UNUSED(number);
     return QString();
 }
 
 QString toWord(const int number)
 {
+    Q_UNUSED(number);
     return QString();
 }
