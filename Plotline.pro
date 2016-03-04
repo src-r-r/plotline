@@ -3,7 +3,8 @@
 ######################################################################
 
 TEMPLATE = subdirs
-TARGET = Plotline
+
+CONFIG += ordered
 
 SUBDIRS = src \
     test \
@@ -14,8 +15,10 @@ OTHER_FILES = \
 
 # Copy the bash executable.
 
-copydata.commands = $(COPY_DIR) $$PWD/plotline.sh $$OUT_PWD
-first.depends = $(first) copydata
-export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+unix {
+    copydata.commands = $(COPY_DIR) "$$PWD/plotline.sh" "$$OUT_PWD"
+    first.depends = $(first) copydata
+    export(first.depends)
+    export(copydata.commands)
+    QMAKE_EXTRA_TARGETS += first copydata
+}

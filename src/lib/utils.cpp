@@ -187,4 +187,5 @@ QString toRomanNumeral(const int number)
 
 QString toWord(const int number)
 {
+    return QString();
 }

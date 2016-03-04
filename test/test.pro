@@ -7,9 +7,9 @@ TEMPLATE = subdirs
 SUBDIRS += \
     unit
 
-INCLUDEPATH += \
-    ../src/lib
+LIBS += -L$$OUT_PWD../../src/lib/libplotline.a
 
-LIBS += $$OUT_PWD/../../src/lib/libplotline.a
+INCLUDEPATH += \
+    $$PWD/../../src/lib
 
 CONFIG += c++11

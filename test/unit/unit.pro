@@ -32,7 +32,7 @@ DISTFILES += \
     fixtures/revision-bug-test.json
 
 INCLUDEPATH += \
-    ../../src/lib \
+    $$OUT_PWD/../../src/lib \
     ../../src/app
 
 ##
@@ -41,8 +41,8 @@ INCLUDEPATH += \
 # There is probably a more elegant solution.
 ##
 
-exists($$OUT_PWD/../../src/lib/libplotline.a){
-    LIBS += $$OUT_PWD/../../src/lib/libplotline.a
+exists($$OUT_PWD/../../../src/lib/libplotline.a){
+    LIBS += $$OUT_PWD/../../../src/lib/libplotline.a
 }
 
 exists($$OUT_PWD/../../src/lib/libplotline.so){

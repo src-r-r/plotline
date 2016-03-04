@@ -1,7 +1,7 @@
 
 TEMPLATE = lib
 TARGET = plotline
-QT += core gui
+QT += core gui widgets
 DEFINES += LIBPLOTLINE
 
 LIBPLOTLINE.path = $$OUT_PWD/
@@ -33,3 +33,6 @@ SOURCES += chapter.cpp \
 INSTALLS += LIBPLOTLINE
 
 CONFIG += c++11
+
+CONFIG +=  -Wl,-export-all-symbols
+LIBS += -lws2_32

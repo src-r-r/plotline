@@ -1,14 +1,14 @@
  
 TEMPLATE = app
 
+TARGET = Plotline
+
 QT       += core gui webkitwidgets printsupport
 
 # greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 INCLUDEPATH += \
     ../lib
-
-TARGET = plotline
 
 HEADERS +=  mainwindow.h \
     characteritemmodel.h \
@@ -105,3 +105,6 @@ styles.files = $$PWD/styles/*.json
 INSTALLS += styles
 
 CONFIG += c++11
+
+REQUIRES += $$PWD/../lib
+#LIBS += $$PWD/../lib
